@@ -1,0 +1,14 @@
+<!DOCTYPE configuration PUBLIC     
+    "-//mybatis.org//DTD Config 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+    
+<configuration>
+	<typeAliases>
+		<!-- 增加velocity支持 -->
+	 	<typeAlias alias="velocity" type="org.mybatis.scripting.velocity.Driver"/>
+	</typeAliases>
+	
+	<mappers>
+	    <mapper resource="mybatis/user/UserBMapper.xml"/>
+	</mappers>
+</configuration>
