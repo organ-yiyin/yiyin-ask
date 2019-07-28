@@ -257,6 +257,20 @@
 			<artifactId>joda-time</artifactId>
 			<version>2.7</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.23</version>
+		</dependency>
+		
+		<!-- mybatis/velocity�? -->
+		<dependency>
+			<groupId>org.mybatis.scripting</groupId>
+			<artifactId>mybatis-velocity</artifactId>
+			<version>1.1</version>
+		</dependency>
+		
 		<dependency>
 		    <groupId>com.aliyun.oss</groupId>
 		    <artifactId>aliyun-sdk-oss</artifactId>
