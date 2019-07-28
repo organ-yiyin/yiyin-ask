@@ -1,0 +1,20 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sys.roleauthority">
+    
+    <select id="findByRoleId" parameterType="int" resultType="com.yiyn.ask.sys.po.RoleAuthorityPo">
+	    select * from t_role_authority where role_id = #{id}
+	</select> 
+    
+	<insert id="insert" parameterType="com.yiyn.ask.sys.po.RoleAuthorityPo" useGeneratedKeys="true" keyProperty="id">
+	    insert into t_role_authority (role_id,authority_id,CREATOR,CREATE_TIME,UPDATER,UPDATE_TIME)   
+	    values (#{role_id},#{authority_id},#{creator},#{create_time},#{updater},#{update_time})
+	</insert> 
+	
+	<delete id="deleteAuthorityByRoleId">
+        delete from t_role_authority where role_id = #{id}
+    </delete>
+
+</mapper>

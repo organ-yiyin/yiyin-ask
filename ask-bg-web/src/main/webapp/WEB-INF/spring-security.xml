@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   
+                http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+                http://www.springframework.org/schema/security   
+                http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+	<!-- Spring-Security 的配置 -->
+	
+	<!-- 拦截器不拦截以下路径 -->
+	<security:http request-matcher="regex" pattern="(/dwz_ria){1}/\S*$" security="none" />
+	<security:http request-matcher="regex" pattern="(/images){1}/\S*$" security="none" />
+	
+	<!-- 不拦截阿里请求 -->
+	<security:http request-matcher="regex" pattern="(/alipay){1}/\S*$"
+		security="none" />
+	<!-- 不拦截招行请求 -->
+	<security:http request-matcher="regex" pattern="(/cmbpay){1}/\S*$"
+		security="none" />
+	
+	<security:http request-matcher="ant" pattern="/" security="none" />
+	<security:http request-matcher="ant" pattern="/login.jsp" security="none" />
+	<security:http request-matcher="ant" pattern="/yiyn/pay/index.jsp" security="none" />
+	
+	<security:http auto-config="true" use-expressions="true" access-denied-page="/auth/denied">
+		
+		<!-- 需要拦截的路径，pattern表示要拦截的路径，access表示能够访问的角色 -->  
+		<security:custom-filter after="FORM_LOGIN_FILTER" ref="needUserLoginFilter" />
+		
+		<security:form-login login-page="/login.jsp"
+			authentication-failure-url="/login.jsp?error=true"
+			default-target-url="/yiyn/index.jsp" />
+
+		<security:logout invalidate-session="true"
+			logout-success-url="/" logout-url="/j_spring_security_logout" />
+		
+		<security:remember-me token-validity-seconds="604800" key="yiynRembemMe" />
+		
+		<!-- 同步session控制 -->  
+
+	</security:http>
+
+	<security:authentication-manager>
+		<security:authentication-provider
+			user-service-ref="userDetailsService">
+			<security:password-encoder ref="passwordEncoder"/>
+		</security:authentication-provider>
+	</security:authentication-manager>
+	
+	<bean class="com.yiyn.ask.base.security.NeedUserLoginFilter" id="needUserLoginFilter"/>
+	
+	<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" id="passwordEncoder"/>
+
+	<!-- 通过 customUserDetailsService,Spring会自动的用户的访问级别. 也可以理解成:以后我们和数据库操作就是通过customUserDetailsService来进行关联. -->
+	<bean id="userDetailsService" class="com.yiyn.ask.base.security.SpringSecurityUserDetailsService"></bean> 
+
+</beans>  
