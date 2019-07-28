@@ -1,19 +1,25 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>yiyin-ask</groupId>
-    <artifactId>yiyin-ask</artifactId>
-    <version>1.0</version>
-  </parent>
-  <groupId>ask-bg-web</groupId>
-  <artifactId>ask-bg-web</artifactId>
-  <packaging>war</packaging>
-  <name>ask-bg-web</name>
-  <description>懿英安心问后台管理系统</description>
-  
-    <properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>yiyin-ask</groupId>
+		<artifactId>yiyin-ask</artifactId>
+		<version>1.0</version>
+	</parent>
+	<groupId>ask-bg-web</groupId>
+	<artifactId>ask-bg-web</artifactId>
+	<packaging>war</packaging>
+	<name>ask-bg-web</name>
+	<description>懿英安心问后台管理系统</description>
+
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<encoding>UTF-8</encoding>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 	</properties>
+	
 	<dependencies>
 		<dependency>
 			<groupId>ask-service</groupId>
@@ -24,5 +30,24 @@
 
 	<build>
 		<finalName>ask-bg-web</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<version>3.6.2</version>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>
