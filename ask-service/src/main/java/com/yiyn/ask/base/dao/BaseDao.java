@@ -3,7 +3,10 @@ package com.yiyn.ask.base.dao;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -12,6 +15,10 @@ import com.yiyn.ask.base.constants.YesOrNoType;
 import com.yiyn.ask.base.po.BasePo;
 
 public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
+	@Resource  
+    public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {  
+        super.setSqlSessionFactory(sqlSessionFactory);  
+    }
 	
 	public void insert(T t) throws Exception{
 		if(StringUtils.isEmpty(t.getDelete_flag())){
