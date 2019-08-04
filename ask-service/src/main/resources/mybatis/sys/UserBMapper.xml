@@ -1,0 +1,50 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="sys.userb">
+
+	<select id="findById" parameterType="int"
+		resultType="com.yiyn.ask.sys.po.UserBPo">
+		select * from user_b where id = #{id};
+	</select>
+	
+	<select id="findByUserNo" parameterType="String" resultType="com.yiyn.ask.sys.po.UserBPo">
+        select * from user_b where user_no =#{user_no}; 
+    </select>
+	
+	<insert id="insert" parameterType="com.yiyn.ask.sys.po.UserBPo" useGeneratedKeys="true" keyProperty="user_id">
+		insert into
+		user_b(user_no,user_name,user_password,user_phone,user_id_number,user_type,
+		user_headimg,work_year,user_desc,order_set,advice_type,
+		advice_val,advice_num,share_link,appendix_img,recommend,
+		open_hours,recent_open_hours,revision,
+		delete_flag,created_by,created_time,updated_by,updated_time)
+		values(#{user_no},#{user_name},#{user_password},#{user_phone},#{user_id_number},#{user_type},
+		#{user_headimg},#{work_year},#{user_desc},#{order_set},#{advice_type},
+		#{advice_val},#{advice_num},#{share_link},#{appendix_img},#{recommend},
+		#{open_hours},#{recent_open_hours},#{revision},
+		#{delete_flag},#{created_by},#{created_time},#{updated_by},#{updated_time});
+	</insert>
+
+	<update id="updateById" parameterType="com.yiyn.ask.sys.po.UserBPo">
+		update user_b
+		set
+		USER_NAME=#{user_name},centre_id=#{centre_id},FULL_NAME=#{full_name},
+		ISADMIN=#{isadmin},ENABLED=#{enabled},
+		UPDATER=#{updater},UPDATE_TIME=#{update_time}
+		where user_id =#{user_id};
+	</update>
+	
+	<delete id="deleteById" parameterType="int">
+	    delete from user_b where user_id=#{user_id}; 
+	</delete>
+	
+	<delete id="deleteByIds">
+	    delete from user_b where user_id in
+        <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</delete>
+
+</mapper>
