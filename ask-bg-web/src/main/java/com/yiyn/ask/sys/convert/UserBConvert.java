@@ -8,7 +8,7 @@ import org.springframework.beans.BeanUtils;
 import com.yiyn.ask.sys.form.UserBForm;
 import com.yiyn.ask.sys.po.UserBPo;
 
-public class UserBConver {
+public class UserBConvert {
 	
 	public static UserBForm convertToForm(UserBPo source) {
 		if(source == null) {

@@ -22,7 +22,7 @@ import com.yiyn.ask.base.security.SpingSecurityUserBo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.DwzResponseForm.StatusCode;
 import com.yiyn.ask.base.utils.PaginationUtils;
-import com.yiyn.ask.sys.convert.UserBConver;
+import com.yiyn.ask.sys.convert.UserBConvert;
 import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.form.UserBForm;
 import com.yiyn.ask.sys.form.UserManagementForm;
@@ -72,11 +72,11 @@ public class UserController {
 		
 		PaginationUtils page = new PaginationUtils();
 		page.setTotalCount(totalCount);
-		page.setData(UserBConver.listConvertToForm(pos));
+		page.setData(UserBConvert.listConvertToForm(pos));
 		
 		UserManagementForm returnUserPage = new UserManagementForm();
 		returnUserPage.setTotalCount(totalCount);
-		returnUserPage.setData(UserBConver.listConvertToForm(pos));
+		returnUserPage.setData(UserBConvert.listConvertToForm(pos));
 		
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/userManagement.jsp");
 		mv.addObject("info", returnUserPage);
@@ -104,7 +104,7 @@ public class UserController {
 			HttpServletResponse response, UserBForm userForm) throws Exception {
 		logger.info("saveUser");
 		
-		UserBPo convertToPo = UserBConver.convertToPo(userForm);
+		UserBPo convertToPo = UserBConvert.convertToPo(userForm);
 		convertToPo.setUser_password(DigestUtils.md5Hex(userForm.getOriginal_password()));
 		Long insertId = this.userBDao.save(convertToPo);
 		
@@ -119,7 +119,7 @@ public class UserController {
 		logger.info("forwardResetPass");
 		
 		UserBPo userBPo = this.userBDao.findById(id);
-		UserBForm userForm = UserBConver.convertToForm(userBPo);
+		UserBForm userForm = UserBConvert.convertToForm(userBPo);
 		
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/userResetPass.jsp");
 		mv.addObject("info", userForm);
