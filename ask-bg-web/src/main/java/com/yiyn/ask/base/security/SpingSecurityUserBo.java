@@ -1,49 +1,30 @@
 package com.yiyn.ask.base.security;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-import com.yiyn.ask.sys.po.AuthorityPo;
-import com.yiyn.ask.sys.po.UserPo;
+import com.yiyn.ask.sys.po.UserBPo;
 
 public class SpingSecurityUserBo extends User{
 	
-	private UserPo po;
+	private static final long serialVersionUID = 1L;
 	
-	private List<AuthorityPo> authorityPos;
+	private UserBPo po;
 	
-	public SpingSecurityUserBo(UserPo po, List<AuthorityPo> authorityPos, Collection<? extends GrantedAuthority> authorities) {
-		super(po.getUser_name(),po.getPassword(), authorities);
-		this.authorityPos = authorityPos;
+	public SpingSecurityUserBo(UserBPo po, Collection<? extends GrantedAuthority> authorities) {
+		super(po.getUser_name(),po.getUser_password(), authorities);
 		this.po = po;
     }
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
-	public UserPo getPo() {
+	public UserBPo getPo() {
 		return po;
 	}
 
-	public void setPo(UserPo po) {
+	public void setPo(UserBPo po) {
 		this.po = po;
 	}
-
-	public List<AuthorityPo> getAuthorityPos() {
-		return authorityPos;
-	}
-
-	public void setAuthorityPos(List<AuthorityPo> authorityPos) {
-		this.authorityPos = authorityPos;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
+	
+	
 }

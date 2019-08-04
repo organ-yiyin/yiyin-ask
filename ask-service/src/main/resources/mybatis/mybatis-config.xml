@@ -9,6 +9,7 @@
 	</typeAliases>
 
 	<mappers>
+		<mapper resource="mybatis/sys/UserBMapper.xml" />
 		<mapper resource="mybatis/sys/UserMapper.xml" />
 		<mapper resource="mybatis/sys/RoleMapper.xml" />
 		<mapper resource="mybatis/sys/AuthorityMapper.xml" />

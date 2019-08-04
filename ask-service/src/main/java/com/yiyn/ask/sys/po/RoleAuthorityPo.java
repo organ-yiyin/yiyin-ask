@@ -4,19 +4,9 @@ import com.yiyn.ask.base.po.BasePo;
 
 public class RoleAuthorityPo extends BasePo {
 	
-	private int id;
-	
 	private int role_id;
 	
 	private int authority_id;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public int getRole_id() {
 		return role_id;

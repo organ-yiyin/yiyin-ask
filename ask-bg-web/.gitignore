@@ -8,6 +8,7 @@
 *.war
 *.ear
 target/
+bin/
  
 # virtual machine crash logs
 hs_err_pid*
@@ -16,4 +17,3 @@ hs_err_pid*
 *.settings
 *.project
 *.classpath
-/bin/

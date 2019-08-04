@@ -1,8 +1,8 @@
-package com.yiyn.ask.base.po;
+package com.yiyn.ask.base.form;
 
 import java.util.Date;
 
-public class BasePo implements java.io.Serializable{
+public class BaseForm implements java.io.Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	

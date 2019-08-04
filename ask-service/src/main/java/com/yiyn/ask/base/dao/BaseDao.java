@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.User;
 
 import com.yiyn.ask.base.constants.YesOrNoType;
 import com.yiyn.ask.base.po.BasePo;
+import com.yiyn.ask.base.utils.PaginationUtils;
 
 public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
 	@Resource  
@@ -28,23 +29,23 @@ public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
 		this.getSqlSession().insert(this.getNameStatement() + ".insert", t);
 	}
 	
-	public T findById(int id) throws Exception {
+	public T findById(Long id) throws Exception {
 		return this.getSqlSession().selectOne(this.getNameStatement() + ".findById", id);
 	}
 	
-	public T findByIdOnLock(int id) throws Exception {
+	public T findByIdOnLock(Long id) throws Exception {
 		return this.getSqlSession().selectOne(this.getNameStatement() + ".findByIdOnLock", id);
 	}
 	
-	public void deleteById(int id) throws Exception {
+	public void deleteById(Long id) throws Exception {
 		this.getSqlSession().delete(this.getNameStatement() + ".deleteById", id);
 	}
 	
-	public void deleteById_logic(int id) throws Exception{
+	public void deleteById_logic(Long id) throws Exception{
 		this.getSqlSession().delete(this.getNameStatement() + ".deleteById_logic", id);
 	}
 	
-	public void deleteByIds(int[] ids) throws Exception{
+	public void deleteByIds(Long[] ids) throws Exception{
 		this.getSqlSession().delete(this.getNameStatement() + ".deleteByIds", ids);
 	}
 	
@@ -57,7 +58,13 @@ public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
 		this.getSqlSession().update(this.getNameStatement() + ".updateById", t);
 	}
 	
-	//public abstract void saveOrUpdate(T t) throws Exception;
+	public List<T> searchByConditions(PaginationUtils paramPage){
+		return this.getSqlSession().selectList(this.getNameStatement() + ".searchByConditions", paramPage);
+	}
+	
+	public Integer searchCountByConditions(PaginationUtils paramPage) throws Exception{
+		return this.getSqlSession().selectOne(this.getNameStatement() + ".searchCountByConditions", paramPage);
+	}
 	
 	public abstract String getNameStatement();
 	
@@ -75,15 +82,15 @@ public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
 			}
 			else{
 				User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-				t.setCreator(user.getUsername());
-				t.setUpdater(user.getUsername());
+				t.setCreated_by(user.getUsername());
+				t.setUpdated_by(user.getUsername());
 			}
 		}
 		else{
-			t.setCreator("system");
-			t.setUpdater("system");
+			t.setCreated_by("system");
+			t.setUpdated_by("system");
 		}
-		t.setCreate_time(new Date());			
-		t.setUpdate_time(new Date());
+		t.setCreated_time(new Date());			
+		t.setUpdated_time(new Date());
 	}
 }
