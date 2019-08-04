@@ -40,12 +40,12 @@
 	
 	<insert id="insert" parameterType="com.yiyn.ask.sys.po.UserBPo" useGeneratedKeys="true" keyProperty="user_id">
 		insert into
-		user_b(user_no,user_name,user_password,user_phone,user_id_number,user_type,
+		user_b(user_no,user_name,user_password,user_phone,user_id_num,user_type,
 		user_headimg,work_year,user_desc,order_set,advice_type,
 		advice_val,advice_num,share_link,appendix_img,recommend,
 		open_hours,recent_open_hours,revision,
 		delete_flag,created_by,created_time,updated_by,updated_time)
-		values(#{user_no},#{user_name},#{user_password},#{user_phone},#{user_id_number},#{user_type},
+		values(#{user_no},#{user_name},#{user_password},#{user_phone},#{user_id_num},#{user_type},
 		#{user_headimg},#{work_year},#{user_desc},#{order_set},#{advice_type},
 		#{advice_val},#{advice_num},#{share_link},#{appendix_img},#{recommend},
 		#{open_hours},#{recent_open_hours},#{revision},

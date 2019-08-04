@@ -16,7 +16,7 @@ public class UserBPo extends BasePo {
 
 	private String user_phone;
 
-	private String user_id_number;
+	private String user_id_num;
 
 	private Integer user_type;
 
@@ -78,12 +78,12 @@ public class UserBPo extends BasePo {
 		this.user_phone = user_phone;
 	}
 
-	public String getUser_id_number() {
-		return user_id_number;
+	public String getUser_id_num() {
+		return user_id_num;
 	}
 
-	public void setUser_id_number(String user_id_number) {
-		this.user_id_number = user_id_number;
+	public void setUser_id_num(String user_id_num) {
+		this.user_id_num = user_id_num;
 	}
 
 	public Integer getUser_type() {
