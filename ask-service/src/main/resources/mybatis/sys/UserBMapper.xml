@@ -4,7 +4,7 @@
 
 <mapper namespace="sys.userb">
 
-	<select id="findById" parameterType="int"
+	<select id="findById" parameterType="Long"
 		resultType="com.yiyn.ask.sys.po.UserBPo">
 		select * from user_b where id = #{id};
 	</select>
@@ -12,6 +12,31 @@
 	<select id="findByUserNo" parameterType="String" resultType="com.yiyn.ask.sys.po.UserBPo">
         select * from user_b where user_no =#{user_no}; 
     </select>
+    
+    <select id="searchByConditions" parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="com.yiyn.ask.sys.po.UserBPo">
+	    select * from user_b u
+	    where 1=1 
+		<if test="paramMap.user_no != null and '' != paramMap.user_no">  
+              AND u.user_no like CONCAT('%',#{paramMap.user_no},'%')  
+        </if>
+        <if test="paramMap.user_name != null and '' != paramMap.user_name">  
+              AND u.user_name like CONCAT('%',#{paramMap.user_name},'%')  
+        </if>
+         order by u.UPDATED_TIME desc
+		limit #{startIndex}, #{numPerPage}
+	</select>
+	
+	<select id="searchCountByConditions" parameterType="java.util.HashMap" resultType="int">
+	    select count(*) as totalCount from user_b u
+	    where 1=1 
+		<if test="paramMap.user_no != null and '' != paramMap.user_no">  
+              AND u.user_no like CONCAT('%',#{paramMap.user_no},'%')  
+        </if>
+        <if test="paramMap.user_name != null and '' != paramMap.user_name">  
+              AND u.user_name like CONCAT('%',#{paramMap.user_name},'%')  
+        </if>
+       
+	</select>
 	
 	<insert id="insert" parameterType="com.yiyn.ask.sys.po.UserBPo" useGeneratedKeys="true" keyProperty="user_id">
 		insert into
@@ -32,8 +57,16 @@
 		set
 		USER_NAME=#{user_name},centre_id=#{centre_id},FULL_NAME=#{full_name},
 		ISADMIN=#{isadmin},ENABLED=#{enabled},
-		UPDATER=#{updater},UPDATE_TIME=#{update_time}
+		updated_by=#{updated_by},UPDATE_TIME=#{update_time}
 		where user_id =#{user_id};
+	</update>
+	
+	<update id="updatePasswordById" parameterType="com.yiyn.ask.sys.po.UserBPo">
+		update user_b
+		set
+		user_password=#{user_password},
+		updated_by=#{updated_by},updated_time=#{updated_time}
+		where id =#{id};
 	</update>
 	
 	<delete id="deleteById" parameterType="int">

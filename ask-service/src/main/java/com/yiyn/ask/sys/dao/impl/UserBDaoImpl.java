@@ -9,6 +9,11 @@ public class UserBDaoImpl extends BaseDao<UserBPo>{
 		return this.getSqlSession().selectOne(this.getNameStatement() + ".findByUserNo", user_no);
 	}
 	
+	public void updatePasswordById(UserBPo userPo){
+		this.initUpdateInfo(userPo);
+		this.getSqlSession().update(this.getNameStatement() + ".updatePasswordById", userPo);
+	}
+	
 	@Override
 	public String getNameStatement() {
 		// TODO Auto-generated method stub

@@ -127,12 +127,12 @@ $(function(){
 						<ul class="tree treeFolder">
 							<li><a href="javascript:void();">用户权限管理</a>
 								<ul>
-									<li><a href="<%= path%>/sys/sys/user/management.do" target="navTab" rel="/sys/sys/user/management">用户管理</a></li>
+									<li><a href="<%= path%>/sys/user/management.do" target="navTab" rel="/sys/user/management">用户管理</a></li>
 								</ul>
 							</li>
 						</ul>
 						<ul class="tree treeFolder">
-							<li><a href="<%= path%>/sys/sys/user/forwardPassword.do" target="navTab" rel="/sys/sys/user/management">个人密码修改</a></li>
+							<li><a href="<%= path%>/sys/user/forwardPassword.do" target="navTab" rel="/sys/user/management">个人密码修改</a></li>
 						</ul>
 					</div>
 					

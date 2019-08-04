@@ -11,6 +11,8 @@
 
     <tx:annotation-driven transaction-manager="txManager"/>
     
+    <context:component-scan base-package="com.yiyn.ask.*.controller" />
+    
     <!-- set @responseBody charset to UTF-8 -->
 	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
 		<property name="messageConverters">
