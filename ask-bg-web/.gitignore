@@ -8,13 +8,12 @@
 *.war
 *.ear
 target/
+bin/
  
 # virtual machine crash logs
 hs_err_pid*
  
 #eclipse
-*.bin
 *.settings
 *.project
 *.classpath
-/bin/
