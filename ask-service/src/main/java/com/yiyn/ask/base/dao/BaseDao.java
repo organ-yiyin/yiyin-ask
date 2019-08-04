@@ -68,15 +68,15 @@ public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
 			}
 			else{
 				User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-				t.setCreator(user.getUsername());
-				t.setUpdater(user.getUsername());
+				t.setCreated_by(user.getUsername());
+				t.setUpdated_by(user.getUsername());
 			}
 		}
 		else{
-			t.setCreator("system");
-			t.setUpdater("system");
+			t.setCreated_by("system");
+			t.setUpdated_by("system");
 		}
-		t.setCreate_time(new Date());			
-		t.setUpdate_time(new Date());
+		t.setCreated_time(new Date());			
+		t.setUpdated_time(new Date());
 	}
 }

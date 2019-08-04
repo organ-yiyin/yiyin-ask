@@ -13,23 +13,7 @@
 	
 	<context:component-scan base-package="com.weixin.*" />
 	
-	<bean id="userDao" class="com.yiyn.ask.sys.dao.impl.UserDaoImpl">
-	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	
-	<bean id="roleDao" class="com.yiyn.ask.sys.dao.impl.RoleDaoImpl">
-	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	
-	<bean id="authorityDao" class="com.yiyn.ask.sys.dao.impl.AuthorityDaoImpl">
-	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	
-	<bean id="roleAuthorityDao" class="com.yiyn.ask.sys.dao.impl.RoleAuthorityDaoImpl">
-	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	
-	<bean id="resourceDao" class="com.yiyn.ask.sys.dao.impl.ResourceDaoImpl">
+	<bean id="userBDao" class="com.yiyn.ask.sys.dao.impl.UserBDaoImpl">
 	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
 	</bean>
 	
