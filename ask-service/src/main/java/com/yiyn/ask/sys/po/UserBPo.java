@@ -26,7 +26,7 @@ public class UserBPo extends BasePo {
 
 	private String user_desc;
 
-	private String order_set;
+	private Integer order_set;
 
 	private Integer advice_type;
 
@@ -38,7 +38,7 @@ public class UserBPo extends BasePo {
 
 	private String appendix_img;
 
-	private Integer recommend;
+	private String recommend;
 
 	private Integer open_hours;
 
@@ -118,11 +118,11 @@ public class UserBPo extends BasePo {
 		this.user_desc = user_desc;
 	}
 
-	public String getOrder_set() {
+	public Integer getOrder_set() {
 		return order_set;
 	}
 
-	public void setOrder_set(String order_set) {
+	public void setOrder_set(Integer order_set) {
 		this.order_set = order_set;
 	}
 
@@ -166,11 +166,11 @@ public class UserBPo extends BasePo {
 		this.appendix_img = appendix_img;
 	}
 
-	public Integer getRecommend() {
+	public String getRecommend() {
 		return recommend;
 	}
 
-	public void setRecommend(Integer recommend) {
+	public void setRecommend(String recommend) {
 		this.recommend = recommend;
 	}
 

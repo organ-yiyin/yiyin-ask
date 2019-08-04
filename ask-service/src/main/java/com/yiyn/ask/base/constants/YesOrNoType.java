@@ -4,20 +4,22 @@ public enum YesOrNoType {
 	
 	YES("Y","是"),NO("N","否");
 	
-	String value;
+	String code;
 	String text;
 	
-	private YesOrNoType(String value, String text){
-		this.value = value;
+	private YesOrNoType(String code, String text){
+		this.code = code;
 		this.text = text;
 	}
 	
-	public String getValue() {
-		return value;
+	public String getCode() {
+		return code;
 	}
-	public void setValue(String value) {
-		this.value = value;
+
+	public void setCode(String code) {
+		this.code = code;
 	}
+
 	public String getText() {
 		return text;
 	}
@@ -34,7 +36,7 @@ public enum YesOrNoType {
 	public static YesOrNoType getByValue(String pValue){
 		
 		for(YesOrNoType cs : YesOrNoType.values()){
-			if(cs.getValue().equals(pValue)){
+			if(cs.getCode().equals(pValue)){
 				return cs;
 			}
 		}

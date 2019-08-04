@@ -22,6 +22,9 @@
         <if test="paramMap.user_name != null and '' != paramMap.user_name">  
               AND u.user_name like CONCAT('%',#{paramMap.user_name},'%')  
         </if>
+        <if test="paramMap.user_type != null and '' != paramMap.user_type">  
+              AND u.user_type = #{paramMap.user_type}
+        </if>
          order by u.UPDATED_TIME desc
 		limit #{startIndex}, #{numPerPage}
 	</select>
@@ -35,7 +38,9 @@
         <if test="paramMap.user_name != null and '' != paramMap.user_name">  
               AND u.user_name like CONCAT('%',#{paramMap.user_name},'%')  
         </if>
-       
+       <if test="paramMap.user_type != null and '' != paramMap.user_type">  
+              AND u.user_type = #{paramMap.user_type}
+        </if>
 	</select>
 	
 	<insert id="insert" parameterType="com.yiyn.ask.sys.po.UserBPo" useGeneratedKeys="true" keyProperty="user_id">
@@ -53,12 +58,17 @@
 	</insert>
 
 	<update id="updateById" parameterType="com.yiyn.ask.sys.po.UserBPo">
+		
+	</update>
+	
+	<update id="updateByIdInBg" parameterType="com.yiyn.ask.sys.po.UserBPo">
 		update user_b
 		set
-		USER_NAME=#{user_name},centre_id=#{centre_id},FULL_NAME=#{full_name},
-		ISADMIN=#{isadmin},ENABLED=#{enabled},
-		updated_by=#{updated_by},UPDATE_TIME=#{update_time}
-		where user_id =#{user_id};
+		user_name=#{user_name},user_phone=#{user_phone},user_id_num=#{user_id_num},user_headimg=#{user_headimg},
+		work_year=#{work_year},order_set=#{order_set},advice_type=#{advice_type},advice_val=#{advice_val},advice_num=#{advice_num},
+		share_link=#{share_link},recommend=#{recommend},user_desc=#{user_desc},
+		updated_by=#{updated_by},updated_time=#{updated_time}
+		where id =#{id};
 	</update>
 	
 	<update id="updatePasswordById" parameterType="com.yiyn.ask.sys.po.UserBPo">

@@ -2,7 +2,10 @@ package com.yiyn.ask.sys.form;
 
 import java.math.BigDecimal;
 
+import com.yiyn.ask.base.constants.ConsultingTypeEnum;
+import com.yiyn.ask.base.constants.OrderSetEnum;
 import com.yiyn.ask.base.constants.UserTypeEnum;
+import com.yiyn.ask.base.constants.YesOrNoType;
 import com.yiyn.ask.base.form.BaseForm;
 
 public class UserBForm extends BaseForm{
@@ -27,7 +30,7 @@ public class UserBForm extends BaseForm{
 
 	private String user_desc;
 
-	private String order_set;
+	private Integer order_set;
 
 	private Integer advice_type;
 
@@ -39,7 +42,7 @@ public class UserBForm extends BaseForm{
 
 	private String appendix_img;
 
-	private Integer recommend;
+	private String recommend;
 
 	private Integer open_hours;
 
@@ -49,7 +52,13 @@ public class UserBForm extends BaseForm{
 	
 	private String original_password;
 	
+	private YesOrNoType[] yesOrNoTypes = YesOrNoType.values();
+	
 	private UserTypeEnum[] userTypes = UserTypeEnum.values();
+	
+	private OrderSetEnum[] orderSets = OrderSetEnum.values();
+	
+	private ConsultingTypeEnum[] consultingTypes = ConsultingTypeEnum.values();
 
 	public String getUser_no() {
 		return user_no;
@@ -123,11 +132,11 @@ public class UserBForm extends BaseForm{
 		this.user_desc = user_desc;
 	}
 
-	public String getOrder_set() {
+	public Integer getOrder_set() {
 		return order_set;
 	}
 
-	public void setOrder_set(String order_set) {
+	public void setOrder_set(Integer order_set) {
 		this.order_set = order_set;
 	}
 
@@ -171,11 +180,11 @@ public class UserBForm extends BaseForm{
 		this.appendix_img = appendix_img;
 	}
 
-	public Integer getRecommend() {
+	public String getRecommend() {
 		return recommend;
 	}
 
-	public void setRecommend(Integer recommend) {
+	public void setRecommend(String recommend) {
 		this.recommend = recommend;
 	}
 
@@ -217,6 +226,30 @@ public class UserBForm extends BaseForm{
 
 	public void setOriginal_password(String original_password) {
 		this.original_password = original_password;
+	}
+
+	public OrderSetEnum[] getOrderSets() {
+		return orderSets;
+	}
+
+	public void setOrderSets(OrderSetEnum[] orderSets) {
+		this.orderSets = orderSets;
+	}
+
+	public ConsultingTypeEnum[] getConsultingTypes() {
+		return consultingTypes;
+	}
+
+	public void setConsultingTypes(ConsultingTypeEnum[] consultingTypes) {
+		this.consultingTypes = consultingTypes;
+	}
+
+	public YesOrNoType[] getYesOrNoTypes() {
+		return yesOrNoTypes;
+	}
+
+	public void setYesOrNoTypes(YesOrNoType[] yesOrNoTypes) {
+		this.yesOrNoTypes = yesOrNoTypes;
 	}
 
 }
