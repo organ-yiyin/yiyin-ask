@@ -23,7 +23,7 @@ public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
 	
 	public void insert(T t) throws Exception{
 		if(StringUtils.isEmpty(t.getDelete_flag())){
-			t.setDelete_flag(YesOrNoType.NO.getValue());
+			t.setDelete_flag(YesOrNoType.NO.getCode());
 		}
 		this.initUpdateInfo(t);
 		this.getSqlSession().insert(this.getNameStatement() + ".insert", t);

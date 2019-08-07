@@ -24,6 +24,11 @@ public class UserBDaoImpl extends BaseDao<UserBPo>{
 		this.getSqlSession().update(this.getNameStatement() + ".updatePasswordById", userPo);
 	}
 	
+	public void updateByIdInBg(UserBPo userPo) throws Exception{
+		this.initUpdateInfo(userPo);
+		this.getSqlSession().update(this.getNameStatement() + ".updateByIdInBg", userPo);
+	}
+
 	@Override
 	public String getNameStatement() {
 		// TODO Auto-generated method stub

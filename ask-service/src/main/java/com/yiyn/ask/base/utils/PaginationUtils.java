@@ -29,7 +29,7 @@ public class PaginationUtils{
 	}
 	
 	public PaginationUtils(YesOrNoType deleteFlag){
-		this.getParamMap().put("delete_flag", YesOrNoType.NO.getValue());
+		this.getParamMap().put("delete_flag", YesOrNoType.NO.getCode());
 	}
 	
 	public PaginationUtils(int numPerPage, int currentPage) {
