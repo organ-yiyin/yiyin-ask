@@ -7,10 +7,40 @@
         SELECT *
         FROM user_b user
         where user_no = #{value}
+        and user_type = 2
+    </select>
+    
+    <select id="findUserInfo" resultType="com.yiyn.ask.xcx.user.po.UserPo" parameterType="String">
+        SELECT user.user_headimg,user.user_name,user.order_set,user.advice_val,user.advice_num,
+        (select count(*) from consultation_sheet s where s.user_b_no = user.user_no) as consultnum
+        FROM user_b user
+        where user_no = #{value}
     </select>
     
     <insert id="insert" parameterType="com.yiyn.ask.xcx.user.po.UserPo" useGeneratedKeys="true" keyProperty="id">
 		insert into user_b(user_no,user_name,user_password,user_phone,user_type,user_headimg,work_year,user_desc)
-		(#{user_no},'涂培忠',#{user_password},'13777844405',1,'','11','我是个天才')
+		values (#{user_no},'涂培忠',#{user_password},'13777844405',1,'','11','我是个天才')
 	</insert>
+	
+    <update id="updInfo" parameterType="com.yiyn.ask.xcx.user.po.UserPo">
+        update user_b
+        set UPDATED_TIME = now()
+        <if test="type == 'pas'">
+			,user_password = #{user_password}
+		</if>
+		<if test="type == 'consult'">
+			,advice_val = #{advice_val}
+			,advice_num = #{advice_num}
+		</if>
+		<if test="type == 'user'">
+		    <if test="user_headimg != null">
+		        ,user_headimg = #{user_headimg}
+		    </if>
+			,user_name = #{user_name}
+			,work_year = #{work_year}
+			,user_desc = #{user_desc}
+			,skilled = #{skilled}
+		</if>
+		where user_no = #{user_no}
+    </update>
 </mapper>

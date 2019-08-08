@@ -1,0 +1,109 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.consult">
+     <resultMap type="com.yiyn.ask.xcx.consult.po.ConsultPo" id="ConsultListMap">
+         <id column="id" property="id"/>
+         <result column="user_c_no" property="user_c_no"/>
+         <result column="user_b_no" property="user_b_no"/>
+         <result column="sheet_age_m" property="sheet_age_m"/>
+         <result column="sheet_age_b" property="sheet_age_b"/>
+         <result column="odd_num" property="odd_num"/>
+         <result column="status" property="status"/>
+         <result column="status_show" property="status_show"/>
+         <result column="problem_desc" property="problem_desc"/>
+         <result column="created_time_format" property="created_time_format"/>
+         <association property="refPo" javaType="com.yiyn.ask.xcx.consult.po.ConsultRefPo">
+	        <result property="name_m" column="name_m"/>
+	        <result property="sex_b" column="sex_b"/>
+	     </association>
+     </resultMap>
+    
+    <select id="getConsultList" resultMap="ConsultListMap" parameterType="java.util.HashMap">
+        select t.*,ref.name_m,case sex_b when '1' then '男' else '女' end as sex_b,
+		case status when '1' then '待支付' when '2' then '退单' when '3' then '已申请退款' when '4' then '已退款' 
+		when '5' then '已回答' else '已结束' end as status_show,
+		DATE_FORMAT(t.CREATED_TIME,'%Y-%m-%d') as created_time_format
+        from consultation_sheet t,user_c_ref ref
+        where t.user_ref_id = ref.id
+        <if test="type == 'user'">
+			and USER_C_NO = #{no}
+		</if>
+        <if test="type == 'server'">
+			and USER_B_NO = #{no}
+			and t.status != '1'
+		</if>
+    </select>
+    
+    <resultMap type="com.yiyn.ask.xcx.consult.po.ConsultPo" id="ConsultInfoMap">
+         <id column="id" property="id"/>
+         <result column="sheet_age_m" property="sheet_age_m"/>
+         <result column="sheet_age_b" property="sheet_age_b"/>
+         <result column="status" property="status"/>
+         <result column="problem_type" property="problem_type"/>
+         <association property="refPo" javaType="com.yiyn.ask.xcx.consult.po.ConsultRefPo">
+		        <result property="name_m" column="name_m"/>
+		        <result property="sex_b" column="sex_b"/>
+		        <result property="special_m" column="special_m"/>
+		        <result property="special_b" column="special_b"/>
+		        <result property="premie" column="premie"/>
+		        <result property="birth_week" column="birth_week"/>
+		        <result property="birth_weight_b" column="birth_weight_b"/>
+		        <result property="birthday_b" column="birthday_b"/>
+		        <result property="edc_b" column="edc_b"/>
+	     </association>
+	     
+         <association property="userPo" javaType="com.yiyn.ask.xcx.user.po.UserPo">
+		        <result property="user_headimg" column="user_headimg"/>
+	     </association>
+     </resultMap>
+    
+    <select id="getConsultInfo" resultMap="ConsultInfoMap" parameterType="String">
+        SELECT
+        	s.id,
+			ref.special_m,
+			ref.special_b,
+			ref.name_m,
+			ref.premie,
+			CASE sex_b
+		WHEN '1' THEN
+			'男'
+		ELSE
+			'女'
+		END AS sex_b,
+		 ref.birth_week,
+		 ref.birth_weight_b,
+		 ref.birthday_b,
+		 ref.edc_b,
+		 s.sheet_age_b,
+		 s.sheet_age_m,
+		 s.status,
+		 (
+			SELECT
+				NAME
+			FROM
+				yiyn_code CODE
+			WHERE
+				CODE .
+			VALUE
+				= s.PROBLEM_TYPE
+			AND CODE .CODE_TYPE = 'QUS_TYPE'
+		) AS problem_type,
+		b.user_headimg
+		FROM
+			consultation_sheet s,
+			user_c_ref ref,
+			user_b b
+		WHERE s.USER_B_NO = b.USER_NO
+		AND s.USER_REF_ID = ref.ID
+		AND s.id = #{consult_id}
+		LIMIT 0,1
+    </select>
+    
+    <update id="updStatus" parameterType="com.yiyn.ask.xcx.consult.po.ConsultPo">
+		update consultation_sheet set status = #{status},
+		UPDATED_BY = 'system',
+		UPDATED_TIME = now()
+	</update>
+</mapper>

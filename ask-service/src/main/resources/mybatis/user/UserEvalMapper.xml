@@ -1,0 +1,12 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.eval">
+    <select id="findUserEval" resultType="com.yiyn.ask.xcx.user.po.UserEvalPo" parameterType="String">
+        SELECT *,DATE_FORMAT(e.CREATED_TIME,'%Y-%m-%d') as created_time_format
+        FROM consultation_evaluate e
+        where e.user_b_no = #{value}
+		order by e.CREATED_TIME desc 
+    </select>
+</mapper>

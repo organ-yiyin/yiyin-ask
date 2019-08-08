@@ -1,0 +1,24 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.center">
+    <select id="findResponseList" resultType="com.yiyn.ask.xcx.center.po.CenterResponsePo" parameterType="String">
+        SELECT t.id,t.user_no,t.response_desc
+        FROM quick_response t
+        where user_no = #{value}
+        order by created_time desc
+    </select>
+    
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.center.po.CenterResponsePo" useGeneratedKeys="true" keyProperty="id">
+		insert into quick_response(user_no,response_desc,created_time)
+		values (#{user_no},#{response_desc},now())
+	</insert>
+	
+    <update id="updateById" parameterType="com.yiyn.ask.xcx.center.po.CenterResponsePo">
+		update quick_response
+		set UPDATED_TIME = now(),
+		response_desc = #{response_desc}
+		where id = #{id}
+	</update>
+</mapper>

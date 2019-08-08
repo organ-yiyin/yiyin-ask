@@ -15,5 +15,17 @@
 		<mapper resource="mybatis/sys/AuthorityMapper.xml" />
 		<mapper resource="mybatis/sys/RoleAuthorityMapper.xml" />
 		<mapper resource="mybatis/sys/ResourceMapper.xml" />
+		<mapper resource="mybatis/user/UserMapper.xml"/>
+		<mapper resource="mybatis/user/UserTagMapper.xml"/>
+		<mapper resource="mybatis/user/UserEvalMapper.xml"/>
+		<mapper resource="mybatis/center/CenterResponseMapper.xml"/>
+		<mapper resource="mybatis/center/CodeMapper.xml"/>
+		<mapper resource="mybatis/account/AccountMapper.xml"/>
+		<mapper resource="mybatis/account/AccountFlowMapper.xml"/>
+		<mapper resource="mybatis/account/AccountStatMapper.xml"/>
+		<mapper resource="mybatis/account/AccountWithDMapper.xml"/>
+		<mapper resource="mybatis/consult/ConsultMapper.xml"/>
+		<mapper resource="mybatis/consult/ConsultRefMapper.xml"/>
+		<mapper resource="mybatis/consult/ConsultProcessMapper.xml"/>
 	</mappers>
 </configuration>

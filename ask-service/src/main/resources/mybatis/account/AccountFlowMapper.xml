@@ -1,0 +1,18 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.accountFlow">
+    <select id="getAccountFlowList" resultType="com.yiyn.ask.xcx.account.po.AccountFlowPo" parameterType="String">
+        select flow.* from user_account_flow flow,user_account a
+        where flow.ACCOUNT_ID = a.id
+        where user_no = #{user_no}
+        and DATE_FORMAT(PAY_TIME,'%Y-%m') = #{selMonth}
+    </select>
+    
+    <!--  通知后更新账户数据 -->
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.account.po.AccountFlowPo" useGeneratedKeys="true" keyProperty="id">
+		insert into quick_response(user_no,response_desc,created_time)
+		values (#{user_no},'涂培忠',now())
+	</insert>
+</mapper>

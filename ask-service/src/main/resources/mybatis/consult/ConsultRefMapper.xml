@@ -1,0 +1,41 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.consultRef">
+    <select id="getRefList" resultType="com.yiyn.ask.xcx.consult.po.ConsultRefPo" parameterType="java.util.HashMap">
+        select * 
+        from user_c_ref
+        where 1 =1
+        <if test="type == 'user'">
+			and USER_C_NO = #{no}
+		</if>
+        <if test="type == 'service'">
+			and USER_B_NO = #{no}
+		</if>
+    </select>
+    
+    <select id="getConsultRefInfo" resultType="com.yiyn.ask.xcx.consult.po.ConsultRefPo" parameterType="java.util.HashMap">
+        select * 
+        from consultation_sheet
+        where 1 =1
+        <if test="type == 'user'">
+			and USER_C_NO = #{no}
+		</if>
+        <if test="type == 'service'">
+			and USER_B_NO = #{no}
+		</if>
+    </select>
+    
+    <update id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultRefPo">
+		update consultation_sheet set status = #{status},
+		UPDATED_BY = 'system',
+		UPDATED_TIME = now()
+	</update>
+	
+    <update id="updateById" parameterType="com.yiyn.ask.xcx.consult.po.ConsultRefPo">
+		update consultation_sheet set status = #{status},
+		UPDATED_BY = 'system',
+		UPDATED_TIME = now()
+	</update>
+</mapper>

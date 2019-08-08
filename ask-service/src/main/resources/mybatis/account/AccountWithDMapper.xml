@@ -1,0 +1,16 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 账户提现记录表 -->
+<mapper namespace="yiyin.withdraw">
+    <select id="getWithDraw" resultType="com.yiyn.ask.xcx.account.po.AccountWithDrawPo" parameterType="String">
+        
+    </select>
+    
+    <!-- 提现点击后插入账户流水表和提现记录表  -->
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.account.po.AccountWithDrawPo" useGeneratedKeys="true" keyProperty="id">
+		insert into user_withdraw(account_id,order_id,withdraw,withdraw_type,created_by,created_time)
+		values (#{account_id},#{order_id},#{withdraw},#{withdraw_type},#{created_by},now())
+	</insert>
+</mapper>
