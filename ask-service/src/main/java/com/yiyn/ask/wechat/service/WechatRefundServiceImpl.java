@@ -16,8 +16,10 @@ import com.yiyn.ask.base.utils.date.DateFormatTemplate;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.base.utils.dom4j.YiynDocumentHelper;
 import com.yiyn.ask.wechat.config.WeixinConfig;
+import com.yiyn.ask.wechat.dto.WechatPrepayResponseDto;
 import com.yiyn.ask.wechat.dto.WechatRefundDto;
 import com.yiyn.ask.wechat.dto.WechatRefundResponseDto;
+import com.yiyn.ask.wechat.dto.WechatResultDto;
 
 /**
  * 退款
@@ -47,7 +49,7 @@ public class WechatRefundServiceImpl {
 	 * @return
 	 * @throws Exception
 	 */
-	public WechatRefundResponseDto refund(String order_code, BigDecimal totalFee, BigDecimal refundFee)
+	public WechatResultDto<WechatRefundResponseDto> refund(String order_code, BigDecimal totalFee, BigDecimal refundFee)
 			throws Exception {
 
 		WechatRefundDto refundDto = new WechatRefundDto(weixinConfig);
@@ -66,56 +68,60 @@ public class WechatRefundServiceImpl {
 			String refundResult = ClientCustomSSL.doRefund(weixinConfig, createOrderURL, xml);
 			System.out.println("退款产生的json字符串：" + refundResult);
 
-			WechatRefundResponseDto responseDto = this.parseRefundXml(refundResult);
+			WechatResultDto<WechatRefundResponseDto> responseDto = this.parseRefundXml(refundResult);
 			return responseDto;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
 
-	public WechatRefundResponseDto parseRefundXml(String content) throws Exception {
-
+	public WechatResultDto<WechatRefundResponseDto> parseRefundXml(String content) throws Exception {
+		
+		WechatResultDto<WechatRefundResponseDto> result = new WechatResultDto<WechatRefundResponseDto>();
 		WechatRefundResponseDto reponseDto = new WechatRefundResponseDto();
 
 		Document document = YiynDocumentHelper.parseText(content);
-
 		Element rootElement = document.getRootElement();
 		String return_code = rootElement.elementText("return_code");
 		String return_msg = rootElement.elementText("return_msg");
-
+		reponseDto.setReturn_code(return_code);
+		reponseDto.setReturn_msg(return_msg);
+		
 		// 此字段是通信标识，非交易标识，交易是否成功需要查看result_code来判断
 		if ("SUCCESS".equals(return_code)) {
-			reponseDto.setReturn_code(return_code);
-			reponseDto.setReturn_msg(return_msg);
-
+			reponseDto.setAppid(rootElement.elementText("appid"));
+			reponseDto.setMch_id(rootElement.elementText("mch_id"));
+			reponseDto.setNonce_str(rootElement.elementText("nonce_str"));
+			reponseDto.setSign(rootElement.elementText("sign"));
+			// SUCCESS/FAIL 
 			reponseDto.setResult_code(rootElement.elementText("result_code"));
 			reponseDto.setErr_code(rootElement.elementText("err_code"));
 			reponseDto.setErr_code_des(rootElement.elementText("err_code_des"));
-			reponseDto.setAppid(rootElement.elementText("appid"));
-			reponseDto.setMch_id(rootElement.elementText("mch_id"));
 			reponseDto.setDevice_info(rootElement.elementText("device_info"));
-			reponseDto.setNonce_str(rootElement.elementText("nonce_str"));
-			reponseDto.setSign(rootElement.elementText("sign"));
-
 			reponseDto.setTransaction_id(rootElement.elementText("transaction_id"));
 			reponseDto.setOut_trade_no(rootElement.elementText("out_trade_no"));
 			reponseDto.setOut_refund_no(rootElement.elementText("out_refund_no"));
 			reponseDto.setRefund_id(rootElement.elementText("refund_id"));
 			reponseDto.setRefund_channel(rootElement.elementText("refund_channel"));
 			reponseDto.setRefund_fee(Integer.parseInt(rootElement.elementText("refund_fee")));
-			// reponseDto.setSettlement_refund_fee_$n(Integer.parseInt(rootElement.elementText("settlement_refund_fee_$n")));
 			reponseDto.setTotal_fee(Integer.parseInt(rootElement.elementText("total_fee")));
-			// reponseDto.setSettlement_total_fee(Integer.parseInt(rootElement.elementText("settlement_total_fee")));
 			reponseDto.setFee_type(rootElement.elementText("fee_type"));
 			reponseDto.setCash_fee(Integer.parseInt(rootElement.elementText("cash_fee")));
+			
+			if("SUCCESS".equals(reponseDto.getResult_code())) {
+				result.setSuccess(true);
+			}
+			else {
+				result.setSuccess(false);
+				result.setMessage(reponseDto.getErr_code_des());
+			}
 
-		} else if ("FAIL".equals(return_code)) {
-			reponseDto.setReturn_code(return_code);
-			reponseDto.setReturn_msg(return_msg);
+		} else {
+			result.setSuccess(false);
+			result.setMessage(return_msg);
 		}
-
-		return reponseDto;
+		result.setResult(reponseDto);
+		return result;
 	}
 }

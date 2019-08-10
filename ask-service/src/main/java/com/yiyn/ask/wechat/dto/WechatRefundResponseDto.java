@@ -1,18 +1,8 @@
 package com.yiyn.ask.wechat.dto;
 
-public class WechatRefundResponseDto {
-	
-	private String return_code;
-	private String return_msg;
-	
-	private String result_code;
-	private String err_code;
-	private String err_code_des;
-	private String appid;
-	private String mch_id;
+public class WechatRefundResponseDto extends WechatBaseResponseDto{
+
 	private String device_info;
-	private String nonce_str;
-	private String sign;
 	private String transaction_id;
 	private String out_trade_no;
 	private String out_refund_no;
@@ -24,65 +14,12 @@ public class WechatRefundResponseDto {
 	private int settlement_total_fee;
 	private String fee_type;
 	private int cash_fee;
-	public String getReturn_code() {
-		return return_code;
-	}
-	public void setReturn_code(String return_code) {
-		this.return_code = return_code;
-	}
-	public String getReturn_msg() {
-		return return_msg;
-	}
-	public void setReturn_msg(String return_msg) {
-		this.return_msg = return_msg;
-	}
-	public String getResult_code() {
-		return result_code;
-	}
-	public void setResult_code(String result_code) {
-		this.result_code = result_code;
-	}
-	public String getErr_code() {
-		return err_code;
-	}
-	public void setErr_code(String err_code) {
-		this.err_code = err_code;
-	}
-	public String getErr_code_des() {
-		return err_code_des;
-	}
-	public void setErr_code_des(String err_code_des) {
-		this.err_code_des = err_code_des;
-	}
-	public String getAppid() {
-		return appid;
-	}
-	public void setAppid(String appid) {
-		this.appid = appid;
-	}
-	public String getMch_id() {
-		return mch_id;
-	}
-	public void setMch_id(String mch_id) {
-		this.mch_id = mch_id;
-	}
+	
 	public String getDevice_info() {
 		return device_info;
 	}
 	public void setDevice_info(String device_info) {
 		this.device_info = device_info;
-	}
-	public String getNonce_str() {
-		return nonce_str;
-	}
-	public void setNonce_str(String nonce_str) {
-		this.nonce_str = nonce_str;
-	}
-	public String getSign() {
-		return sign;
-	}
-	public void setSign(String sign) {
-		this.sign = sign;
 	}
 	public String getTransaction_id() {
 		return transaction_id;
@@ -150,5 +87,6 @@ public class WechatRefundResponseDto {
 	public void setCash_fee(int cash_fee) {
 		this.cash_fee = cash_fee;
 	}
-
+	
+	
 }
