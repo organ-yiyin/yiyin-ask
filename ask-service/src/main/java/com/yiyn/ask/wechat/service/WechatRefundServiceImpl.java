@@ -11,12 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.yiyn.ask.base.utils.ClientCustomSSL;
 import com.yiyn.ask.base.utils.date.DateFormatTemplate;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.base.utils.dom4j.YiynDocumentHelper;
+import com.yiyn.ask.base.utils.http.ClientCustomSSL;
 import com.yiyn.ask.wechat.config.WeixinConfig;
-import com.yiyn.ask.wechat.dto.WechatPrepayResponseDto;
 import com.yiyn.ask.wechat.dto.WechatRefundDto;
 import com.yiyn.ask.wechat.dto.WechatRefundResponseDto;
 import com.yiyn.ask.wechat.dto.WechatResultDto;
@@ -32,7 +31,7 @@ public class WechatRefundServiceImpl {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public static final String createOrderURL = "https://api.mch.weixin.qq.com/secapi/pay/refund";
+	public static final String refundUrl = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 
 	@Autowired
 	private WeixinConfig weixinConfig;
@@ -65,7 +64,7 @@ public class WechatRefundServiceImpl {
 		String xml = refundDto.getWechatXml();
 		System.out.println("发送xml：" + xml);
 		try {
-			String refundResult = ClientCustomSSL.doRefund(weixinConfig, createOrderURL, xml);
+			String refundResult = ClientCustomSSL.doRefund(weixinConfig, refundUrl, xml);
 			System.out.println("退款产生的json字符串：" + refundResult);
 
 			WechatResultDto<WechatRefundResponseDto> responseDto = this.parseRefundXml(refundResult);

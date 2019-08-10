@@ -1,4 +1,4 @@
-package com.yiyn.ask.base.utils;
+package com.yiyn.ask.base.utils.http;
 /*
  * ====================================================================
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -47,6 +47,7 @@ import com.yiyn.ask.wechat.config.WeixinConfig;
  * This example demonstrates how to create secure connections with a custom SSL
  * context.
  */
+@SuppressWarnings("deprecation")
 public class ClientCustomSSL {
 
 	//商户号
