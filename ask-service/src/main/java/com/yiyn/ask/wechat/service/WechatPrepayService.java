@@ -19,6 +19,7 @@ import com.yiyn.ask.base.utils.http.HttpClientPostUtils;
 import com.yiyn.ask.wechat.config.WeixinConfig;
 import com.yiyn.ask.wechat.dto.WechatPrepayRequestDto;
 import com.yiyn.ask.wechat.dto.WechatPrepayResponseDto;
+import com.yiyn.ask.wechat.dto.WechatResultDto;
 
 /**
  * 微信支付生成预订单
@@ -54,7 +55,7 @@ public class WechatPrepayService {
 	 * @return
 	 * @throws Exception
 	 */
-	public WechatPrepayResponseDto getPrepay(String order_code, String comment, String ipAddress,
+	public WechatResultDto<WechatPrepayResponseDto> getPrepay(String order_code, String comment, String ipAddress,
 			BigDecimal totalAmount, String notifyUrl, String openId) throws Exception {
 
 		// String prefixTime = YiynDateUtils.format(new Date(),
@@ -84,23 +85,47 @@ public class WechatPrepayService {
 		return this.parsePrepayXml(content);
 	}
 
-	public WechatPrepayResponseDto parsePrepayXml(String content) throws Exception {
-
+	public WechatResultDto<WechatPrepayResponseDto> parsePrepayXml(String content) throws Exception {
+		
+		WechatResultDto<WechatPrepayResponseDto> result = new WechatResultDto<WechatPrepayResponseDto>();
 		WechatPrepayResponseDto prepayDto = new WechatPrepayResponseDto();
 		Document document = YiynDocumentHelper.parseText(content);
 
 		Element rootElement = document.getRootElement();
-		if ("SUCCESS".equals(rootElement.elementText("return_code"))
-				&& "SUCCESS".equals(rootElement.elementText("result_code"))) {
-			String prepay_id = rootElement.elementText("prepay_id");
-			// String code_url = rootElement.elementText("code_url");
-
-			prepayDto.setPrepay_id(prepay_id);
-			// prepayDto.setCode_url(code_url);
-		} else {
-
+		// SUCCESS/FAIL 
+		String return_code = rootElement.elementText("return_code");
+		String return_msg = rootElement.elementText("return_msg");
+		prepayDto.setReturn_code(return_code);
+		prepayDto.setReturn_msg(return_msg);
+		
+		if ("SUCCESS".equals(return_code)) {			
+			prepayDto.setAppid(rootElement.elementText("appid"));
+			prepayDto.setMch_id(rootElement.elementText("mch_id"));
+			prepayDto.setNonce_str(rootElement.elementText("nonce_str"));
+			prepayDto.setSign(rootElement.elementText("sign"));
+			// SUCCESS/FAIL 
+			prepayDto.setResult_code(rootElement.elementText("result_code"));
+			prepayDto.setErr_code(rootElement.elementText("err_code"));
+			prepayDto.setErr_code_des(rootElement.elementText("err_code_des"));
+			
+			if("SUCCESS".equals(prepayDto.getResult_code())) {
+				result.setSuccess(true);
+				String prepay_id = rootElement.elementText("prepay_id");
+				prepayDto.setPrepay_id(prepay_id);
+				prepayDto.setTrade_type(rootElement.elementText("trade_type"));
+				prepayDto.setCode_url(rootElement.elementText("code_url"));
+			}
+			else {
+				result.setSuccess(false);
+				result.setMessage(prepayDto.getErr_code_des());
+			}
 		}
-		return prepayDto;
+		else {
+			result.setSuccess(false);
+			result.setMessage(return_msg);
+		}
+		result.setResult(prepayDto);
+		return result;
 	}
 
 }
