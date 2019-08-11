@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -71,16 +72,13 @@ public class UserController {
 		int totalCount = this.userBDao.searchCountByConditions(paramPage);
 		List<UserBPo> pos =  this.userBDao.searchByConditions(paramPage);
 		
-		PaginationUtils page = new PaginationUtils();
-		page.setTotalCount(totalCount);
-		page.setData(UserBConvert.listConvertToForm(pos));
-		
-		UserManagementForm returnUserPage = new UserManagementForm();
-		returnUserPage.setTotalCount(totalCount);
-		returnUserPage.setData(UserBConvert.listConvertToForm(pos));
+		UserManagementForm returnPage = new UserManagementForm();
+		BeanUtils.copyProperties(paramPage, returnPage);
+		returnPage.setTotalCount(totalCount);
+		returnPage.setData(UserBConvert.listConvertToForm(pos));
 		
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/userManagement.jsp");
-		mv.addObject("info", returnUserPage);
+		mv.addObject("info", returnPage);
 
 		return mv;
 	}

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -68,16 +69,13 @@ public class ConsultantManagmentController {
 		int totalCount = this.userBDao.searchCountByConditions(paramPage);
 		List<UserBPo> pos =  this.userBDao.searchByConditions(paramPage);
 		
-		PaginationUtils page = new PaginationUtils();
-		page.setTotalCount(totalCount);
-		page.setData(UserBConvert.listConvertToForm(pos));
-		
-		ConsultantManagementForm returnUserPage = new ConsultantManagementForm();
-		returnUserPage.setTotalCount(totalCount);
-		returnUserPage.setData(UserBConvert.listConvertToForm(pos));
+		ConsultantManagementForm returnPage = new ConsultantManagementForm();
+		BeanUtils.copyProperties(paramPage, returnPage);
+		returnPage.setTotalCount(totalCount);
+		returnPage.setData(UserBConvert.listConvertToForm(pos));
 		
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/consultantManagement.jsp");
-		mv.addObject("info", returnUserPage);
+		mv.addObject("info", returnPage);
 
 		return mv;
 	}
