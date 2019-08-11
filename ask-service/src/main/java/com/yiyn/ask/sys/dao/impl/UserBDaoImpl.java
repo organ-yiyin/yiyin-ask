@@ -1,8 +1,5 @@
 package com.yiyn.ask.sys.dao.impl;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
-
 import com.yiyn.ask.base.dao.BaseDao;
 import com.yiyn.ask.sys.po.UserBPo;
 

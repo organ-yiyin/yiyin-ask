@@ -68,8 +68,8 @@
 	
 	<insert id="insert" parameterType="com.yiyn.ask.sys.po.UserPo" useGeneratedKeys="true" keyProperty="user_id">
 		insert into
-		T_USER(USER_NAME,CENTRE_ID,FULL_NAME,PASSWORD,ISADMIN,ENABLED,CREATOR,CREATE_TIME,UPDATER,UPDATE_TIME)
-		values(#{user_name},#{centre_id},#{full_name},#{password},#{isadmin},#{enabled},#{creator},#{create_time},#{updater},#{update_time});
+		T_USER(USER_NAME,CENTRE_ID,FULL_NAME,PASSWORD,ISADMIN,ENABLED,CREATOR,CREATE_TIME,UPDATER,UPDATE_TIME,DELETE_FLAG)
+		values(#{user_name},#{centre_id},#{full_name},#{password},#{isadmin},#{enabled},#{creator},#{create_time},#{updater},#{update_time},#{delete_flag});
 	</insert>
 
 	<update id="updateById" parameterType="com.yiyn.ask.sys.po.UserPo">
