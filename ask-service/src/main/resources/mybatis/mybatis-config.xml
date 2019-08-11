@@ -25,7 +25,7 @@
 		<mapper resource="mybatis/account/AccountStatMapper.xml"/>
 		<mapper resource="mybatis/account/AccountWithDMapper.xml"/>
 		<mapper resource="mybatis/consult/ConsultMapper.xml"/>
-		<mapper resource="mybatis/consult/ConsultationSheetMapper_bg_.xml"/>
+		<mapper resource="mybatis/consult/ConsultationSheetMapper_bg.xml"/>
 		<mapper resource="mybatis/consult/ConsultRefMapper.xml"/>
 		<mapper resource="mybatis/consult/ConsultProcessMapper.xml"/>
 	</mappers>
