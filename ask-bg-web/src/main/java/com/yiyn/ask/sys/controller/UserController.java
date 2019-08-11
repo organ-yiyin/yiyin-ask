@@ -2,6 +2,7 @@ package com.yiyn.ask.sys.controller;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,7 +39,7 @@ public class UserController {
 	
 	public static final String URL_PATH_PREFIX = "/sys/user";
 	
-	@Autowired
+	@Resource(name="userBDao_bg")
 	private UserBDaoImpl userBDao;
 	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)

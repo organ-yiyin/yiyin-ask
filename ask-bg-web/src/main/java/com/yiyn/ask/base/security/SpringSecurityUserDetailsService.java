@@ -2,6 +2,8 @@ package com.yiyn.ask.base.security;
 
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,7 +19,7 @@ import com.yiyn.ask.sys.po.UserBPo;
  */
 public class SpringSecurityUserDetailsService implements UserDetailsService {
 	
-	@Autowired
+	@Resource(name="userBDao_bg")
 	private UserBDaoImpl uerBDao;
 	
 	@Override

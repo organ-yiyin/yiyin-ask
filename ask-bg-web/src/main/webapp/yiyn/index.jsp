@@ -125,6 +125,13 @@ $(function(){
 					</div>
 					<div class="accordionContent">
 						<ul class="tree treeFolder">
+							<li><a href="javascript:void();">订单管理</a>
+								<ul>
+									<li><a href="<%= path%>/order/management.do" target="navTab" rel="/order/managemnt">服务订单管理</a></li>
+								</ul>
+							</li>
+						</ul>
+						<ul class="tree treeFolder">
 							<li><a href="javascript:void();">服务人员管理</a>
 								<ul>
 									<li><a href="<%= path%>/consultant/management.do" target="navTab" rel="/consultant/management">服务人员管理</a></li>
