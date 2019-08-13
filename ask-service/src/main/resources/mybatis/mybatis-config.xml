@@ -29,5 +29,6 @@
 		<mapper resource="mybatis/consult/ConsultationSheetMapper_bg.xml"/>
 		<mapper resource="mybatis/consult/ConsultRefMapper.xml"/>
 		<mapper resource="mybatis/consult/ConsultProcessMapper.xml"/>
+		<mapper resource="mybatis/main/BannerMapper.xml"/>
 	</mappers>
 </configuration>
