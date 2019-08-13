@@ -19,10 +19,11 @@ public class ConsultDaoImpl extends BaseDao<ConsultPo> {
 		return this.getSqlSession().selectOne(
 				this.getNameStatement() + ".getConsultInfo", id);
 	}
-
-	public void updStatus(Map<String,Object> m) throws Exception {
-		this.getSqlSession().update(this.getNameStatement() + ".updStatus", m);
+	
+	public void updateStatus(ConsultPo p)throws Exception {
+		this.getSqlSession().update(this.getNameStatement() + ".updateStatus",p);
 	}
+
 	public String getNameStatement() {
 		return "yiyin.consult";
 	}

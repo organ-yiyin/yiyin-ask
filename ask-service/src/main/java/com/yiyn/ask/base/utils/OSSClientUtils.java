@@ -60,6 +60,6 @@ public class OSSClientUtils
   }
 
   private String generateFilePath(String bucketName, String fileName) {
-    return "https://" + bucketName + ".oss.aliyuncs.com/" + fileName;
+    return "https://" + bucketName + ".oss-cn-hangzhou.aliyuncs.com/" + fileName;
   }
 }

@@ -19,11 +19,9 @@
     </select>
     
     <insert id="insTag" parameterType="java.util.List">
-		insert into user_b_skilled (user_no,code_id,code_type)
-        values 
-		<foreach collection="list" item="arr"
-			separator=",">
-			(#{arr.user_no},#{arr.code_id},'TAG')
+		insert into user_b_skilled (user_no,code_id,code_type) values 
+		<foreach collection="list" item="userTagPo" separator=",">
+			(#{userTagPo.user_no},#{userTagPo.value},'TAG')
 		</foreach>
 	</insert>
     

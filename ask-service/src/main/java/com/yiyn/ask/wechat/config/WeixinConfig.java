@@ -59,5 +59,4 @@ public class WeixinConfig {
 	public void setMch_id(String mch_id) {
 		this.mch_id = mch_id;
 	}
-	
 }

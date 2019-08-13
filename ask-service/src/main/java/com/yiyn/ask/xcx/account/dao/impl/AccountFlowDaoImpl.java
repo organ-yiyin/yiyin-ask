@@ -9,9 +9,9 @@ import com.yiyn.ask.base.dao.BaseDao;
 import com.yiyn.ask.xcx.account.po.AccountFlowPo;
 @Repository("accountFlowDao")
 public class AccountFlowDaoImpl extends BaseDao<AccountFlowPo> {
-	public List<AccountFlowPo> findResponseList(String userno) throws Exception {
+	public List<AccountFlowPo> findAccountFlowList(String userno) throws Exception {
 		return this.getSqlSession().selectList(
-				this.getNameStatement() + ".findResponseList", userno);
+				this.getNameStatement() + ".findAccountFlowList", userno);
 	}
 
 	public String getNameStatement() {

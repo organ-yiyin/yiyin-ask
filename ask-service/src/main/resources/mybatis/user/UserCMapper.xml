@@ -1,0 +1,24 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.userb">
+    <select id="findByUserno" resultType="com.yiyn.ask.xcx.user.po.UserCPo" parameterType="String">
+        SELECT user.*,
+        DATE_FORMAT(user.REG_TIME,'%Y-%m-%d') as reg_time_format
+        FROM user_c user
+        where user_no = #{value}
+    </select>
+    
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.user.po.UserCPo" useGeneratedKeys="true" keyProperty="id">
+		insert into user_c(user_no,user_type,user_phone,user_headimg,user_name,unionid,reg_time)
+		values (#{user_no},#{user_type},#{user_phone},#{user_headimg},#{user_name},#{unionid},now())
+	</insert>
+	
+    <update id="updByUser_no" parameterType="com.yiyn.ask.xcx.user.po.UserCPo">
+        update user_c
+        set UPDATED_TIME = now() 
+		,user_phone = #{user_phone}
+		where user_no=#{user_no}
+    </update>
+</mapper>

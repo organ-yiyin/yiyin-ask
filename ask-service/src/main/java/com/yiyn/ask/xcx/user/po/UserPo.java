@@ -24,15 +24,36 @@ public class UserPo extends BasePo {
 	
 	private String work_year;
 	private String user_desc;
-	private String order_set;
+	private String order_set;//接单设置
 	private String skilled;
 	private List<UserTagPo> tagList;
-	private String evaluate; // 评价
 	private String consultnum;// 咨询量
 	private String advice_val;// 咨询单价
 	private String advice_num;// 咨询数量
 	private String type; // 更新数据库的类型
 	
+	private String consultEval; // 评价---实时算出
+	private String consultCount; // 咨询量
+	
+	private String share_link; // 二维码分享链接
+	public String getShare_link() {
+		return share_link;
+	}
+	public void setShare_link(String share_link) {
+		this.share_link = share_link;
+	}
+	public String getConsultEval() {
+		return consultEval;
+	}
+	public void setConsultEval(String consultEval) {
+		this.consultEval = consultEval;
+	}
+	public String getConsultCount() {
+		return consultCount;
+	}
+	public void setConsultCount(String consultCount) {
+		this.consultCount = consultCount;
+	}
 	public String getSkilled() {
 		return skilled;
 	}
@@ -69,12 +90,7 @@ public class UserPo extends BasePo {
 	public void setTagList(List<UserTagPo> tagList) {
 		this.tagList = tagList;
 	}
-	public String getEvaluate() {
-		return evaluate;
-	}
-	public void setEvaluate(String evaluate) {
-		this.evaluate = evaluate;
-	}
+	
 	public String getConsultnum() {
 		return consultnum;
 	}

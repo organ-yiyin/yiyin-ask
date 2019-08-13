@@ -1,0 +1,10 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.consultLog">
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultLogPo">
+		insert into consultation_sheet_log(LOG_TYPE,CONSULT_ID,LOG_DESC,CREATED_BY,CREATED_TIME)
+		values(#{log_type},#{consult_id},#{log_desc},#{created_by},now())
+	</insert>
+</mapper>

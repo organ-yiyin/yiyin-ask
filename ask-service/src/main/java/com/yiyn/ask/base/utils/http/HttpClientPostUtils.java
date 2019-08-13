@@ -45,10 +45,18 @@ public class HttpClientPostUtils {
 	
 	public static String getHttpPostContentByEntity(String url, StringEntity entity, String read_encoding) throws Exception{
 		HttpPost post = new HttpPost(url);
-		post.setHeader(HttpClientConstants.headerName_content_type,HttpClientConstants.headerValue_form);
+		post.setHeader(HttpClientConstants.headerValue_form_json,HttpClientConstants.headerValue_form);
 		post.setEntity(entity);
 		
 		return IOUtils.toString(initHttpClient().execute(post).getEntity().getContent(), read_encoding);
+	}
+	
+	public static HttpResponse getHttpPostContentByEntityForEwm(String url, StringEntity entity, String read_encoding) throws Exception{
+		HttpPost post = new HttpPost(url);
+		post.setHeader(HttpClientConstants.headerValue_form_json,HttpClientConstants.headerValue_form);
+		post.setEntity(entity);
+		
+		return initHttpClient().execute(post);
 	}
 	
 	public static String getHttpPostContent(String url,

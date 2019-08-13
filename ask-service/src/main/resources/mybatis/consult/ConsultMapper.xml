@@ -101,9 +101,10 @@
 		LIMIT 0,1
     </select>
     
-    <update id="updStatus" parameterType="com.yiyn.ask.xcx.consult.po.ConsultPo">
+    <update id="updateStatus" parameterType="com.yiyn.ask.xcx.consult.po.ConsultPo">
 		update consultation_sheet set status = #{status},
-		UPDATED_BY = 'system',
+		UPDATED_BY =#{updated_by},
 		UPDATED_TIME = now()
+		where id = #{id}
 	</update>
 </mapper>

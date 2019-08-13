@@ -8,7 +8,7 @@ public class AccountStatPo extends BasePo {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String stat_month;
-	private String income;
+	private String income; // 累计收益
 	private String income_totax; // 税前收益
 	private String tax; //税款
 	private String order_num;

@@ -4,8 +4,10 @@ package com.yiyn.ask.xcx.account.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.yiyn.ask.xcx.user.dao.impl.UserDaoImpl;
-import com.yiyn.ask.xcx.user.po.UserPo;
+import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
+import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
+import com.yiyn.ask.xcx.account.po.AccountFlowPo;
+import com.yiyn.ask.xcx.account.po.AccountPo;
 
 @Service
 /**
@@ -15,13 +17,16 @@ import com.yiyn.ask.xcx.user.po.UserPo;
  */
 public class AccountService {
    @Autowired
-   private UserDaoImpl userBDao;
+   private AccountDaoImpl accountDaoImpl;
    
-   public UserPo findByUserno(String userno) throws Exception{
-	   return userBDao.findByUserno(userno);
+   @Autowired
+   private AccountFlowDaoImpl AccountflowDaoImpl;
+   
+   public AccountPo getAccountInfo(String userno) throws Exception{
+	   return accountDaoImpl.getAccountInfo(userno);
    }
    
-   public void insetUser(UserPo p) throws Exception{
-	   userBDao.insert(p);
+   public void insetAccount(AccountFlowPo p) throws Exception{
+	   AccountflowDaoImpl.insert(p);
    }
 }

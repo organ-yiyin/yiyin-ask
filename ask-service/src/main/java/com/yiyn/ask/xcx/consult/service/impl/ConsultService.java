@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultDaoImpl;
+import com.yiyn.ask.xcx.consult.dao.impl.ConsultLogDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultProcessDaoImpl;
+import com.yiyn.ask.xcx.consult.po.ConsultLogPo;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
 import com.yiyn.ask.xcx.consult.po.ConsultProcessPo;
 
@@ -21,6 +23,9 @@ public class ConsultService {
    
    @Autowired
    private ConsultProcessDaoImpl consultProcessDao;
+   
+   @Autowired
+   private ConsultLogDaoImpl consultLogDao;
    
    public Map<String,Object> getConsultList(Map<String,Object> m) throws Exception{
 	   Map<String,Object> result = new HashMap<String,Object>();
@@ -84,5 +89,27 @@ public class ConsultService {
     */
    public List<ConsultProcessPo> getConsultProcessList(String id) throws Exception{
 	   return consultProcessDao.getConsultProcessList(id);
+   }
+   
+   public void insConsultProcess(ConsultProcessPo p) throws Exception{
+	   consultProcessDao.insert(p);
+   }
+   
+   /**
+    * 订单状态的变换
+    * @param p
+    * @throws Exception
+    */
+   public void updConsult(ConsultPo p) throws Exception{
+	   consultDao.updateStatus(p);
+   }
+   
+   /**
+    * 咨询单操作日志--比如支付，退单，订单结束啊，等
+    * @param p
+    * @throws Exception
+    */
+   public void insConsultLog(ConsultLogPo p) throws Exception{
+	   consultLogDao.insert(p);
    }
 }

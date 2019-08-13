@@ -3,7 +3,6 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="yiyin.consult.bg">
-
 	<select id="searchByConditions"
 		parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="java.util.HashMap">
 		select cs.*,
@@ -58,7 +57,5 @@
               AND DATE_FORMAT(cs.booking_time,'%Y-%m-%d')  <=  #{paramMap.end_booking_time} 
                ]]>
 		</if>
-
 	</select>
-
 </mapper>

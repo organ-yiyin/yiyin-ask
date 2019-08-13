@@ -6,6 +6,7 @@ public class HttpClientConstants {
 	
 	public static final String headerName_content_type = "Content-Type";
 	
+	public static final String headerValue_form_json = "application/json; charset=utf-8";
 	public static final String headerValue_form = "application/x-www-form-urlencoded; charset=utf-8";
 	public static final String headerValue_form_template = "application/x-www-form-urlencoded; charset=%s";
 	public static final String headerValue_xml_template = "application/soap+xml; charset=%s";

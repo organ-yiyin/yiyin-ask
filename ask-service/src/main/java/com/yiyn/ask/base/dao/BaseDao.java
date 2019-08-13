@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +13,7 @@ import org.springframework.security.core.userdetails.User;
 import com.yiyn.ask.base.constants.YesOrNoType;
 import com.yiyn.ask.base.po.BasePo;
 import com.yiyn.ask.base.utils.PaginationUtils;
+import com.yiyn.ask.base.utils.StringUtils;
 
 public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
 	@Resource  
@@ -22,7 +22,7 @@ public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
     }
 	
 	public void insert(T t) throws Exception{
-		if(StringUtils.isEmpty(t.getDelete_flag())){
+		if(StringUtils.isEmptyString(t.getDelete_flag())){
 			t.setDelete_flag(YesOrNoType.NO.getCode());
 		}
 		this.initUpdateInfo(t);
@@ -74,7 +74,6 @@ public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
 	 * @param t
 	 */
 	public void initUpdateInfo(T t){
-		
 		if(SecurityContextHolder.getContext().getAuthentication() != null 
 			&& SecurityContextHolder.getContext().getAuthentication().getPrincipal() != null) {
 			
@@ -87,8 +86,12 @@ public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
 			}
 		}
 		else{
-			t.setCreated_by("system");
-			t.setUpdated_by("system");
+			if(StringUtils.isEmptyString(t.getCreated_by())){
+				t.setCreated_by("system");
+			}
+			if(StringUtils.isEmptyString(t.getUpdated_by())){
+				t.setUpdated_by("system");
+			}
 		}
 		t.setCreated_time(new Date());			
 		t.setUpdated_time(new Date());
