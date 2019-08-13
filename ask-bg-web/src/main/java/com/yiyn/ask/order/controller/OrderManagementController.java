@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.order.form.OrderManagementForm;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultantSheetBgDaoImpl;
+import com.yiyn.ask.xcx.consult.service.impl.ConsultService;
 
 @Controller
 @RequestMapping("/order")
@@ -32,6 +34,9 @@ public class OrderManagementController {
 	
 	@Resource(name="consultSheetDao_bg")
 	private ConsultantSheetBgDaoImpl consultantSheetBgDao;
+	
+	@Autowired
+	private ConsultService consultService;
 	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request,
@@ -76,6 +81,19 @@ public class OrderManagementController {
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderManagement.jsp");
 		mv.addObject("info", returnPage);
 
+		return mv;
+	}
+	
+	@RequestMapping(value = "/forwardDetails.do", method = RequestMethod.GET)
+	public ModelAndView forwardDetails(HttpServletRequest request,
+			HttpServletResponse response,@RequestParam("id") Long id) throws Exception {
+		logger.info("forwardDetails");
+		
+		//consultService.getConsultInfo(id);
+		//consultService.getConsultProcessList(id);
+		
+		ModelAndView mv = new ModelAndView( FOLDER_PATH + "/orderDetails.jsp");
+		
 		return mv;
 	}
 	

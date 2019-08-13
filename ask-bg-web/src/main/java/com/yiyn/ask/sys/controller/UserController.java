@@ -1,5 +1,6 @@
 package com.yiyn.ask.sys.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.security.SpingSecurityUserBo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.DwzResponseForm.StatusCode;
@@ -29,6 +32,8 @@ import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.form.UserBForm;
 import com.yiyn.ask.sys.form.UserManagementForm;
 import com.yiyn.ask.sys.po.UserBPo;
+import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
+import com.yiyn.ask.xcx.account.po.AccountPo;
 
 @Controller
 @RequestMapping("/sys/user")
@@ -42,6 +47,9 @@ public class UserController {
 	
 	@Resource(name="userBDao_bg")
 	private UserBDaoImpl userBDao;
+	
+	@Autowired
+	private AccountDaoImpl accountDao;
 	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardUserManagementPage(HttpServletRequest request,
@@ -99,6 +107,7 @@ public class UserController {
 	
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
+	@Transactional
 	public String saveUser(HttpServletRequest request,
 			HttpServletResponse response, UserBForm userForm) throws Exception {
 		logger.info("saveUser");
@@ -106,6 +115,15 @@ public class UserController {
 		UserBPo convertToPo = UserBConvert.convertToPo(userForm);
 		convertToPo.setUser_password(DigestUtils.md5Hex(userForm.getOriginal_password()));
 		Long insertId = this.userBDao.save(convertToPo);
+		
+		AccountPo accountPo = new AccountPo();
+		accountPo.setUser_b_id(insertId);
+		accountPo.setUser_no(convertToPo.getUser_no());
+		accountPo.setBalance(BigDecimal.ZERO);
+		accountPo.setWithdraw(BigDecimal.ZERO);
+		accountPo.setUser_type(UserTypeEnum.SERVER.getCode());
+		accountPo.setUser_name(convertToPo.getUser_name());
+		accountDao.insert(accountPo);
 		
 		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
 		return new Gson().toJson(responseForm);
@@ -128,6 +146,7 @@ public class UserController {
 	
 	@RequestMapping(value = "/resetPassword.do", method = RequestMethod.POST)
 	@ResponseBody
+	@Transactional
 	public String resetPassword(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam("id") Long id,
@@ -157,6 +176,7 @@ public class UserController {
 	
 	@RequestMapping(value = "/updatePassword.do", method = RequestMethod.POST)
 	@ResponseBody
+	@Transactional
 	public String updatePassword(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam("password") String password,

@@ -14,7 +14,7 @@ public class SpingSecurityUserBo extends User{
 	private UserBPo po;
 	
 	public SpingSecurityUserBo(UserBPo po, Collection<? extends GrantedAuthority> authorities) {
-		super(po.getUser_name(),po.getUser_password(), authorities);
+		super(po.getUser_no(),po.getUser_password(), authorities);
 		this.po = po;
     }
 

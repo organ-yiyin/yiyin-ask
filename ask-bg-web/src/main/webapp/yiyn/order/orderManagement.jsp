@@ -8,6 +8,32 @@
 	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 
+<script>
+	var downloadExcel = function(){
+		alertMsg.confirm("如果导出的数据很多，速度会很慢，请耐心等待！确认导出订单数据吗？", {
+			okCall: function(){
+				var url = "<%=path %>/order/course/downloadOrders.do";
+				url = url + "?username=" + $("#username").val();
+				url = url + "&centre_id=" + $("#centre_id").val();
+				url = url + "&order_code=" + $("#order_code").val();
+				url = url + "&course_type=" + $("#course_type").val();
+				url = url + "&course_id=" + $("#course_id").val();
+				url = url + "&authorize_course_time_id=" + $("#authorize_course_time_id").val();
+				url = url + "&course_start_time=" + $("#course_start_time").val();
+				url = url + "&course_end_time=" + $("#course_end_time").val();
+				url = url + "&startTime=" + $("#startTime").val();
+				url = url + "&endTime=" + $("#endTime").val();
+				url = url + "&operationStartTime=";
+				url = url + "&operationEndTime=";
+				url = url + "&order_status=" + $("#order_status").val();
+				
+				window.location.href=url;
+			}
+		});
+	};
+	
+</script>
+
 <div class="pageHeader">
 
 	<form id="pagerForm" onsubmit="return navTabSearch(this)" action="<%=path %>/order/search.do" method="post">
@@ -67,8 +93,9 @@
 <div class="pageContent">
 	<div class="panelBar">
 		<ul class="toolBar">
-			<li><a class="edit" href="<%=path %>/consultant/forwardUpdateDetails.do?user_id={id}" target="navTab"><span>修改</span></a></li>
+			<li><a class="edit" href="<%=path %>/order/forwardDetails.do?id={id}" target="navTab"><span>查看</span></a></li>
 			<li class="line">line</li>
+			<li><a class="edit" href="javascript:void(0)" onclick="downloadExcel()"><span>导出完整订单</span></a></li>
 		</ul>
 	</div>
 
@@ -86,7 +113,7 @@
 		<tbody>
 			
 			<c:forEach items="${info.data}" var="item" varStatus="s">
-			<tr target="id" rel="${item['id']}">
+			<tr target="id" rel="${item['ID']}">
 				<td>${item['c_user_phone']}</td>
 				<td>${item['ODD_NUM']}</td>
 				<td><f:formatDate value="${item['BOOKING_TIME']}" pattern="yyyy-MM-dd HH:mm:ss" /></td>

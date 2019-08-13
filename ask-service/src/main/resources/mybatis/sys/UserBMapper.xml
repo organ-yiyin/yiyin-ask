@@ -43,7 +43,7 @@
         </if>
 	</select>
 	
-	<insert id="insert" parameterType="com.yiyn.ask.sys.po.UserBPo" useGeneratedKeys="true" keyProperty="user_id">
+	<insert id="insert" parameterType="com.yiyn.ask.sys.po.UserBPo" useGeneratedKeys="true" keyProperty="id">
 		insert into
 		user_b(user_no,user_name,user_password,user_phone,user_id_num,user_type,
 		user_headimg,work_year,user_desc,order_set,advice_type,
