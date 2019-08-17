@@ -1,4 +1,5 @@
-﻿package com.yiyn.ask.xcx.account.po;
+package com.yiyn.ask.xcx.account.po;
+
 
 import java.math.BigDecimal;
 

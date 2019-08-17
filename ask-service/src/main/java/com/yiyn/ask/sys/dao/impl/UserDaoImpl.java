@@ -2,11 +2,24 @@ package com.yiyn.ask.sys.dao.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import com.yiyn.ask.base.dao.BaseDao;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.sys.po.UserPo;
 
+@Repository("userDao")
 public class UserDaoImpl extends BaseDao<UserPo>{
+	
+	public Long save(UserPo userPo) throws Exception{
+		if(userPo.getId() == null) {
+			this.insert(userPo);
+		}
+		else {
+			this.updateById(userPo);
+		}
+		return userPo.getId();
+	}
 	
 	public List<UserPo> searchByConditions(PaginationUtils paramPage){
 		return this.getSqlSession().selectList(this.getNameStatement() + ".searchByConditions", paramPage);
@@ -16,8 +29,8 @@ public class UserDaoImpl extends BaseDao<UserPo>{
 		return this.getSqlSession().selectOne(this.getNameStatement() + ".searchCountByConditions", paramPage);
 	}
 	
-	public UserPo findByUsername(String user_name){
-		return this.getSqlSession().selectOne(this.getNameStatement() + ".findByUsername", user_name);
+	public UserPo findByUserNo(String user_no) throws Exception{
+		return this.getSqlSession().selectOne(this.getNameStatement() + ".findByUserNo", user_no);
 	}
 	
 	public void updatePasswordById(UserPo userPo){
@@ -28,7 +41,7 @@ public class UserDaoImpl extends BaseDao<UserPo>{
 	@Override
 	public String getNameStatement() {
 		// TODO Auto-generated method stub
-		return null;
+		return "sys.user";
 	}
 
 }

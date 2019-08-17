@@ -16,10 +16,21 @@ import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.base.utils.StringUtils;
 
 public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
+	
 	@Resource  
     public void setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {  
         super.setSqlSessionFactory(sqlSessionFactory);  
     }
+	
+	public Long save(T t) throws Exception{
+		if(t.getId() == null) {
+			this.insert(t);
+		}
+		else {
+			this.updateById(t);
+		}
+		return t.getId();
+	}
 	
 	public void insert(T t) throws Exception{
 		if(StringUtils.isEmptyString(t.getDelete_flag())){

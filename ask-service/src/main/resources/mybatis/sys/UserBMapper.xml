@@ -48,12 +48,12 @@
 		user_b(user_no,user_name,user_password,user_phone,user_id_num,user_type,
 		user_headimg,work_year,user_desc,order_set,advice_type,
 		advice_val,advice_num,share_link,appendix_img,recommend,
-		open_hours,recent_open_hours,revision,
+		open_hours,recent_open_hours,is_hidden,revision,
 		delete_flag,created_by,created_time,updated_by,updated_time)
 		values(#{user_no},#{user_name},#{user_password},#{user_phone},#{user_id_num},#{user_type},
 		#{user_headimg},#{work_year},#{user_desc},#{order_set},#{advice_type},
 		#{advice_val},#{advice_num},#{share_link},#{appendix_img},#{recommend},
-		#{open_hours},#{recent_open_hours},#{revision},
+		#{open_hours},#{recent_open_hours},#{is_hidden},#{revision},
 		#{delete_flag},#{created_by},#{created_time},#{updated_by},#{updated_time});
 	</insert>
 
@@ -66,7 +66,7 @@
 		set
 		user_name=#{user_name},user_phone=#{user_phone},user_id_num=#{user_id_num},user_headimg=#{user_headimg},
 		work_year=#{work_year},order_set=#{order_set},advice_type=#{advice_type},advice_val=#{advice_val},advice_num=#{advice_num},
-		share_link=#{share_link},recommend=#{recommend},user_desc=#{user_desc},
+		share_link=#{share_link},recommend=#{recommend},user_desc=#{user_desc},is_hidden=#{is_hidden},
 		updated_by=#{updated_by},updated_time=#{updated_time}
 		where id =#{id};
 	</update>

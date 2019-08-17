@@ -20,15 +20,15 @@
 		<input type="hidden" name="id" id="id" value="${info.id}" >
 		
 		<div class="pageFormContent" layoutH="56">
-			<dl>
+			<dl class="nowrap">
 				<dt>用户名：</dt>
 				<dd><input class="required" name="user_name" type="text" size="30" maxlength="20" value="${info.user_no}" readonly /></dd>
 			</dl>
-			<dl>
+			<dl class="nowrap">
 				<dt>用户姓名：</dt>
-				<dd><input class="required" name="full_name" type="text" size="30" maxlength="20" value="${info.user_no}" readonly /></dd>
+				<dd><input class="required" name="full_name" type="text" size="30" maxlength="20" value="${info.user_name}" readonly /></dd>
 			</dl>
-			<dl>
+			<dl class="nowrap">
 				<dt>重置用户密码：</dt>
 				<dd><input class="required" name="original_password" type="text" size="30" minlength="6" maxlength="20" value="" /></dd>
 			</dl>

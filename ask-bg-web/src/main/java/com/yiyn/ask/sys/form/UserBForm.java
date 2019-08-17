@@ -52,6 +52,8 @@ public class UserBForm extends BaseForm{
 	
 	private String original_password;
 	
+	private String is_hidden;
+	
 	private YesOrNoType[] yesOrNoTypes = YesOrNoType.values();
 	
 	private UserTypeEnum[] userTypes = UserTypeEnum.values();
@@ -250,6 +252,14 @@ public class UserBForm extends BaseForm{
 
 	public void setYesOrNoTypes(YesOrNoType[] yesOrNoTypes) {
 		this.yesOrNoTypes = yesOrNoTypes;
+	}
+
+	public String getIs_hidden() {
+		return is_hidden;
+	}
+
+	public void setIs_hidden(String is_hidden) {
+		this.is_hidden = is_hidden;
 	}
 
 }

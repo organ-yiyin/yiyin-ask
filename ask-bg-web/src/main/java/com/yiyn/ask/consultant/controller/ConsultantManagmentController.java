@@ -1,15 +1,19 @@
 package com.yiyn.ask.consultant.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +29,8 @@ import com.yiyn.ask.sys.convert.UserBConvert;
 import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.form.UserBForm;
 import com.yiyn.ask.sys.po.UserBPo;
+import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
+import com.yiyn.ask.xcx.account.po.AccountPo;
 
 @Controller
 @RequestMapping("/consultant")
@@ -38,6 +44,9 @@ public class ConsultantManagmentController {
 	
 	@Resource(name="userBDao_bg")
 	private UserBDaoImpl userBDao;
+	
+	@Autowired
+	private AccountDaoImpl accountDao;
 	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request,
@@ -56,6 +65,7 @@ public class ConsultantManagmentController {
 			HttpServletResponse response, 
 			@RequestParam("user_no") String user_no,
 			@RequestParam("user_name") String user_name,
+			@RequestParam("user_type") Integer user_type,
 			@RequestParam("pageNum") String pageNum,
 			@RequestParam("numPerPage") String numPerPage) throws Exception {
 		logger.info("searchUserList");
@@ -64,7 +74,7 @@ public class ConsultantManagmentController {
 				Integer.parseInt(numPerPage), Integer.parseInt(pageNum));
 		paramPage.getParamMap().put("user_no", user_no);
 		paramPage.getParamMap().put("user_name", user_name);
-		paramPage.getParamMap().put("user_type", UserTypeEnum.SERVER.getCode());
+		paramPage.getParamMap().put("user_type",user_type );
 		
 		int totalCount = this.userBDao.searchCountByConditions(paramPage);
 		List<UserBPo> pos =  this.userBDao.searchByConditions(paramPage);
@@ -80,15 +90,27 @@ public class ConsultantManagmentController {
 		return mv;
 	}
 	
+	@RequestMapping(value = "/forwardNewDetails.do", method = RequestMethod.GET)
+	public ModelAndView forwardNewDetails(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		logger.info("forwardNewDetails");
+		
+		UserBForm userForm = new UserBForm();
+		ModelAndView mv = new ModelAndView( FOLDER_PATH + "/consultantDetails.jsp");
+		mv.addObject("info", userForm);
+		
+		return mv;
+	}
+	
 	@RequestMapping(value = "/forwardUpdateDetails.do", method = RequestMethod.GET)
 	public ModelAndView forwardUpdateDetails(HttpServletRequest request,
-			HttpServletResponse response,@RequestParam("user_id") Long user_id) throws Exception {
+			HttpServletResponse response,@RequestParam("id") Long id) throws Exception {
 		logger.info("forwardUpdateDetails");
 		
-		UserBPo userBPo = this.userBDao.findById(user_id);
+		UserBPo userBPo = this.userBDao.findById(id);
 		UserBForm userForm = UserBConvert.convertToForm(userBPo);
 		
-		ModelAndView mv = new ModelAndView( FOLDER_PATH + "/consultantDetails.jsp");
+		ModelAndView mv = new ModelAndView( FOLDER_PATH + "/consultantUpdateDetails.jsp");
 		mv.addObject("info", userForm);
 		
 		return mv;
@@ -101,10 +123,63 @@ public class ConsultantManagmentController {
 		logger.info("save");
 		
 		UserBPo convertToPo = UserBConvert.convertToPo(userForm);
+		convertToPo.setUser_password(DigestUtils.md5Hex(userForm.getOriginal_password()));
+		Long insertId = this.userBDao.save(convertToPo);
+		
+		AccountPo accountPo = new AccountPo();
+		accountPo.setUser_b_id(insertId);
+		accountPo.setUser_no(convertToPo.getUser_no());
+		accountPo.setBalance(BigDecimal.ZERO);
+		accountPo.setWithdraw(BigDecimal.ZERO);
+		accountPo.setUser_type(UserTypeEnum.SERVER.getCode());
+		accountPo.setUser_name(convertToPo.getUser_name());
+		accountDao.insert(accountPo);
+		
+		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
+		return new Gson().toJson(responseForm);
+	}
+	
+	@RequestMapping(value = "/update.do", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String update(HttpServletRequest request,
+			HttpServletResponse response, UserBForm userForm) throws Exception {
+		logger.info("update");
+		
+		UserBPo convertToPo = UserBConvert.convertToPo(userForm);
 		this.userBDao.updateByIdInBg(convertToPo);
 		
 		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
 		return new Gson().toJson(responseForm);
 	}
 
+	@RequestMapping(value = "/forwardResetPass.do", method = RequestMethod.GET)
+	public ModelAndView forwardResetPass(HttpServletRequest request,
+			HttpServletResponse response,@RequestParam("id") Long id) throws Exception {
+		
+		logger.info("forwardResetPass");
+		
+		UserBPo userPo = this.userBDao.findById(id);
+		UserBForm userForm = UserBConvert.convertToForm(userPo);
+		
+		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/consultantResetPass.jsp");
+		mv.addObject("info", userForm);
+		
+		return mv;
+	}
+	
+	@RequestMapping(value = "/resetPassword.do", method = RequestMethod.POST)
+	@ResponseBody
+	@Transactional
+	public String resetPassword(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam("id") Long id,
+			@RequestParam("original_password") String original_password) throws Exception {
+		logger.info("resetPassword");
+		
+		UserBPo userPo = this.userBDao.findById(id);
+		userPo.setUser_password(DigestUtils.md5Hex(original_password));
+		this.userBDao.updatePasswordById(userPo);
+		
+		return new Gson().toJson(DwzResponseForm.createCloseCurrentResponseForm());
+	}
 }

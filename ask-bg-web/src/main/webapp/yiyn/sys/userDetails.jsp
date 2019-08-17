@@ -20,32 +20,31 @@
 		<input type="hidden" name="id" id="id" value="${info.id}" >
 		
 		<div class="pageFormContent" layoutH="56">
-			<dl>
+			<dl class="nowrap">
 				<dt>用户名：</dt>
 				<dd><input class="required" name="user_no" type="text" size="30" maxlength="20" value="${info.user_no}" /></dd>
 			</dl>
-			<dl>
+			<dl class="nowrap">
 				<dt>用户姓名：</dt>
 				<dd><input class="required" name="user_name" type="text" size="30" maxlength="20" value="${info.user_name}" /></dd>
 			</dl>
+			
 			<dl class="nowrap">
-				<dt>用户类型：</dt>
+				<dt>是否可用：</dt>
 				<dd>
-					<select class="combox required" name="user_type" class="required">
+					<select class="combox required" name="enabled" class="required">
 						<option value="">请选择</option>
-						<c:forEach items="${info.userTypes}" var="item" varStatus="s">
-							<option value="${item.code}" <c:if test="${item.code==info.user_type}">selected</c:if>>${item.text}</option>
+						<c:forEach items="${info.yesOrNoTypes}" var="item" varStatus="s">
+							<option value="${item.code}" <c:if test="${item.code==info.enabled}">selected</c:if>>${item.text}</option>
 						</c:forEach>
 					</select>
 				</dd>
 			</dl>
 
-			<c:if test="${empty info.id}">
-			<dl>
+			<dl class="nowrap">
 				<dt>新增用户默认密码：</dt>
 				<dd><input class="required" name="original_password" id="original_password" type="text" size="30" maxlength="20" readonly value="123456" /></dd>
 			</dl>
-			</c:if>
 
 		</div>
 		
