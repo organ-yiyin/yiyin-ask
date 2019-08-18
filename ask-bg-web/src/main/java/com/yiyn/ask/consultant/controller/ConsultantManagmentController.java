@@ -118,6 +118,7 @@ public class ConsultantManagmentController {
 	
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
+	@Transactional
 	public String save(HttpServletRequest request,
 			HttpServletResponse response, UserBForm userForm) throws Exception {
 		logger.info("save");
@@ -141,6 +142,7 @@ public class ConsultantManagmentController {
 	
 	@RequestMapping(value = "/update.do", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
+	@Transactional
 	public String update(HttpServletRequest request,
 			HttpServletResponse response, UserBForm userForm) throws Exception {
 		logger.info("update");

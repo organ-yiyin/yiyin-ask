@@ -1,0 +1,61 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="market.ad">
+
+	<select id="findById" parameterType="Long"
+		resultType="com.yiyn.ask.market.po.AdPo">
+		select * from yiyn_ad where id = #{id};
+	</select>
+
+	<select id="searchByConditions" parameterType="com.yiyn.ask.base.utils.PaginationUtils"
+		resultType="com.yiyn.ask.market.po.AdPo">
+		select * from yiyn_ad where 1=1
+		<if test="paramMap.ad_title != null and '' != paramMap.ad_title">
+			AND title like CONCAT('%',#{paramMap.ad_title},'%')
+		</if>
+		<if test="paramMap.ad_position != null and '' != paramMap.ad_position">
+			AND content like CONCAT('%',#{paramMap.ad_position},'%')
+		</if>
+		<if test="paramMap.delete_flag != null and '' != paramMap.delete_flag">
+			and delete_flag = #{paramMap.delete_flag}
+		</if>
+		order by updated_time desc
+		limit #{startIndex}, #{numPerPage}
+	</select>
+
+	<select id="searchCountByConditions" parameterType="com.yiyn.ask.base.utils.PaginationUtils"
+		resultType="int">
+
+		select count(*) as totalCount from yiyn_ad where 1=1
+		<if test="paramMap.ad_title != null and '' != paramMap.ad_title">
+			AND title like CONCAT('%',#{paramMap.ad_title},'%')
+		</if>
+		<if test="paramMap.ad_position != null and '' != paramMap.ad_position">
+			AND content like CONCAT('%',#{paramMap.ad_position},'%')
+		</if>
+		<if test="paramMap.delete_flag != null and '' != paramMap.delete_flag">
+			and delete_flag = #{paramMap.delete_flag}
+		</if>
+	</select>
+
+	<insert id="insert" parameterType="com.yiyn.ask.market.po.AdPo"
+		useGeneratedKeys="true" keyProperty="ad_id">
+		insert into
+		yiyn_ad(AD_POSITION,AD_TITLE,AD_URL,PIC_URL,DESCRIPTION,
+		delete_flag,created_by,created_time,updated_by,updated_time)
+		values
+		(#{ad_position},#{ad_title},#{ad_url},#{pic_url},#{description},
+		#{delete_flag},#{created_by},#{created_time},#{updated_by},#{updated_time});
+	</insert>
+
+	<update id="updateById" parameterType="com.yiyn.ask.market.po.AdPo">
+		update yiyn_ad
+		set
+		AD_POSITION=#{ad_position},AD_TITLE=#{ad_title},AD_URL=#{ad_url},PIC_URL=#{pic_url},DESCRIPTION=#{description},
+		DELETE_FLAG=#{delete_flag},updated_by=#{updated_by},updated_time=#{updated_time}
+		where id =#{id};
+	</update>
+
+</mapper>

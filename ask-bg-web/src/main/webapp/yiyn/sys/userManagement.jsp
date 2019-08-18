@@ -80,7 +80,7 @@
 				<td>${item.user_no}</td>
 				<td>${item.user_name}</td>
 				<td>
-					<c:forEach items="${info.deleteFlags}" var="item_u" varStatus="s">
+					<c:forEach items="${info.yesOrNoTypes}" var="item_u" varStatus="s">
 						<c:if test="${item_u.code==item.enabled}">${item_u.text}</c:if>
 					</c:forEach>
 				</td>
