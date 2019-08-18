@@ -135,10 +135,36 @@
 				</dd>
 			</dl>
 			
-			<dl class="">
+			<dl class="nowrap">
 				<dt>用户简介：</dt>
 				<dd>
 					<textarea name="user_desc" cols="80" rows="8">${info.user_desc}</textarea>
+				</dd>
+			</dl>
+			
+			<div class="divider"></div>
+			<dl>
+				<dt>创建人员：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="${info.created_by}" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>创建时间：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="<fmt:formatDate value="${info.created_time}" pattern="yyyy-MM-dd HH:mm:ss" />" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>最新修改人员：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="${info.updated_by}" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>最新修改时间：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="<fmt:formatDate value="${info.updated_time}" pattern="yyyy-MM-dd HH:mm:ss" />" />
 				</dd>
 			</dl>
 			

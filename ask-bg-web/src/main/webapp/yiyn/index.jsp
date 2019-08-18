@@ -128,6 +128,7 @@ $(function(){
 							<li><a href="javascript:void();">订单管理</a>
 								<ul>
 									<li><a href="<%= path%>/order/management.do" target="navTab" rel="/order/managemnt">服务订单管理</a></li>
+									<li><a href="<%= path%>/withdraw/management.do" target="navTab" rel="/withdraw/managemnt">提现管理</a></li>
 								</ul>
 							</li>
 						</ul>

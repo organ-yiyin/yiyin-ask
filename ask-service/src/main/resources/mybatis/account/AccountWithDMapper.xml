@@ -13,4 +13,35 @@
 		insert into user_withdraw(account_id,order_id,withdraw,withdraw_type,created_by,created_time)
 		values (#{account_id},#{order_id},#{withdraw},#{withdraw_type},#{created_by},now())
 	</insert>
+	
+	<select id="searchByConditions_bg" parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="java.util.HashMap">
+	    select uw.*,ub.user_no as ub_user_no from user_withdraw uw, user_account ua, user_b ub
+	    where 1=1 and uw.account_id = ua.id and ua.user_b_id = ub.id
+	    <if test="paramMap.status != null and '' != paramMap.status">  
+              AND uw.status = #{paramMap.status}
+        </if>
+	    <if test="paramMap.withdraw_type != null and '' != paramMap.withdraw_type">  
+              AND uw.withdraw_type = #{paramMap.withdraw_type}
+        </if>
+		<if test="paramMap.user_no != null and '' != paramMap.user_no">  
+              AND ub.user_no = #{paramMap.user_no}
+        </if>
+        order by uw.UPDATED_TIME desc
+		limit #{startIndex}, #{numPerPage}
+	</select>
+	
+	<select id="searchCountByConditions_bg" parameterType="java.util.HashMap" resultType="int">
+	    select count(*) from user_withdraw uw, user_account ua, user_b ub
+	    where 1=1 and uw.account_id = ua.id and ua.user_b_id = ub.id
+	    <if test="paramMap.status != null and '' != paramMap.status">  
+              AND uw.status = #{paramMap.status}
+        </if>
+	    <if test="paramMap.withdraw_type != null and '' != paramMap.withdraw_type">  
+              AND uw.withdraw_type = #{paramMap.withdraw_type}
+        </if>
+		<if test="paramMap.user_no != null and '' != paramMap.user_no">  
+              AND ub.user_no = #{paramMap.user_no}
+        </if>
+	</select>
+	
 </mapper>

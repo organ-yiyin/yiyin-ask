@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 
 <%
 	String path = request.getContextPath();
@@ -38,6 +39,32 @@
 							<option value="${item.code}" <c:if test="${item.code==info.enabled}">selected</c:if>>${item.text}</option>
 						</c:forEach>
 					</select>
+				</dd>
+			</dl>
+			
+			<div class="divider"></div>
+			<dl>
+				<dt>创建人员：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="${info.created_by}" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>创建时间：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="<fmt:formatDate value="${info.created_time}" pattern="yyyy-MM-dd HH:mm:ss" />" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>最新修改人员：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="${info.updated_by}" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>最新修改时间：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="<fmt:formatDate value="${info.updated_time}" pattern="yyyy-MM-dd HH:mm:ss" />" />
 				</dd>
 			</dl>
 
