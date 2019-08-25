@@ -52,12 +52,14 @@ public abstract class BaseDao<T extends BasePo> extends SqlSessionDaoSupport{
 		this.getSqlSession().delete(this.getNameStatement() + ".deleteById", id);
 	}
 	
-	public void deleteById_logic(Long id) throws Exception{
-		this.getSqlSession().delete(this.getNameStatement() + ".deleteById_logic", id);
+	public void deleteById_logic(T t) throws Exception{
+		//return this.save(t);
+		this.initUpdateInfo(t);
+		this.getSqlSession().update(this.getNameStatement() + ".deleteById_logic", t);
 	}
 	
 	public void deleteByIds(Long[] ids) throws Exception{
-		this.getSqlSession().delete(this.getNameStatement() + ".deleteByIds", ids);
+		//this.getSqlSession().delete(this.getNameStatement() + ".deleteByIds", ids);
 	}
 	
 	public List<T> findAll() throws Exception{

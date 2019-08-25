@@ -58,12 +58,13 @@
 	<div class="panelBar">
 		<ul class="toolBar">
 			<li><a class="add" href="<%=path %>/consultant/forwardNewDetails.do" target="navTab"><span>新增</span></a></li>
-			<li class="line">line</li>
 			<li><a class="edit" href="<%=path %>/consultant/forwardUpdateDetails.do?id={id}" target="navTab"><span>修改</span></a></li>
 			<li class="line">line</li>
 			<li>
 				<a class="edit" href="<%=path%>/consultant/forwardResetPass.do?id={id}" target="navTab"><span>重置密码</span></a>
 			</li>
+			<li class="line">line</li>
+			<li><a class="edit" href="<%=path %>/consultant/attachment/management.do?id={id}" target="navTab" rel="attachmentManagement"><span>附件管理</span></a></li>
 			</ul>
 	</div>
 

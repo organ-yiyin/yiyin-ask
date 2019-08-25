@@ -22,6 +22,7 @@
 		<property name="locations">
 			<list>
 				<value>classpath*:database.properties</value>
+				<value>classpath*:oss.properties</value>
 			</list>
 		</property>
 	</bean>

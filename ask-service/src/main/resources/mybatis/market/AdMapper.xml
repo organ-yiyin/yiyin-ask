@@ -13,10 +13,10 @@
 		resultType="com.yiyn.ask.market.po.AdPo">
 		select * from yiyn_ad where 1=1
 		<if test="paramMap.ad_title != null and '' != paramMap.ad_title">
-			AND title like CONCAT('%',#{paramMap.ad_title},'%')
+			AND ad_title like CONCAT('%',#{paramMap.ad_title},'%')
 		</if>
 		<if test="paramMap.ad_position != null and '' != paramMap.ad_position">
-			AND content like CONCAT('%',#{paramMap.ad_position},'%')
+			and ad_position = #{paramMap.ad_position}
 		</if>
 		<if test="paramMap.delete_flag != null and '' != paramMap.delete_flag">
 			and delete_flag = #{paramMap.delete_flag}
@@ -30,10 +30,10 @@
 
 		select count(*) as totalCount from yiyn_ad where 1=1
 		<if test="paramMap.ad_title != null and '' != paramMap.ad_title">
-			AND title like CONCAT('%',#{paramMap.ad_title},'%')
+			AND ad_title like CONCAT('%',#{paramMap.ad_title},'%')
 		</if>
 		<if test="paramMap.ad_position != null and '' != paramMap.ad_position">
-			AND content like CONCAT('%',#{paramMap.ad_position},'%')
+			and ad_position = #{paramMap.ad_position}
 		</if>
 		<if test="paramMap.delete_flag != null and '' != paramMap.delete_flag">
 			and delete_flag = #{paramMap.delete_flag}
@@ -41,7 +41,7 @@
 	</select>
 
 	<insert id="insert" parameterType="com.yiyn.ask.market.po.AdPo"
-		useGeneratedKeys="true" keyProperty="ad_id">
+		useGeneratedKeys="true" keyProperty="id">
 		insert into
 		yiyn_ad(AD_POSITION,AD_TITLE,AD_URL,PIC_URL,DESCRIPTION,
 		delete_flag,created_by,created_time,updated_by,updated_time)

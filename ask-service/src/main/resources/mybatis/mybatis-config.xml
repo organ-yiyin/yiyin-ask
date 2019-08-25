@@ -30,6 +30,7 @@
 		<mapper resource="mybatis/consult/ConsultRefMapper.xml"/>
 		<mapper resource="mybatis/consult/ConsultProcessMapper.xml"/>
 		
+		<mapper resource="mybatis/base/AttachmentMapper.xml" />
 		<mapper resource="mybatis/market/AdMapper.xml"/>
 	</mappers>
 </configuration>
