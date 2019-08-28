@@ -54,12 +54,12 @@ public class WechatRefundServiceImpl {
 		WechatRefundDto refundDto = new WechatRefundDto(weixinConfig);
 		String prefixTime = SPDateUtils.format(new Date(), DateFormatTemplate.DATE_TIME_FORMAT_COMPACT_S);
 
-		refundDto.setNonce_str(prefixTime + RandomStringUtils.random(10));
+		refundDto.setNonce_str(prefixTime + RandomStringUtils.randomAlphabetic(10));
 		refundDto.setOut_trade_no(order_code);
 		refundDto.setOut_refund_no("TK_" + order_code);
 
-		refundDto.setTotal_fee(totalFee.intValue());
-		refundDto.setRefund_fee(refundFee.intValue());
+		refundDto.setTotal_fee(totalFee.multiply(BigDecimal.valueOf(100l)).intValue());
+		refundDto.setRefund_fee(refundFee.multiply(BigDecimal.valueOf(100l)).intValue());
 
 		String xml = refundDto.getWechatXml();
 		System.out.println("发送xml：" + xml);
@@ -79,7 +79,7 @@ public class WechatRefundServiceImpl {
 		
 		WechatResultDto<WechatRefundResponseDto> result = new WechatResultDto<WechatRefundResponseDto>();
 		WechatRefundResponseDto reponseDto = new WechatRefundResponseDto();
-
+		System.out.println("refund content : " + content);
 		Document document = YiynDocumentHelper.parseText(content);
 		Element rootElement = document.getRootElement();
 		String return_code = rootElement.elementText("return_code");
@@ -89,31 +89,33 @@ public class WechatRefundServiceImpl {
 		
 		// 此字段是通信标识，非交易标识，交易是否成功需要查看result_code来判断
 		if ("SUCCESS".equals(return_code)) {
-			reponseDto.setAppid(rootElement.elementText("appid"));
-			reponseDto.setMch_id(rootElement.elementText("mch_id"));
-			reponseDto.setNonce_str(rootElement.elementText("nonce_str"));
-			reponseDto.setSign(rootElement.elementText("sign"));
-			// SUCCESS/FAIL 
-			reponseDto.setResult_code(rootElement.elementText("result_code"));
-			reponseDto.setErr_code(rootElement.elementText("err_code"));
-			reponseDto.setErr_code_des(rootElement.elementText("err_code_des"));
-			reponseDto.setDevice_info(rootElement.elementText("device_info"));
-			reponseDto.setTransaction_id(rootElement.elementText("transaction_id"));
-			reponseDto.setOut_trade_no(rootElement.elementText("out_trade_no"));
-			reponseDto.setOut_refund_no(rootElement.elementText("out_refund_no"));
-			reponseDto.setRefund_id(rootElement.elementText("refund_id"));
-			reponseDto.setRefund_channel(rootElement.elementText("refund_channel"));
-			reponseDto.setRefund_fee(Integer.parseInt(rootElement.elementText("refund_fee")));
-			reponseDto.setTotal_fee(Integer.parseInt(rootElement.elementText("total_fee")));
-			reponseDto.setFee_type(rootElement.elementText("fee_type"));
-			reponseDto.setCash_fee(Integer.parseInt(rootElement.elementText("cash_fee")));
-			
 			if("SUCCESS".equals(reponseDto.getResult_code())) {
+				reponseDto.setAppid(rootElement.elementText("appid"));
+				reponseDto.setMch_id(rootElement.elementText("mch_id"));
+				reponseDto.setNonce_str(rootElement.elementText("nonce_str"));
+				reponseDto.setSign(rootElement.elementText("sign"));
+				// SUCCESS/FAIL 
+				reponseDto.setResult_code(rootElement.elementText("result_code"));
+				reponseDto.setErr_code(rootElement.elementText("err_code"));
+				reponseDto.setErr_code_des(rootElement.elementText("err_code_des"));
+				reponseDto.setDevice_info(rootElement.elementText("device_info"));
+				reponseDto.setTransaction_id(rootElement.elementText("transaction_id"));
+				reponseDto.setOut_trade_no(rootElement.elementText("out_trade_no"));
+				reponseDto.setOut_refund_no(rootElement.elementText("out_refund_no"));
+				reponseDto.setRefund_id(rootElement.elementText("refund_id"));
+				reponseDto.setRefund_channel(rootElement.elementText("refund_channel"));
+				reponseDto.setRefund_fee(Integer.parseInt(rootElement.elementText("refund_fee")));
+				reponseDto.setTotal_fee(Integer.parseInt(rootElement.elementText("total_fee")));
+				reponseDto.setFee_type(rootElement.elementText("fee_type"));
+				reponseDto.setCash_fee(Integer.parseInt(rootElement.elementText("cash_fee")));
 				result.setSuccess(true);
 			}
 			else {
-				result.setSuccess(false);
+				
+				reponseDto.setErr_code(rootElement.elementText("err_code"));
+				reponseDto.setErr_code_des(rootElement.elementText("err_code_des"));
 				result.setMessage(reponseDto.getErr_code_des());
+				result.setSuccess(false);
 			}
 
 		} else {

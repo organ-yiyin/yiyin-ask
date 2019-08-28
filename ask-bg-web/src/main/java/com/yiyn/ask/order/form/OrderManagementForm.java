@@ -5,14 +5,14 @@ import com.yiyn.ask.base.utils.PaginationUtils;
 
 public class OrderManagementForm extends PaginationUtils {
 
-	private ConsultStatuEnum[] consultStatus = ConsultStatuEnum.values();
+	private ConsultStatuEnum[] consultStatusList = ConsultStatuEnum.values();
 
-	public ConsultStatuEnum[] getConsultStatus() {
-		return consultStatus;
+	public ConsultStatuEnum[] getConsultStatusList() {
+		return consultStatusList;
 	}
 
-	public void setConsultStatus(ConsultStatuEnum[] consultStatus) {
-		this.consultStatus = consultStatus;
+	public void setConsultStatusList(ConsultStatuEnum[] consultStatusList) {
+		this.consultStatusList = consultStatusList;
 	}
 
 }
