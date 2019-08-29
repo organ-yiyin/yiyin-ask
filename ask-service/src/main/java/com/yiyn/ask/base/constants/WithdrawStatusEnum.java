@@ -1,6 +1,6 @@
 package com.yiyn.ask.base.constants;
 
-public enum WithdrawStatusEnum {
+public enum WithDrawStatusEnum {
 	
 	WAITING_APPROVE(1,"待审核"),
 	APPROVED(2,"已审核"),
@@ -10,7 +10,7 @@ public enum WithdrawStatusEnum {
 	Integer code;
 	String name;
 	
-	private WithdrawStatusEnum(Integer code, String name){
+	private WithDrawStatusEnum(Integer code, String name){
 		this.code = code;
 		this.name = name;
 	}

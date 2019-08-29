@@ -1,7 +1,9 @@
 package com.yiyn.ask.base.constants;
 
 public enum WithDrawTypeEnum {
-	WECHAT("1","微信"), OFFLINE("2","线下");
+	
+	WECHAT("wechat","微信"),
+	OFFLINE("offline","线下");
 	
 	String code;
 	String name;

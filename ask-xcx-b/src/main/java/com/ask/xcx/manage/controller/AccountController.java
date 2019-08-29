@@ -137,7 +137,7 @@ public class AccountController {
 				p.setWithdraw_act(withdraw * 0.7);
 				p.setService_charge(withdraw * 0.3);
 				p.setWithdraw_type(WithDrawTypeEnum.OFFLINE.getCode());
-				p.setStatus(WithDrawStatusEnum.REVIEW_WAIT.getCode());
+				p.setStatus(String.valueOf(WithDrawStatusEnum.WAITING_APPROVE.getCode()));
 				p.setCreated_by(user_no);
 				accountService.insetAccountWithDraw(p);
 				resultMap.put("status", "1");
