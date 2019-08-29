@@ -1,12 +1,7 @@
 package com.ask.xcx.manage.controller;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +11,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.HttpEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +23,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.ask.xcx.manage.wechat.controller.XcxOAuthService;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.yiyn.ask.base.utils.MD5Util;
 import com.yiyn.ask.base.utils.OSSClientUtils;
 import com.yiyn.ask.base.utils.StringUtils;
+import com.yiyn.ask.xcx.account.service.impl.AccountService;
 import com.yiyn.ask.xcx.center.po.CenterResponsePo;
 import com.yiyn.ask.xcx.center.service.impl.CenterResponseService;
 import com.yiyn.ask.xcx.user.po.UserPo;
@@ -51,6 +45,9 @@ public class UserCenterController {
 	
 	@Autowired
 	private OSSClientUtils ossclientUtils;
+	
+	@Autowired
+	private AccountService accountService;
 
 	/**
 	 * @param request
@@ -206,6 +203,7 @@ public class UserCenterController {
 	}
 	
 	/**
+	 * 接单设置，顺便插入接单日志
 	 * @param request
 	 * @param response
 	 * @return

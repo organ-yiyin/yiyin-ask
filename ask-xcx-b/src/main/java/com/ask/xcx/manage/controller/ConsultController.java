@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.gson.Gson;
+import com.yiyn.ask.base.constants.ConsultStatuEnum;
 import com.yiyn.ask.base.utils.OSSClientUtils;
 import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.xcx.center.service.impl.CenterResponseService;
@@ -193,8 +194,13 @@ public class ConsultController {
 		}else{
 			insP.setContent(content);
 		}
+		ConsultPo updP = new ConsultPo();
+		updP.setId(new Long(id));
+		updP.setStatus(ConsultStatuEnum.ANS.getCode());
+		updP.setUpdated_by(user_no);
 		try{
 			consultService.insConsultProcess(insP);
+			consultService.updConsultStatus(updP);
 			resultMap.put("status", "1");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -211,11 +217,11 @@ public class ConsultController {
 	 */
 	public String uploadImg2Oss(MultipartFile newfile,String user_no) throws Exception{
 		try {
-			String fileUrl = ossclientUtils.uploadFile("咨询单进程/" + user_no, newfile.getInputStream(), 
+			String fileUrl = ossclientUtils.uploadFile("咨询窗口/" + user_no, newfile.getInputStream(), 
 					newfile.getOriginalFilename());
 			return fileUrl;
 		} catch (FileNotFoundException e) {
-			throw new Exception("图片上传失败");
+			throw new Exception("上传失败");
 		} 
 	}
 }

@@ -5,16 +5,13 @@
 	<display-name>ASK Yiyn Web Application</display-name>
 
 	<welcome-file-list>
-		<welcome-file>login.jsp</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 	
 	<context-param>
+	    <param-name>webAppRootKey</param-name>
 		<param-value>ask-xcx-c</param-value>
 	</context-param>
-	
-	<session-config>
-		<session-timeout>30</session-timeout>
-	</session-config>
 
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
@@ -54,21 +51,6 @@
 	<servlet-mapping>
 		<servlet-name>xcxController</servlet-name>
 		<url-pattern>*.x</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>xcxController</servlet-name>
-		<url-pattern>*.do</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>xcxController</servlet-name>
-		<url-pattern>*.htm</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>xcxController</servlet-name>
-		<url-pattern>*.json</url-pattern>
 	</servlet-mapping>
 
 	<listener>
