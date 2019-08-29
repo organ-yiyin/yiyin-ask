@@ -1,6 +1,7 @@
 package com.yiyn.ask.xcx.consult.po;
 
 import com.yiyn.ask.base.po.BasePo;
+import com.yiyn.ask.xcx.user.po.UserEvalPo;
 import com.yiyn.ask.xcx.user.po.UserPo;
 
 public class ConsultPo extends BasePo {
@@ -28,16 +29,43 @@ public class ConsultPo extends BasePo {
 	private String problem_type;
 	
 	private String problem_imgs;
-	private String problem_videos;
+	private String problem_video;
 	
 	private String status;
 	
 	private String status_show;
 	
+	private String pay_odd_num;
+	
+	private String prepay_id; //预支付订单id
+	
+	private int ques_num;
+	
+	private UserEvalPo evalPo;
+	
 	private ConsultRefPo refPo;
 	
 	private UserPo userPo;
 	
+	// 查看订单是否被服务人员回答过
+	private int sfhd;
+	
+	public int getSfhd() {
+		return sfhd;
+	}
+
+	public void setSfhd(int sfhd) {
+		this.sfhd = sfhd;
+	}
+
+	public String getPay_odd_num() {
+		return pay_odd_num;
+	}
+
+	public void setPay_odd_num(String pay_odd_num) {
+		this.pay_odd_num = pay_odd_num;
+	}
+
 	public UserPo getUserPo() {
 		return userPo;
 	}
@@ -118,12 +146,12 @@ public class ConsultPo extends BasePo {
 		this.problem_imgs = problem_imgs;
 	}
 
-	public String getProblem_videos() {
-		return problem_videos;
+	public String getProblem_video() {
+		return problem_video;
 	}
 
-	public void setProblem_videos(String problem_videos) {
-		this.problem_videos = problem_videos;
+	public void setProblem_video(String problem_video) {
+		this.problem_video = problem_video;
 	}
 
 	public String getStatus() {
@@ -156,5 +184,29 @@ public class ConsultPo extends BasePo {
 
 	public void setStatus_show(String status_show) {
 		this.status_show = status_show;
+	}
+
+	public UserEvalPo getEvalPo() {
+		return evalPo;
+	}
+
+	public void setEvalPo(UserEvalPo evalPo) {
+		this.evalPo = evalPo;
+	}
+
+	public int getQues_num() {
+		return ques_num;
+	}
+
+	public void setQues_num(int ques_num) {
+		this.ques_num = ques_num;
+	}
+
+	public String getPrepay_id() {
+		return prepay_id;
+	}
+
+	public void setPrepay_id(String prepay_id) {
+		this.prepay_id = prepay_id;
 	}
 }

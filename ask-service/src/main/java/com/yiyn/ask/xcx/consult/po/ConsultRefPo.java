@@ -7,7 +7,7 @@ public class ConsultRefPo extends BasePo {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String user_c_no;
+	private String user_no;
 	private String name_m;
 	private String age_m;
 	private String birthday_m;
@@ -20,9 +20,6 @@ public class ConsultRefPo extends BasePo {
 	private String special_b;
 	private String birth_week;//出生孕周
 	private String premie; //是否早产儿
-	public String getUser_c_no() {
-		return user_c_no;
-	}
 	public String getName_m() {
 		return name_m;
 	}
@@ -52,9 +49,6 @@ public class ConsultRefPo extends BasePo {
 	}
 	public String getSpecial_b() {
 		return special_b;
-	}
-	public void setUser_c_no(String user_c_no) {
-		this.user_c_no = user_c_no;
 	}
 	public void setName_m(String name_m) {
 		this.name_m = name_m;
@@ -97,5 +91,11 @@ public class ConsultRefPo extends BasePo {
 	}
 	public void setPremie(String premie) {
 		this.premie = premie;
+	}
+	public String getUser_no() {
+		return user_no;
+	}
+	public void setUser_no(String user_no) {
+		this.user_no = user_no;
 	}
 }

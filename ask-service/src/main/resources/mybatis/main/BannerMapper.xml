@@ -4,6 +4,10 @@
 
 <mapper namespace="yiyin.banner">
     <select id="getBannerList" resultType="com.yiyn.ask.xcx.main.po.BannerPo">
-        select * from banner_setting order by xh
+        select ad_url as banner_link,
+        pic_url as banner_img,
+        description as banner_desc
+        from yiyn_ad order by id desc
+        limit 0,3
     </select>
 </mapper>

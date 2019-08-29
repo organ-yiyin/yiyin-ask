@@ -3,31 +3,21 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="yiyin.account">
-
-    <select id="getAcount" resultType="com.yiyn.ask.xcx.account.po.AccountPo" parameterType="String">
-        SELECT t.BALANCE,t.WITHDRAW,
-		((select sum(JOURNAL_MONEY) from user_account_flow flow where flow.ACCOUNT_ID = t.ID
-		and flow.JOURNAL_DIR = '1' and flow.JOURNAL_TYPE = '1') - (select sum(JOURNAL_MONEY) from user_account_flow flow where flow.ACCOUNT_ID = t.ID
-		and flow.JOURNAL_DIR = '1' and flow.JOURNAL_TYPE = '2')) as income_total,
-		
-		((select sum(JOURNAL_MONEY) from user_account_flow flow where flow.ACCOUNT_ID = t.ID
-		and flow.JOURNAL_DIR = '1' and flow.JOURNAL_TYPE = '1' and DATE_FORMAT(flow.pay_time,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 month),'%Y-%m-%d')) - (select sum(JOURNAL_MONEY) from user_account_flow flow where flow.ACCOUNT_ID = t.ID
-		and flow.JOURNAL_DIR = '1' and flow.JOURNAL_TYPE = '2' and DATE_FORMAT(flow.pay_time,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 month),'%Y-%m-%d'))) as income_last_m
-		FROM `user_account` t 
-        where user_no = #{value}
+    <select id="getAccountInfo" resultType="com.yiyn.ask.xcx.account.po.AccountPo" parameterType="String">
+      select t.user_no,t.id,
+      cast(t.WITHDRAW_enable as decimal(9,2)) as withdraw_enable,
+      cast(t.BALANCE as decimal(9,2)) as balance,
+      cast(sum(m.income_total) as decimal(9,2))  as income_total,
+	  case when m.STAT_MONTH = DATE_FORMAT(date_sub(now(),INTERVAL 1 month),'%Y-%m') then cast(m.income_total as decimal(9,2)) else 0 end as income_last_m
+	  from user_account t left join stat_account_m m on m.user_no = t.USER_NO
+	  where t.USER_NO = #{value}
+	  group by t.user_no
     </select>
     
-    <insert id="insert" parameterType="com.yiyn.ask.xcx.account.po.AccountPo" useGeneratedKeys="true" keyProperty="id">
-		insert into user_account(user_b_id,user_no,balance,withdraw,user_type,user_name,revision,
-		delete_flag,created_by,created_time,updated_by,updated_time)
-		values (#{user_b_id},#{user_no},#{balance},#{withdraw},#{user_type},#{user_name},#{revision},
-		#{delete_flag},#{created_by},#{created_time},#{updated_by},#{updated_time});
-	</insert>
-    
     <!--  通知后更新账户数据 -->
-    <!-- <insert id="insert" parameterType="com.yiyn.ask.xcx.account.po.AccountPo" useGeneratedKeys="true" keyProperty="id">
-		insert into quick_response(user_no,response_desc,created_time)
-		values (#{user_no},'涂培忠',now())
-	</insert> -->
-	
+    <update id="updateById" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
+		update user_account
+		set balance = #{balance}
+		where id = #{id}
+	</update>
 </mapper>

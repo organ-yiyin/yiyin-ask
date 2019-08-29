@@ -217,18 +217,14 @@ public class DateUtils {
      * @param late
      * @return
      */
-    public static int getDaysBetweenDates(Date early, Date late){
+    public static int getDaysBetweenDates(String early, String late){
+		Date sEarly = parse(early,DATE_SMALL_STR);
+		Date sLate = parse(late,DATE_SMALL_STR);
 		
-		Date sEarly = parse(format(early,DATE_SMALL_STR),DATE_SMALL_STR);
-		Date sLate = parse(format(late,DATE_SMALL_STR),DATE_SMALL_STR);
+		long t1 = sEarly.getTime();
+		long t2 = sLate.getTime();
 		
-		Calendar earlyCalendar = Calendar.getInstance();
-		earlyCalendar.setTime(sEarly);
-		
-		Calendar lateCalendar = Calendar.getInstance();
-		lateCalendar.setTime(sLate);
-		
-		long between_days=(late.getTime()-early.getTime())/(1000*3600*24);  
+		long between_days=(t2 - t1)/(1000*60*60*24);  
 		
 		return (int)between_days;
 	}
@@ -274,9 +270,146 @@ public class DateUtils {
 		return dayResult;
 	}
 	
-	public static void main(String args[]){
-		Date end_today = DateUtils.calculateDate(new Date(),Calendar.DAY_OF_MONTH,300);
-		
-		System.out.println(DateUtil.formatDate(end_today,"yyyy-MM-dd"));
+	/**
+	 * 根据出生日期获取当前年龄
+	 * @param birthDay
+	 * @return
+	 * @throws Exception
+	 */
+    public static int getAge(Date birthDay) throws Exception {  
+        Calendar cal = Calendar.getInstance();  
+        if (cal.before(birthDay)) {  
+            throw new IllegalArgumentException(  
+                    "The birthDay is before Now.It's unbelievable!");  
+        }  
+        int yearNow = cal.get(Calendar.YEAR);  
+        int monthNow = cal.get(Calendar.MONTH);  
+        int dayOfMonthNow = cal.get(Calendar.DAY_OF_MONTH);  
+        cal.setTime(birthDay);   
+  
+        int yearBirth = cal.get(Calendar.YEAR);  
+        int monthBirth = cal.get(Calendar.MONTH);  
+        int dayOfMonthBirth = cal.get(Calendar.DAY_OF_MONTH);   
+  
+        int age = yearNow - yearBirth;  
+  
+        if (monthNow <= monthBirth) {  
+            if (monthNow == monthBirth) {  
+                if (dayOfMonthNow < dayOfMonthBirth) age--;  
+            }else{  
+                age--;  
+            }
+        }  
+        return age;  
+    }
+    
+    /**
+	 * 根据出生日期获取当前年龄 精确到xx岁xx月xx日
+	 * @param birthDay
+	 * @return
+	 * @throws Exception
+	 */
+    public static String getAgeDetail(String strDate1,String strDate2) throws Exception {  
+    	String age="";
+        Calendar cal = Calendar.getInstance();  
+        cal.setTime(parse(strDate1,DATE_SMALL_STR));
+        int yearStart = cal.get(Calendar.YEAR);  
+        int monthStart = cal.get(Calendar.MONTH);  
+        int dayOfMonthStart = cal.get(Calendar.DAY_OF_MONTH);  
+        cal.setTime(parse(strDate2,DATE_SMALL_STR));
+  
+        int yearEnd = cal.get(Calendar.YEAR);  
+        int monthEnd = cal.get(Calendar.MONTH);  
+        int dayOfMonthEnd = cal.get(Calendar.DAY_OF_MONTH);   
+  
+        int yearInterval = yearEnd - yearStart;  
+  
+        if(monthEnd < monthStart || (monthStart == monthEnd && dayOfMonthEnd < dayOfMonthStart)) yearInterval --;
+        
+        if(yearInterval > 0){
+        	age = yearInterval + "岁";
+        }
+        
+        int monthInteval = monthEnd -monthStart;
+        int dayInteval = dayOfMonthEnd - dayOfMonthStart;
+        if(monthInteval > 0){
+        	if(dayInteval > 0){
+        		age += monthInteval + "月" + dayInteval + "天";
+        	}else if(dayInteval == 0){
+        		age += monthInteval + "月";
+        	}else{
+        		int m = monthInteval -1;
+        		if(m > 0){
+        			age += m + "月" + (dayInteval+ 31) + "天";
+        		}
+        	}
+        }else if (monthInteval == 0){
+        	if(dayInteval > 0){
+        		age += dayInteval + "天";
+        	}else if(dayInteval == 0){
+        	}else{
+        		age += "11月" + (dayInteval + 31) + "天";
+        	}
+        }else{
+        	if(dayInteval > 0){
+        		age += (12 + monthInteval) + "月" + dayInteval + "天";
+        	}else if(dayInteval == 0){
+        		age += (12 + monthInteval) + "月";
+        	}else{
+        		age += (12 + monthInteval - 1) + "月" + (dayInteval + 31)  + "天";
+        	}
+        }
+        
+        return age;  
+    }
+    
+    /**
+	 * 比较两个日期String的大小
+	 * @param birthDay
+	 * @return
+	 * @throws Exception
+	 */
+    public static boolean compareStrDate(String dateStr1,String dateStr2) throws Exception {  
+        long date1 = parse(dateStr1,DATE_SMALL_STR).getTime();
+        long date2 = parse(dateStr2,DATE_SMALL_STR).getTime();
+        
+        return date1 > date2 ? true:false;  
+    }
+    
+    /**
+     * 获取两个日期的月数差
+     * @param dateStr1
+     * @param dateStr2
+     * @return
+     * @throws Exception
+     */
+    public static int getMonthDiff(String dateStr1,String dateStr2) throws Exception {  
+        Calendar cal1 = Calendar.getInstance(); 
+        cal1.setTime(parse(dateStr1,DATE_SMALL_STR));
+        Calendar cal2 = Calendar.getInstance();  
+        cal2.setTime(parse(dateStr2,DATE_SMALL_STR));
+        
+        int year1 = cal1.get(Calendar.YEAR);  
+        int month1 = cal1.get(Calendar.MONTH);  
+        int dayOfMonth1 = cal1.get(Calendar.DAY_OF_MONTH);  
+        
+        int year2 = cal2.get(Calendar.YEAR);  
+        int month2 = cal2.get(Calendar.MONTH);  
+        int dayOfMonth2 = cal2.get(Calendar.DAY_OF_MONTH);  
+        
+        int yearInterval = year2 - year1;
+        
+        // 如果 d1的 月-日 小于 d2的 月-日 那么 yearInterval-- 这样就得到了相差的年数
+        if(month2 < month1 || (month1 == month2 && dayOfMonth2 < dayOfMonth1)) yearInterval --;
+		// 获取月数差值
+		int monthInterval = (month2 + 12) - month1 ;
+		if(dayOfMonth2 > dayOfMonth1) monthInterval ++;
+		monthInterval %= 12;
+		return yearInterval * 12 + monthInterval;
+    }
+	
+	public static void main(String args[]) throws Exception{
+		//Date end_today = DateUtils.calculateDate(new Date(),Calendar.DAY_OF_MONTH,300);
+		System.out.println(DateUtils.getAgeDetail("2018-09-23","2019-08-22"));
 	}
 }

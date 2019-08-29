@@ -27,7 +27,6 @@ public class UserPo extends BasePo {
 	private String order_set;//接单设置
 	private String skilled;
 	private List<UserTagPo> tagList;
-	private String consultnum;// 咨询量
 	private String advice_val;// 咨询单价
 	private String advice_num;// 咨询数量
 	private String type; // 更新数据库的类型
@@ -43,10 +42,10 @@ public class UserPo extends BasePo {
 		this.share_link = share_link;
 	}
 	public String getConsultEval() {
-		return consultEval;
+		return StringUtils.subZeroAndDot(consultEval);
 	}
 	public void setConsultEval(String consultEval) {
-		this.consultEval = consultEval;
+		this.consultEval = StringUtils.subZeroAndDot(consultEval);
 	}
 	public String getConsultCount() {
 		return consultCount;
@@ -61,7 +60,7 @@ public class UserPo extends BasePo {
 		this.skilled = skilled;
 	}
 	public String getAdvice_val() {
-		return advice_val;
+		return StringUtils.subZeroAndDot(advice_val);
 	}
 	public void setAdvice_val(String advice_val) {
 		this.advice_val = StringUtils.subZeroAndDot(advice_val);
@@ -91,12 +90,6 @@ public class UserPo extends BasePo {
 		this.tagList = tagList;
 	}
 	
-	public String getConsultnum() {
-		return consultnum;
-	}
-	public void setConsultnum(String consultnum) {
-		this.consultnum = consultnum;
-	}
 	public String getUser_no() {
 		return user_no;
 	}

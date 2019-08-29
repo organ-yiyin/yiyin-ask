@@ -13,7 +13,7 @@ public class ConsultProcessPo extends BasePo {
 	
 	private String content_type;//内容类型
 	
-	private String send_type;// 下订单时宝宝的年龄
+	private String send_type;// 操作类型   customer：客户 server：咨询服务人员
 
 	public String getConsultation_id() {
 		return consultation_id;

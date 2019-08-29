@@ -5,20 +5,10 @@
 <!-- 账户统计表 -->
 <mapper namespace="yiyin.accountStat">
     <select id="getAcountStatM" resultType="com.yiyn.ask.xcx.account.po.AccountStatPo" parameterType="java.util.HashMap">
-        select * from stat_account_m
-        where user_no = #{user_no}
-        and DATE_FORMAT(NOW(),'%Y-%m') = STAT_MONTH
+        select *
+ 		from stat_account_m m
+		where user_no = #{user_no}
+		and #{year} = SUBSTR(STAT_MONTH FROM 1 FOR 4)
+		order by m.CREATED_TIME desc
     </select>
-    
-    <!--  通知后更新账户数据 -->
-    <insert id="insert" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
-		insert into quick_response(user_no,response_desc,created_time)
-		values (#{user_no},'涂培忠',now())
-	</insert>
-        
-    <!--  通知后更新账户数据 -->
-    <update id="updStat" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
-		insert into quick_response(user_no,response_desc,created_time)
-		values (#{user_no},'涂培忠',now())
-	</update>
 </mapper>

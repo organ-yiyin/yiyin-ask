@@ -1,0 +1,24 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.usercol">
+    <select id="sfRel" resultType="com.yiyn.ask.xcx.user.po.UserColPo" parameterType="com.yiyn.ask.xcx.user.po.UserColPo">
+        SELECT *
+        FROM user_c_collection col
+        where user_no_c = #{user_no_c}
+        and user_no_b = #{user_no_b}
+    </select>
+    
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.user.po.UserColPo" useGeneratedKeys="true" keyProperty="id">
+		insert into user_c_collection(user_no_c,user_no_b)
+		values (#{user_no_c},#{user_no_b})
+	</insert>
+	
+    <delete id="delCol" parameterType="com.yiyn.ask.xcx.user.po.UserColPo" >
+		delete from user_c_collection
+		where user_no_c = #{user_no_c}
+        and user_no_b = #{user_no_b}
+	</delete>
+    
+</mapper>

@@ -1280,4 +1280,9 @@ public class StringUtils {
 	    }
 	    return s;
 	}
+	
+	public static void main(String[] args){
+		//double a = formatZero(new Double(124.00));
+		//System.out.println(a);
+	}
 }

@@ -4,23 +4,42 @@
 
 <mapper namespace="yiyin.userb">
     <select id="findByUserno" resultType="com.yiyn.ask.xcx.user.po.UserPo" parameterType="String">
-        SELECT *
-        FROM user_b user
+        SELECT user.*,(
+				SELECT
+					count(1)
+				FROM
+					consultation_sheet s
+				WHERE
+					user.user_no = s.USER_B_NO
+				AND s.`STATUS` != '1'
+			) AS consultCount,case when t.consultEval is null then 5 else t.consultEval end as  consultEval
+        FROM user_b user left join (SELECT
+			round(sum(e.stars)/count(1),1) consultEval,user_b_no
+		FROM consultation_evaluate e
+			group by e.USER_B_NO) t on t.user_b_no = user.user_no
         where user_no = #{value}
         and user_type = 2
     </select>
     
     <!-- 查找大咖推荐 -->
     <select id="findRecommendList" resultType="com.yiyn.ask.xcx.user.po.UserPo">
-        SELECT *
-        FROM user_b user
+        SELECT user.*,case when t.consultEval is null then 5 else t.consultEval end as consultEval
+        FROM user_b user left join (SELECT
+			round(sum(e.stars)/count(1),1) consultEval,user_b_no
+		FROM
+			consultation_evaluate e
+			group by e.USER_B_NO) t on t.user_b_no = user.user_no
         where user_type = 2 and RECOMMEND ='Y'
     </select>
     
     <!-- c端用户关注咨询师列表 -->
     <select id="getCollectionConsultList" resultType="com.yiyn.ask.xcx.user.po.UserPo" parameterType="String">
-        SELECT u.*
-			FROM user_b u,user_c_collection c
+        SELECT u.*,case when t.consultEval is null then 5 else t.consultEval end as  consultEval
+			FROM user_c_collection c,
+			user_b u left join (SELECT
+			round(sum(e.stars)/count(1),1) consultEval,user_b_no
+		FROM consultation_evaluate e
+			group by e.USER_B_NO) t on t.user_b_no = u.user_no
 			where u.user_type = 2 
 			and u.user_no =c.USER_NO_B
 			and c.user_no_c = #{value}
@@ -30,7 +49,7 @@
     <!-- 根据名称或者其他信息查找 服务人员列表  -->
     <select id="getConsultList" resultType="com.yiyn.ask.xcx.user.po.UserPo" parameterType="java.util.HashMap">
        select * from (SELECT
-			USER .*, (
+			USER.*, (
 				SELECT
 					count(1)
 				FROM
@@ -45,38 +64,51 @@
 				FROM
 					consultation_evaluate e
 					group by e.USER_B_NO) t on t.user_b_no = user.user_no
-		WHERE
-			user.user_type = 2
+		WHERE user.user_type = 2
         <if test="advice_type != null">
-			and advice_type = #{advice_type}
+            <if test="advice_type == 1">
+			and advice_type in('1','2','9')
+			</if>
+			<if test="advice_type == 2">
+			and advice_type in('3','9')
+			</if>
 		</if>
 		<if test="name != null">
-		    and (SKILLED like concat('%',#{name},'%') or user_name like concat('%',#{name},'%') )
+		    and (SKILLED like concat('%',#{name},'%') or user_name like concat('%',#{name},'%')  or USER_DESC like concat('%',#{name},'%'))
 		</if>
 		limit 0,50
 		) t
-		<if test="pxtype == 'all'">
+		<!-- 全部排序 -->
+		<if test="pxtype == 1">
 			order by t.consultEval desc,t.consultCount desc,t.advice_val desc
 		</if>
-		<if test="pxtype == 'eval'">
+		<!-- 评分排序 -->
+		<if test="pxtype == 2">
 			order by t.consultEval desc
 		</if>
-		<if test="pxtype == 'consult_count'">
+		<!-- 咨询量排序 -->
+		<if test="pxtype == 3">
 			order by t.consultCount desc
 		</if>
-		<if test="pxtype == 'price_desc'">
+		<!-- 价格升序 -->
+		<if test="pxtype == 4">
+			order by t.ADVICE_VAL asc
+		</if>
+		<!-- 价格降序 -->
+		<if test="pxtype == 5">
 			order by t.ADVICE_VAL desc
 		</if>
-		<if test="pxtype == 'price_asc'">
-			order by t.ADVICE_VAL asc 
-		</if>
-		
     </select>
     
     <select id="findUserInfo" resultType="com.yiyn.ask.xcx.user.po.UserPo" parameterType="String">
         SELECT user.user_headimg,user.user_name,user.order_set,user.advice_val,user.advice_num,
-        (select count(*) from consultation_sheet s where s.user_b_no = user.user_no) as consultnum
-        FROM user_b user
+        case when t.consultEval is null then 5 else t.consultEval end as consultEval,
+        (select count(*) from consultation_sheet s where s.user_b_no = user.user_no) as consultCount
+        FROM user_b user left join (SELECT
+			round(sum(e.stars)/count(1),1) consultEval,user_b_no
+		FROM
+			consultation_evaluate e
+			group by e.USER_B_NO) t on t.user_b_no = user.user_no
         where user_no = #{value}
     </select>
     

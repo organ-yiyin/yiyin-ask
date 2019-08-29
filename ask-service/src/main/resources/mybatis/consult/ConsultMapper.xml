@@ -24,24 +24,61 @@
         select t.*,ref.name_m,case sex_b when '1' then '男' else '女' end as sex_b,
 		case status when '1' then '待支付' when '2' then '退单' when '3' then '已申请退款' when '4' then '已退款' 
 		when '5' then '已回答' else '已结束' end as status_show,
-		DATE_FORMAT(t.CREATED_TIME,'%Y-%m-%d') as created_time_format
+		DATE_FORMAT(t.CREATED_TIME,'%Y-%m-%d %H:%i:%s') as created_time_format
         from consultation_sheet t,user_c_ref ref
         where t.user_ref_id = ref.id
-        <if test="type == 'user'">
-			and USER_C_NO = #{no}
-		</if>
-        <if test="type == 'server'">
-			and USER_B_NO = #{no}
-			and t.status != '1'
-		</if>
+		and USER_B_NO = #{no}
+		and t.status != '1'
+		order by t.CREATED_TIME desc
+    </select>
+    
+    <resultMap type="com.yiyn.ask.xcx.consult.po.ConsultPo" id="ConsultCListMap">
+         <id column="id" property="id"/>
+         <result column="user_c_no" property="user_c_no"/>
+         <result column="user_b_no" property="user_b_no"/>
+         <result column="odd_num" property="odd_num"/>
+         <result column="status" property="status"/>
+         <result column="status_show" property="status_show"/>
+         <result column="problem_desc" property="problem_desc"/>
+         <result column="prepay_id" property="prepay_id"/>
+         <result column="created_time_format" property="created_time_format"/>
+	     <association property="userPo" javaType="com.yiyn.ask.xcx.user.po.UserPo">
+	        <result property="user_headimg" column="user_headimg"/>
+	        <result property="user_name" column="user_name"/>
+	     </association>
+	     <association property="evalPo" javaType="com.yiyn.ask.xcx.user.po.UserEvalPo">
+	        <result property="stars" column="stars"/>
+	     </association>
+     </resultMap>
+    
+    <select id="getConsultCList" resultMap="ConsultCListMap" parameterType="java.util.HashMap">
+        select t.*,b.user_headimg,b.user_name,
+		case status when '1' then '待支付' when '2' then '退单' when '3' then '已申请退款' when '4' then '已退款' 
+		when '5' then '已回答' else '已结束' end as status_show,
+		DATE_FORMAT(t.CREATED_TIME,'%Y-%m-%d %H:%i:%s') as created_time_format,
+		e.stars
+        from user_b b,consultation_sheet t left join consultation_evaluate e on e.CONSULTATION_ID = t.id
+        where b.user_no = t.user_b_no
+        and t.USER_C_NO = #{no}
+        order by t.CREATED_TIME desc
     </select>
     
     <resultMap type="com.yiyn.ask.xcx.consult.po.ConsultPo" id="ConsultInfoMap">
          <id column="id" property="id"/>
+         <result column="user_c_no" property="user_c_no"/>
+         <result column="user_b_no" property="user_b_no"/>
          <result column="sheet_age_m" property="sheet_age_m"/>
          <result column="sheet_age_b" property="sheet_age_b"/>
          <result column="status" property="status"/>
+         <result column="price" property="price"/>
          <result column="problem_type" property="problem_type"/>
+         <result column="odd_num" property="odd_num"/>
+         <result column="ques_num" property="ques_num"/>
+         <result column="prepay_id" property="prepay_id"/>
+         <result column="problem_desc" property="problem_desc"/>
+         <result column="sfhd" property="sfhd"/>
+         <result column="created_time_format" property="created_time_format"/>
+         <result column="updated_time_format" property="updated_time_format"/>
          <association property="refPo" javaType="com.yiyn.ask.xcx.consult.po.ConsultRefPo">
 		        <result property="name_m" column="name_m"/>
 		        <result property="sex_b" column="sex_b"/>
@@ -53,15 +90,20 @@
 		        <result property="birthday_b" column="birthday_b"/>
 		        <result property="edc_b" column="edc_b"/>
 	     </association>
-	     
          <association property="userPo" javaType="com.yiyn.ask.xcx.user.po.UserPo">
-		        <result property="user_headimg" column="user_headimg"/>
+	        <result property="user_headimg" column="user_headimg"/>
+	        <result property="user_name" column="user_name"/>
 	     </association>
      </resultMap>
     
     <select id="getConsultInfo" resultMap="ConsultInfoMap" parameterType="String">
         SELECT
         	s.id,
+        	s.user_c_no,
+        	s.user_b_no,
+        	s.ques_num,
+        	s.price,
+        	s.prepay_id,
 			ref.special_m,
 			ref.special_b,
 			ref.name_m,
@@ -79,32 +121,64 @@
 		 s.sheet_age_b,
 		 s.sheet_age_m,
 		 s.status,
+		 s.odd_num,
+		 s.problem_desc,
 		 (
 			SELECT
 				NAME
 			FROM
 				yiyn_code CODE
-			WHERE
-				CODE .
-			VALUE
-				= s.PROBLEM_TYPE
-			AND CODE .CODE_TYPE = 'QUS_TYPE'
+			WHERE CODE.VALUE = s.PROBLEM_TYPE
+			AND CODE.CODE_TYPE = 'QUS_TYPE'
 		) AS problem_type,
-		b.user_headimg
-		FROM
-			consultation_sheet s,
+		b.user_headimg,
+		b.user_name,
+		(select count(1) from consultation_sheet_log log where log.log_type = '5' and log.CONSULT_ID = s.id) as sfhd,
+		DATE_FORMAT(s.CREATED_TIME,'%Y-%m-%d %H:%i:%s') as created_time_format,
+		DATE_FORMAT(s.UPDATED_TIME,'%Y-%m-%d %H:%i:%s') as updated_time_format
+		FROM consultation_sheet s,
 			user_c_ref ref,
 			user_b b
 		WHERE s.USER_B_NO = b.USER_NO
 		AND s.USER_REF_ID = ref.ID
-		AND s.id = #{consult_id}
+		AND s.id = #{value}
+		LIMIT 0,1
+    </select>
+    
+    <!-- 微信通知的时候用 -->
+    <select id="getConsultByOdd_Num" resultType="com.yiyn.ask.xcx.consult.po.ConsultPo" parameterType="String">
+        SELECT *
+		FROM consultation_sheet s
+		WHERE odd_num = #{value}
 		LIMIT 0,1
     </select>
     
     <update id="updateStatus" parameterType="com.yiyn.ask.xcx.consult.po.ConsultPo">
 		update consultation_sheet set status = #{status},
+		<if test="pay_odd_num != null and '' != pay_odd_num">
+			PAY_ODD_NUM = #{pay_odd_num},
+		</if>
 		UPDATED_BY =#{updated_by},
 		UPDATED_TIME = now()
 		where id = #{id}
 	</update>
+	
+    <update id="updConsult" parameterType="com.yiyn.ask.xcx.consult.po.ConsultPo">
+		update consultation_sheet set UPDATED_TIME = now(),
+		<if test="ques_num != null">
+		    status = #{status},
+			ques_num = ques_num + 1,
+		</if>
+		UPDATED_BY =#{updated_by}
+		where id = #{id}
+	</update>
+	
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultPo" useGeneratedKeys="true" keyProperty="id">
+		insert into consultation_sheet(USER_C_NO,USER_B_NO,USER_REF_ID,ODD_NUM,
+		SHEET_AGE_M,SHEET_AGE_B,PRICE,PROBLEM_DESC,PROBLEM_TYPE,PROBLEM_IMGS,PROBLEM_VIDEO,STATUS,
+		CREATED_BY,CREATED_TIME,PREPAY_ID)
+		values(#{user_c_no},#{user_b_no},#{user_ref_id},#{odd_num},
+		#{sheet_age_m},#{sheet_age_b},#{price},#{problem_desc},#{problem_type},#{problem_imgs},#{problem_video},
+		#{status},#{created_by},now(),#{prepay_id})
+	</insert>
 </mapper>

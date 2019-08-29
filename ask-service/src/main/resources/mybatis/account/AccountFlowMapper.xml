@@ -3,16 +3,23 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="yiyin.accountFlow">
-    <select id="getAccountFlowList" resultType="com.yiyn.ask.xcx.account.po.AccountFlowPo" parameterType="String">
-        select flow.* from user_account_flow flow,user_account a
+    <select id="findAccountFlowList" resultType="com.yiyn.ask.xcx.account.po.AccountFlowPo" parameterType="java.util.HashMap">
+        select flow.*,DATE_FORMAT(pay_time, '%m-%d %H:%i:%s') pay_time_format
+        from user_account_flow flow,user_account a
         where flow.ACCOUNT_ID = a.id
-        where user_no = #{user_no}
-        and DATE_FORMAT(PAY_TIME,'%Y-%m') = #{selMonth}
+        and user_no = #{user_no}
+        and DATE_FORMAT(PAY_TIME,'%Y-%m') = #{month}
+        and flow.pay_status = '1'
+        order by pay_time desc
     </select>
     
-    <!--  通知后更新账户数据 -->
+    <!--  通知后插入账户流水数据 -->
     <insert id="insert" parameterType="com.yiyn.ask.xcx.account.po.AccountFlowPo" useGeneratedKeys="true" keyProperty="id">
-		insert into quick_response(user_no,response_desc,created_time)
-		values (#{user_no},'涂培忠',now())
+		insert into user_account_flow(ACCOUNT_ID,JOURNAL_MONEY,JOURNAL_DIR,
+		JOURNAL_TYPE,ORDER_ID,PAY_TYPE,PAY_TIME,PAY_CHANNEL_NO,JOURNAL_REMARK,PAY_STATUS,
+		CREATED_BY,created_time)
+		values (#{account_id},#{journal_money},#{journal_dir},
+		#{journal_type},#{order_id},#{pay_type},#{pay_time},#{pay_channel_no},#{journal_remark},#{pay_status},
+		'微信通知',now())
 	</insert>
 </mapper>

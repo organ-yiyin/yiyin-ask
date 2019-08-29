@@ -19,6 +19,8 @@ public class BasePo implements java.io.Serializable{
 	private String updated_by;
 	
 	private Date updated_time;
+	
+	private String updated_time_format;
 
 	public Long getId() {
 		return id;
@@ -74,5 +76,13 @@ public class BasePo implements java.io.Serializable{
 
 	public void setCreated_time_format(String created_time_format) {
 		this.created_time_format = created_time_format;
+	}
+
+	public String getUpdated_time_format() {
+		return updated_time_format;
+	}
+
+	public void setUpdated_time_format(String updated_time_format) {
+		this.updated_time_format = updated_time_format;
 	}
 }

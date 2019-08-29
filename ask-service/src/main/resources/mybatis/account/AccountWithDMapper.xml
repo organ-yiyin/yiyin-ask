@@ -4,13 +4,11 @@
 
 <!-- 账户提现记录表 -->
 <mapper namespace="yiyin.withdraw">
-    <select id="getWithDraw" resultType="com.yiyn.ask.xcx.account.po.AccountWithDrawPo" parameterType="String">
-        
-    </select>
-    
-    <!-- 提现点击后插入账户流水表和提现记录表  -->
+    <!-- 提现点击后插入提现记录表  -->
     <insert id="insert" parameterType="com.yiyn.ask.xcx.account.po.AccountWithDrawPo" useGeneratedKeys="true" keyProperty="id">
-		insert into user_withdraw(account_id,order_id,withdraw,withdraw_type,created_by,created_time)
-		values (#{account_id},#{order_id},#{withdraw},#{withdraw_type},#{created_by},now())
+		insert into user_withdraw(account_id,WITHDRAW,WITHDRAW_ACT,SERVICE_CHARGE,WITHDRAW_TYPE,
+		STATUS,created_by,created_time)
+		values (#{account_id},#{withdraw},#{withdraw_act},#{service_charge},#{withdraw_type},
+		#{status},#{created_by},now())
 	</insert>
 </mapper>

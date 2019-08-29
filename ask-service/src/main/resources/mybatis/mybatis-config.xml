@@ -18,6 +18,9 @@
 		<mapper resource="mybatis/user/UserMapper.xml"/>
 		<mapper resource="mybatis/user/UserTagMapper.xml"/>
 		<mapper resource="mybatis/user/UserEvalMapper.xml"/>
+		<mapper resource="mybatis/user/UserCMapper.xml"/>
+		<mapper resource="mybatis/user/UserColMapper.xml"/>
+		<mapper resource="mybatis/user/UserOrderSetMapper.xml"/>
 		<mapper resource="mybatis/center/CenterResponseMapper.xml"/>
 		<mapper resource="mybatis/center/CodeMapper.xml"/>
 		<mapper resource="mybatis/account/AccountMapper.xml"/>

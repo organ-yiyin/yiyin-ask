@@ -1,0 +1,10 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.userOrderSet">
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.user.po.UserOrderSetPo">
+		insert into user_b_setlog (USER_NO,SET_TYPE,CREATED_TIME) 
+		values(#{user_no},#{set_type},now())
+	</insert>
+</mapper>

@@ -8,5 +8,18 @@
         FROM consultation_evaluate e
         where e.user_b_no = #{value}
 		order by e.CREATED_TIME desc 
+		limit 0,10
     </select>
+    
+     <insert id="insert" parameterType="com.yiyn.ask.xcx.user.po.UserEvalPo" useGeneratedKeys="true" keyProperty="id">
+		insert into consultation_evaluate(USER_B_NO,USER_C_NO,CONSULTATION_ID,STARS,EVA_DESC,CREATED_BY,CREATED_TIME)
+		select user_b_no,user_c_no,
+		#{consultation_id},
+		#{stars},
+		#{eva_desc},
+		user_c_no,
+		now()
+		from consultation_sheet
+		where id = #{consultation_id}
+	</insert>
 </mapper>

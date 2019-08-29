@@ -1,4 +1,4 @@
-﻿package com.yiyn.ask.xcx.account.po;
+package com.yiyn.ask.xcx.account.po;
 
 import java.math.BigDecimal;
 
@@ -13,12 +13,14 @@ public class AccountPo extends BasePo {
 	private String user_no;
 	private BigDecimal balance;
 	private BigDecimal withdraw;
+	private BigDecimal withdraw_enable;
 	private Integer user_type;
 	private String user_name;
 	private Integer revision;
 	
 	private String income_total; // 累计收益
 	private String income_last_m; //上月收益
+	
 	public Long getUser_b_id() {
 		return user_b_id;
 	}
@@ -72,5 +74,11 @@ public class AccountPo extends BasePo {
 	}
 	public void setIncome_last_m(String income_last_m) {
 		this.income_last_m = income_last_m;
+	}
+	public BigDecimal getWithdraw_enable() {
+		return withdraw_enable;
+	}
+	public void setWithdraw_enable(BigDecimal withdraw_enable) {
+		this.withdraw_enable = withdraw_enable;
 	}
 }

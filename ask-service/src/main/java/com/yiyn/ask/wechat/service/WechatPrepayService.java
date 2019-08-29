@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yiyn.ask.base.utils.ValidateCode;
 import com.yiyn.ask.base.utils.date.DateFormatTemplate;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.base.utils.dom4j.YiynDocumentHelper;
@@ -63,7 +64,7 @@ public class WechatPrepayService {
 		String prefixTime = SPDateUtils.format(new Date(), DateFormatTemplate.DATE_TIME_FORMAT_COMPACT_S);
 
 		WechatPrepayRequestDto prepayDto = new WechatPrepayRequestDto(wechatConfig);
-		prepayDto.setNonce_str(prefixTime + RandomStringUtils.random(10));
+		prepayDto.setNonce_str(prefixTime +  ValidateCode.randomCode(10));
 		// prepayDto.setBody(orderDetailsBo.getOrderBo().getNote());
 		prepayDto.setBody(comment);
 		prepayDto.setOut_trade_no(order_code);

@@ -4,12 +4,16 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OSSClientUtils
 {
+  private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Value("#{configProperties['oss.access_id']}")
   private String ACCESS_ID;
@@ -30,9 +34,7 @@ public class OSSClientUtils
     String newFileName = folderName + "/" + String.valueOf(System.currentTimeMillis()) + ofileName.substring(ofileName.lastIndexOf("."));
 
     OSSClient client = new OSSClient(this.END_POINT, this.ACCESS_ID, this.ACCESS_KEY);
-
     uploadFile(client, this.bucketName, newFileName, inputStream, "image/");
-
     return generateFilePath(this.bucketName, newFileName);
   }
 
@@ -59,6 +61,25 @@ public class OSSClientUtils
     client.putObject(bucketName, newFileName, inputStream, objectMeta);
   }
 
+  /**
+   * 删除文件
+   * @param bucketName
+   * @param filePath
+   * @throws Exception
+   */
+  public void deleteFile(String filePath)
+    throws Exception
+  {
+	  OSSClient ossClient = new OSSClient(this.END_POINT, this.ACCESS_ID, this.ACCESS_KEY);
+      boolean exist = ossClient.doesObjectExist(this.bucketName, filePath);
+      if (!exist) {
+          logger.info("文件不存在,filePath={}", filePath);
+      }
+      
+      logger.info("删除文件,filePath={}", filePath);
+      ossClient.deleteObject(this.bucketName, filePath);
+  }
+  
   private String generateFilePath(String bucketName, String fileName) {
     return "https://" + bucketName + ".oss-cn-hangzhou.aliyuncs.com/" + fileName;
   }

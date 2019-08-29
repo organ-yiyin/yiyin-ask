@@ -21,14 +21,14 @@ public class ConsultRefDaoImpl extends BaseDao<ConsultRefPo> {
 	}
 	
 	/**
-	 * 根据咨询单关联咨询人信息
+	 * 根据咨询单id查询相关信息
 	 * @param m
 	 * @return
 	 * @throws Exception
 	 */
-	public ConsultRefPo getConsultRefInfo(Map<String,Object> m) throws Exception {
+	public ConsultRefPo getRefInfo(String id) throws Exception {
 		return this.getSqlSession().selectOne(
-				this.getNameStatement() + ".getConsultRefInfo", m);
+				this.getNameStatement() + ".getRefInfo", id);
 	}
 
 	public String getNameStatement() {

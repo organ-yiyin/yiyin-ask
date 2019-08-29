@@ -7,25 +7,40 @@ public class AccountFlowPo extends BasePo {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String account_id;
-	private int journal_money;
+	private Long account_id;
+	private double journal_money;
 	private String journal_dir;
 	private String journal_type;
 	private String order_id;//微信订单id
 	private String pay_type;
+	private String pay_time;
 	private String pay_time_format;
 	private String journal_remark;
 	private String pay_status;
-	public String getAccount_id() {
+	private String pay_channel_no;
+	public String getPay_channel_no() {
+		return pay_channel_no;
+	}
+	public void setPay_channel_no(String pay_channel_no) {
+		this.pay_channel_no = pay_channel_no;
+	}
+	public String getPay_time() {
+		return pay_time;
+	}
+	public void setPay_time(String pay_time) {
+		this.pay_time = pay_time;
+	}
+	public Long getAccount_id() {
 		return account_id;
 	}
-	public void setAccount_id(String account_id) {
+	public void setAccount_id(Long account_id) {
 		this.account_id = account_id;
 	}
-	public int getJournal_money() {
+	
+	public double getJournal_money() {
 		return journal_money;
 	}
-	public void setJournal_money(int journal_money) {
+	public void setJournal_money(double journal_money) {
 		this.journal_money = journal_money;
 	}
 	public String getJournal_dir() {
