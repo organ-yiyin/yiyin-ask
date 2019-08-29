@@ -2,6 +2,8 @@ package com.yiyn.ask.base.form;
 
 import java.util.Date;
 
+import com.yiyn.ask.base.constants.YesOrNoType;
+
 public class BaseForm implements java.io.Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -17,6 +19,8 @@ public class BaseForm implements java.io.Serializable{
 	private String updated_by;
 	
 	private Date updated_time;
+	
+	private YesOrNoType[] yesOrNoTypes = YesOrNoType.values();
 
 	public Long getId() {
 		return id;
@@ -65,4 +69,13 @@ public class BaseForm implements java.io.Serializable{
 	public void setUpdated_time(Date updated_time) {
 		this.updated_time = updated_time;
 	}
+
+	public YesOrNoType[] getYesOrNoTypes() {
+		return yesOrNoTypes;
+	}
+
+	public void setYesOrNoTypes(YesOrNoType[] yesOrNoTypes) {
+		this.yesOrNoTypes = yesOrNoTypes;
+	}
+
 }

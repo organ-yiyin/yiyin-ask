@@ -35,6 +35,12 @@ public class DwzResponseForm {
 				"", "", "", "", "");
 	}
 	
+	public static DwzResponseForm createSuccessResponseForm(String message){
+		return new DwzResponseForm(
+				StatusCode.SUCCESS.getValue(), message,
+				"", "", "", "", "");
+	}
+	
 	public static DwzResponseForm createForwardResponseForm(HttpServletRequest request, String forwardUrl){
 		return new DwzResponseForm(
 				StatusCode.SUCCESS.getValue(), StatusCode.SUCCESS.getMessage(),

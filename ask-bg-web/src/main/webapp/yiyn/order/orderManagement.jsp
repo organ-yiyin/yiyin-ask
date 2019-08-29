@@ -62,7 +62,7 @@
 				<td>
 					<select name="status" class="combox">
 						<option value="">请选择</option>
-						<c:forEach items="${info.consultStatus}" var="p">
+						<c:forEach items="${info.consultStatusList}" var="p">
 							<option <c:if test="${p.code eq info.paramMap['status']}">selected</c:if> value="${p.code}">${p.name}</option>	
 						</c:forEach>
 					</select>
@@ -120,7 +120,7 @@
 				<td><f:formatDate value="${item['APPLY_CANCEL_TIME']}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<td><f:formatDate value="${item['REFUND_TIME']}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<td>
-					<c:forEach items="${info.consultStatus}" var="item_u" varStatus="s">
+					<c:forEach items="${info.consultStatusList}" var="item_u" varStatus="s">
 						<c:if test="${item_u.code==item['STATUS']}">${item_u.name}</c:if>
 					</c:forEach>
 				</td>

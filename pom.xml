@@ -175,6 +175,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+
+		<dependency>
 			<groupId>taglibs</groupId>
 			<artifactId>standard</artifactId>
 			<version>1.1.2</version>
@@ -311,6 +317,6 @@
 		<module>ask-service</module>
 		<module>ask-xcx-b</module>
 		<module>ask-xcx-c</module>
-		<!-- <module>ask-bg-web</module> -->
+		<module>ask-bg-web</module>
 	</modules>
 </project>

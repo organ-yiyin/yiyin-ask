@@ -29,6 +29,16 @@
 				<td>
 					<input type="text" name="user_name" value="${info.paramMap['user_name']}" />
 				</td>
+				<td>
+					是否可用：
+				</td>
+				<td>
+					<select class="combox" name="enabled">
+						<option value="">请选择</option>
+						<option value="Y" <c:if test="${'Y' == info.paramMap['enabled']}">selected</c:if>>是</option>
+						<option value="N" <c:if test="${'N' == info.paramMap['enabled']}">selected</c:if>>否</option>
+					</select>
+				</td>
 			</tr>
 			
 		</table>
@@ -48,6 +58,7 @@
 		<ul class="toolBar">
 			<li><a class="add" href="<%=path %>/sys/user/forwardNewDetails.do" target="navTab"><span>添加</span></a></li>
 			<li class="line">line</li>
+			<li><a class="edit" href="<%=path %>/sys/user/forwardUpdateDetails.do?id={id}" target="navTab"><span>修改</span></a></li>
 			<li class="line">line</li>
 			<li>
 				<a class="edit" href="<%=path%>/sys/user/forwardResetPass.do?id={id}" target="navTab" rel="user.resetPass"><span>重置密码</span></a>
@@ -55,12 +66,12 @@
 			</ul>
 	</div>
 
-	<table class="table" style="width:500px" layoutH="140">
+	<table class="table" style="width:600px" layoutH="140">
 		<thead>
 			<tr>
 				<th width="200px">用户名</th>
 				<th width="300px">用户姓名</th>
-				<th width="300px">用户类型</th>
+				<th width="100px">是否可用</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -69,8 +80,8 @@
 				<td>${item.user_no}</td>
 				<td>${item.user_name}</td>
 				<td>
-					<c:forEach items="${info.userTypes}" var="item_u" varStatus="s">
-						<c:if test="${item_u.code==item.user_type}">${item_u.text}</c:if>
+					<c:forEach items="${info.yesOrNoTypes}" var="item_u" varStatus="s">
+						<c:if test="${item_u.code==item.enabled}">${item_u.text}</c:if>
 					</c:forEach>
 				</td>
 			</tr>

@@ -17,20 +17,17 @@
 			<dl class="">
 				<dt>用户名：</dt>
 				<dd>
-					<input type="text" name="user_no" class="required" value="${info.user_no}" readonly />
+					<input type="text" name="user_no" class="required" value="${info.user_no}" />
 				</dd>
+			</dl>
+			<dl>
+				<dt>用户默认密码：</dt>
+				<dd><input class="required" name="original_password" id="original_password" type="text" size="30" maxlength="20" readonly value="123456" /></dd>
 			</dl>
 			<dl class="">
 				<dt>用户姓名：</dt>
 				<dd>
 					<input type="text" name="user_name" class="required" value="${info.user_name}"/>
-				</dd>
-			</dl>
-			
-			<dl class="">
-				<dt>用户手机：</dt>
-				<dd>
-					<input type="text" name="user_phone" value="${info.user_phone}"/>
 				</dd>
 			</dl>
 			<dl class="">
@@ -39,6 +36,23 @@
 					<input type="text" name="user_id_num" value="${info.user_id_num}" />
 				</dd>
 			</dl>
+			<dl class="">
+				<dt>用户手机：</dt>
+				<dd>
+					<input type="text" name="user_phone" value="${info.user_phone}"/>
+				</dd>
+			</dl>
+			<dl>
+				<dt>用户类型</dt>
+				<dd>
+					<select class="combox required" name="user_type" class="required">
+ 						<option value="">请选择</option>
+						<c:forEach items="${info.userTypes}" var="item" varStatus="s">
+							<option value="${item.code}" <c:if test="${item.code==info.user_type}">selected</c:if>>${item.text}</option>
+						</c:forEach>
+ 					</select>
+ 				</dd>
+ 			</dl>
 			<dl class="nowrap">
 				<dt>头像：</dt>
 				<dd>
@@ -102,6 +116,18 @@
 				</dd>
 			</dl>
 			
+			<dl class="">
+				<dt>是否隐藏：</dt>
+				<dd>
+					<select name="is_hidden" class="combox">
+						<option value="">请选择</option>
+						<c:forEach items="${info.yesOrNoTypes}" var="p">
+							<option <c:if test="${p.code eq info.is_hidden}">selected</c:if> value="${p.code}">${p.text}</option>	
+						</c:forEach>
+					</select>
+				</dd>
+			</dl>
+			
 			<dl class="nowrap">
 				<dt>二维码分享链接：</dt>
 				<dd>
@@ -109,10 +135,36 @@
 				</dd>
 			</dl>
 			
-			<dl class="">
+			<dl class="nowrap">
 				<dt>用户简介：</dt>
 				<dd>
 					<textarea name="user_desc" cols="80" rows="8">${info.user_desc}</textarea>
+				</dd>
+			</dl>
+			
+			<div class="divider"></div>
+			<dl>
+				<dt>创建人员：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="${info.created_by}" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>创建时间：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="<fmt:formatDate value="${info.created_time}" pattern="yyyy-MM-dd HH:mm:ss" />" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>最新修改人员：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="${info.updated_by}" />
+				</dd>
+			</dl>
+			<dl>
+				<dt>最新修改时间：</dt>
+				<dd>
+					<input readonly="readonly" type="text" size="30" value="<fmt:formatDate value="${info.updated_time}" pattern="yyyy-MM-dd HH:mm:ss" />" />
 				</dd>
 			</dl>
 			

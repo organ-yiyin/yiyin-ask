@@ -22,7 +22,7 @@ public class PaginationUtils{
 	
 	private List data = new ArrayList(); // 返回数据
 	
-	private YesOrNoType[] deleteFlags = YesOrNoType.values();
+	private YesOrNoType[] yesOrNoTypes = YesOrNoType.values();
 	
 	public PaginationUtils(){
 		
@@ -87,14 +87,14 @@ public class PaginationUtils{
 		this.data = data;
 	}
 
-	public YesOrNoType[] getDeleteFlags() {
-		return deleteFlags;
+	public YesOrNoType[] getYesOrNoTypes() {
+		return yesOrNoTypes;
 	}
 
-	public void setDeleteFlags(YesOrNoType[] deleteFlags) {
-		this.deleteFlags = deleteFlags;
+	public void setYesOrNoTypes(YesOrNoType[] yesOrNoTypes) {
+		this.yesOrNoTypes = yesOrNoTypes;
 	}
-	
+
 	public List<SortBean> getSortList() {
 		return sortList;
 	}

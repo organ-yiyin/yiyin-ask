@@ -1,6 +1,5 @@
 package com.yiyn.ask.sys.controller;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,7 +10,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,18 +20,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
-import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.security.SpingSecurityUserBo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.DwzResponseForm.StatusCode;
 import com.yiyn.ask.base.utils.PaginationUtils;
-import com.yiyn.ask.sys.convert.UserBConvert;
-import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
-import com.yiyn.ask.sys.form.UserBForm;
+import com.yiyn.ask.sys.convert.UserConvert;
+import com.yiyn.ask.sys.dao.impl.UserDaoImpl;
+import com.yiyn.ask.sys.form.UserForm;
 import com.yiyn.ask.sys.form.UserManagementForm;
-import com.yiyn.ask.sys.po.UserBPo;
-import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
-import com.yiyn.ask.xcx.account.po.AccountPo;
+import com.yiyn.ask.sys.po.UserPo;
 
 @Controller
 @RequestMapping("/sys/user")
@@ -45,11 +40,10 @@ public class UserController {
 	
 	public static final String URL_PATH_PREFIX = "/sys/user";
 	
-	@Resource(name="userBDao_bg")
-	private UserBDaoImpl userBDao;
+	@Resource(name="userDao")
+	private UserDaoImpl userDao;
 	
-	@Autowired
-	private AccountDaoImpl accountDao;
+	
 	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardUserManagementPage(HttpServletRequest request,
@@ -68,6 +62,7 @@ public class UserController {
 			HttpServletResponse response, 
 			@RequestParam("user_no") String user_no,
 			@RequestParam("user_name") String user_name,
+			@RequestParam("enabled") String enabled,
 			@RequestParam("pageNum") String pageNum,
 			@RequestParam("numPerPage") String numPerPage) throws Exception {
 		logger.info("searchUserList");
@@ -76,14 +71,15 @@ public class UserController {
 				Integer.parseInt(numPerPage), Integer.parseInt(pageNum));
 		paramPage.getParamMap().put("user_no", user_no);
 		paramPage.getParamMap().put("user_name", user_name);
+		paramPage.getParamMap().put("enabled", enabled);
 		
-		int totalCount = this.userBDao.searchCountByConditions(paramPage);
-		List<UserBPo> pos =  this.userBDao.searchByConditions(paramPage);
+		int totalCount = this.userDao.searchCountByConditions(paramPage);
+		List<UserPo> pos =  this.userDao.searchByConditions(paramPage);
 		
 		UserManagementForm returnPage = new UserManagementForm();
 		BeanUtils.copyProperties(paramPage, returnPage);
 		returnPage.setTotalCount(totalCount);
-		returnPage.setData(UserBConvert.listConvertToForm(pos));
+		returnPage.setData(UserConvert.listConvertToForm(pos));
 		
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/userManagement.jsp");
 		mv.addObject("info", returnPage);
@@ -97,9 +93,23 @@ public class UserController {
 		
 		logger.info("forwardNewUserDetailsPage");
 		
-		UserBForm userForm = new UserBForm();
+		UserForm userForm = new UserForm();
 		
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/userDetails.jsp");
+		mv.addObject("info", userForm);
+		
+		return mv;
+	}
+	
+	@RequestMapping(value = "/forwardUpdateDetails.do", method = RequestMethod.GET)
+	public ModelAndView forwardUpdateDetails(HttpServletRequest request,
+			HttpServletResponse response, @RequestParam("id") Long id) throws Exception {
+		
+		logger.info("forwardUpdateDetails");
+		UserPo userPo = this.userDao.findById(id);
+		UserForm userForm = UserConvert.convertToForm(userPo);
+		
+		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/userUpdateDetails.jsp");
 		mv.addObject("info", userForm);
 		
 		return mv;
@@ -108,23 +118,31 @@ public class UserController {
 	@RequestMapping(value = "/save.do", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
 	@Transactional
-	public String saveUser(HttpServletRequest request,
-			HttpServletResponse response, UserBForm userForm) throws Exception {
+	public String save(HttpServletRequest request,
+			HttpServletResponse response, UserForm userForm) throws Exception {
 		logger.info("saveUser");
 		
-		UserBPo convertToPo = UserBConvert.convertToPo(userForm);
+		UserPo convertToPo = UserConvert.convertToPo(userForm);
 		convertToPo.setUser_password(DigestUtils.md5Hex(userForm.getOriginal_password()));
-		Long insertId = this.userBDao.save(convertToPo);
+		Long insertId = this.userDao.save(convertToPo);
+
+		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
+		return new Gson().toJson(responseForm);
+	}
+	
+	@RequestMapping(value = "/update.do", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	@Transactional
+	public String update(HttpServletRequest request,
+			HttpServletResponse response, UserForm userForm) throws Exception {
+		logger.info("saveUser");
 		
-		AccountPo accountPo = new AccountPo();
-		accountPo.setUser_b_id(insertId);
-		accountPo.setUser_no(convertToPo.getUser_no());
-		accountPo.setBalance(BigDecimal.ZERO);
-		accountPo.setWithdraw(BigDecimal.ZERO);
-		accountPo.setUser_type(UserTypeEnum.SERVER.getCode());
-		accountPo.setUser_name(convertToPo.getUser_name());
-		accountDao.insert(accountPo);
-		
+		UserPo dbUserPo = this.userDao.findById(userForm.getId());
+		dbUserPo.setUser_name(userForm.getUser_name());
+		dbUserPo.setEnabled(userForm.getEnabled());
+
+		Long insertId = this.userDao.save(dbUserPo);
+
 		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
 		return new Gson().toJson(responseForm);
 	}
@@ -135,8 +153,8 @@ public class UserController {
 		
 		logger.info("forwardResetPass");
 		
-		UserBPo userBPo = this.userBDao.findById(id);
-		UserBForm userForm = UserBConvert.convertToForm(userBPo);
+		UserPo userPo = this.userDao.findById(id);
+		UserForm userForm = UserConvert.convertToForm(userPo);
 		
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/userResetPass.jsp");
 		mv.addObject("info", userForm);
@@ -153,9 +171,9 @@ public class UserController {
 			@RequestParam("original_password") String original_password) throws Exception {
 		logger.info("resetPassword");
 		
-		UserBPo userBPo = this.userBDao.findById(id);
-		userBPo.setUser_password(DigestUtils.md5Hex(original_password));
-		this.userBDao.updatePasswordById(userBPo);
+		UserPo userPo = this.userDao.findById(id);
+		userPo.setUser_password(DigestUtils.md5Hex(original_password));
+		this.userDao.updatePasswordById(userPo);
 		
 		return new Gson().toJson(DwzResponseForm.createCloseCurrentResponseForm());
 	}
@@ -188,8 +206,8 @@ public class UserController {
 			    .getAuthentication()  
 			    .getPrincipal();
 		
-		UserBPo userBo = this.userBDao.findById(userDetails.getPo().getId());
-		if(!userBo.getUser_password().equals(DigestUtils.md5Hex(password))){
+		UserPo userPo = this.userDao.findById(userDetails.getPo().getId());
+		if(!userPo.getUser_password().equals(DigestUtils.md5Hex(password))){
 			DwzResponseForm repForm = new DwzResponseForm();
 			repForm.setStatusCode(StatusCode.FAIL.getValue());
 			repForm.setMessage("原密码不正确");
@@ -197,8 +215,8 @@ public class UserController {
 			return new Gson().toJson(repForm);
 		}
 		else{
-			userBo.setUser_password(DigestUtils.md5Hex(newPassword));
-			this.userBDao.updatePasswordById(userBo);
+			userPo.setUser_password(DigestUtils.md5Hex(newPassword));
+			this.userDao.updatePasswordById(userPo);
 			return new Gson().toJson(DwzResponseForm.createCloseCurrentResponseForm());
 		}
 	}

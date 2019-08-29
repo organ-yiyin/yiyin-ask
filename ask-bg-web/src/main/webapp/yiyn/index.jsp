@@ -121,16 +121,23 @@ $(function(){
 				<div class="accordion" fillSpace="sidebar">
 					
 					<div class="accordionHeader">
-						<h2><span>Folder</span>系统管理</h2>
+						<h2><span>Folder</span>订单管理</h2>
 					</div>
 					<div class="accordionContent">
 						<ul class="tree treeFolder">
 							<li><a href="javascript:void();">订单管理</a>
 								<ul>
 									<li><a href="<%= path%>/order/management.do" target="navTab" rel="/order/managemnt">服务订单管理</a></li>
+									<li><a href="<%= path%>/withdraw/management.do" target="navTab" rel="/withdraw/managemnt">提现管理</a></li>
 								</ul>
 							</li>
 						</ul>
+					</div>
+					
+					<div class="accordionHeader">
+						<h2><span>Folder</span>服务人员管理</h2>
+					</div>
+					<div class="accordionContent">
 						<ul class="tree treeFolder">
 							<li><a href="javascript:void();">服务人员管理</a>
 								<ul>
@@ -138,6 +145,21 @@ $(function(){
 								</ul>
 							</li>
 						</ul>
+					</div>
+					
+					<div class="accordionHeader">
+						<h2><span>Folder</span>营销管理</h2>
+					</div>
+					<div class="accordionContent">
+						<ul class="tree treeFolder">
+							<li><a href="<%= path%>/market/ad/management.do" target="navTab" rel="/market/ad/management">广告管理</a></li>
+						</ul>
+					</div>
+					
+					<div class="accordionHeader">
+						<h2><span>Folder</span>系统管理</h2>
+					</div>
+					<div class="accordionContent">	
 						<ul class="tree treeFolder">
 							<li><a href="javascript:void();">用户权限管理</a>
 								<ul>

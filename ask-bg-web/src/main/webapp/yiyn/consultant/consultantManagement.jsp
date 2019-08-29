@@ -29,6 +29,17 @@
 				<td>
 					<input type="text" name="user_name" value="${info.paramMap['user_name']}" />
 				</td>
+				<td>
+					用户类型：
+				</td>
+				<td>
+					<select class="combox" name="user_type">
+						<option value="">请选择</option>
+						<c:forEach items="${info.userTypes}" var="item_u" varStatus="s">
+							<option value="${item_u.code}" <c:if test="${item_u.code==info.paramMap['user_type']}">selected</c:if>>${item_u.text}</option>
+						</c:forEach>
+					</select>
+				</td>
 			</tr>
 			
 		</table>
@@ -46,8 +57,14 @@
 <div class="pageContent">
 	<div class="panelBar">
 		<ul class="toolBar">
-			<li><a class="edit" href="<%=path %>/consultant/forwardUpdateDetails.do?user_id={id}" target="navTab"><span>修改</span></a></li>
+			<li><a class="add" href="<%=path %>/consultant/forwardNewDetails.do" target="navTab"><span>新增</span></a></li>
+			<li><a class="edit" href="<%=path %>/consultant/forwardUpdateDetails.do?id={id}" target="navTab"><span>修改</span></a></li>
 			<li class="line">line</li>
+			<li>
+				<a class="edit" href="<%=path%>/consultant/forwardResetPass.do?id={id}" target="navTab"><span>重置密码</span></a>
+			</li>
+			<li class="line">line</li>
+			<li><a class="edit" href="<%=path %>/consultant/attachment/management.do?id={id}" target="navTab" rel="attachmentManagement"><span>附件管理</span></a></li>
 			</ul>
 	</div>
 
@@ -55,8 +72,8 @@
 		<thead>
 			<tr>
 				<th width="200px">用户名</th>
-				<th width="300px">用户姓名</th>
-				<th width="300px">用户类型</th>
+				<th width="200px">用户姓名</th>
+				<th width="100px">用户类型</th>
 			</tr>
 		</thead>
 		<tbody>

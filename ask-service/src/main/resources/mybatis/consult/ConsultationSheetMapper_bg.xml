@@ -8,7 +8,7 @@
 		select cs.*,
 		c.user_phone as c_user_phone from consultation_sheet cs,user_c c
 		where 1=1
-		and cs.user_c_id = c.user_id
+		and cs.user_c_no = c.user_no
 		
 		<if test="paramMap.user_c_phone != null and '' != paramMap.user_c_phone">
 			AND c.user_phone = #{paramMap.user_c_phone}
@@ -36,7 +36,7 @@
 	<select id="searchCountByConditions" parameterType="java.util.HashMap" resultType="int">
 	    select count(*) from consultation_sheet cs,user_c c
 		where 1=1
-		and cs.user_c_id = c.user_id
+		and cs.user_c_no = c.user_no
 		
 		<if test="paramMap.user_c_phone != null and '' != paramMap.user_c_phone">
 			AND c.user_phone = #{paramMap.user_c_phone}
@@ -58,4 +58,9 @@
                ]]>
 		</if>
 	</select>
+	
+	<select id="findById" parameterType="java.util.HashMap" resultType="com.yiyn.ask.xcx.consult.po.ConsultPo">
+	    select * from consultation_sheet where id = #{id};
+	</select>
+	
 </mapper>

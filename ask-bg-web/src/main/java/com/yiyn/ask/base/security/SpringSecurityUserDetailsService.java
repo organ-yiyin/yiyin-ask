@@ -4,12 +4,11 @@ import java.util.ArrayList;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
-import com.yiyn.ask.sys.po.UserBPo;
+import com.yiyn.ask.sys.dao.impl.UserDaoImpl;
+import com.yiyn.ask.sys.po.UserPo;
 
 /**
  * 
@@ -19,8 +18,8 @@ import com.yiyn.ask.sys.po.UserBPo;
  */
 public class SpringSecurityUserDetailsService implements UserDetailsService {
 	
-	@Resource(name="userBDao_bg")
-	private UserBDaoImpl uerBDao;
+	@Resource(name="userDao")
+	private UserDaoImpl uerDao;
 	
 	@Override
 	public SpingSecurityUserBo loadUserByUsername(String username)
@@ -28,8 +27,8 @@ public class SpringSecurityUserDetailsService implements UserDetailsService {
 		
 		SpingSecurityUserBo bo = null;
 		try {
-			UserBPo po = uerBDao.findByUserNo(username);
-			if(po == null){
+			UserPo po = uerDao.findByUserNo(username);
+			if(po == null || !"Y".equals(po.getEnabled())){
 				return null;
 			}
 			bo = new SpingSecurityUserBo(po, new ArrayList());

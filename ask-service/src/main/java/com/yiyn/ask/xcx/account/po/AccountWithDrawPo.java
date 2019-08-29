@@ -1,5 +1,7 @@
 package com.yiyn.ask.xcx.account.po;
 
+import java.math.BigDecimal;
+
 import com.yiyn.ask.base.po.BasePo;
 
 public class AccountWithDrawPo extends BasePo {

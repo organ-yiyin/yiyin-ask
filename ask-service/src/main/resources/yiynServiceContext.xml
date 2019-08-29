@@ -13,8 +13,4 @@
 	
 	<context:component-scan base-package="com.weixin.*" />
 	
-	<bean id="userBDao_bg" class="com.yiyn.ask.sys.dao.impl.UserBDaoImpl">
-	    <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
-	</bean>
-	
 </beans>
