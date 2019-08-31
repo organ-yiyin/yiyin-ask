@@ -4,8 +4,8 @@ public enum ProcessContentTypeEnum {
 	
 //	text：文字
 //	image：图片
-//	vedio：视频
-	TEXT("text"),IMG("image"),vedio("vedio");
+//	video：视频
+	TEXT("text"),IMG("image"),video("video");
     private final String name;
     
     private ProcessContentTypeEnum(String name)

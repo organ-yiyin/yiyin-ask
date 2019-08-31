@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
 import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
@@ -80,9 +81,14 @@ public class AccountService {
    }
    
    /*
-    * 插入提现记录表
+    * 插入提现记录表 并更新可提现金额
     */
+   @Transactional
    public void insetAccountWithDraw(AccountWithDrawPo p) throws Exception{
 	   accountWithDrawDao.insert(p);
+	   // 更新账户表的可提现金额
+	   AccountPo updP = new AccountPo();
+	   updP.setId(new Long(p.getAccount_id()));
+	   accountDao.updWithDraw(updP);
    }
 }

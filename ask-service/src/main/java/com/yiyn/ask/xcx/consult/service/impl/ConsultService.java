@@ -267,7 +267,7 @@ public class ConsultService {
 				  ConsultProcessPo imgP = new ConsultProcessPo();
 				  imgP.setConsultation_id(String.valueOf(p.getId()));
 				  imgP.setContent(video);
-				  imgP.setContent_type(ProcessContentTypeEnum.vedio.getName());
+				  imgP.setContent_type(ProcessContentTypeEnum.video.getName());
 				  imgP.setSend_type(ProcessSendTypeEnum.CUSTOMER.getName());
 				  
 				  this.insConsultProcess(imgP);

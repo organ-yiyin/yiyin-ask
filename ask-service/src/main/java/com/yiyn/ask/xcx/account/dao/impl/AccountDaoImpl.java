@@ -10,6 +10,10 @@ public class AccountDaoImpl extends BaseDao<AccountPo> {
 		return this.getSqlSession().selectOne(
 				this.getNameStatement() + ".getAccountInfo", userno);
 	}
+	
+	public void updWithDraw(AccountPo p)throws Exception {
+		this.getSqlSession().update(this.getNameStatement() + ".updWithDraw", p);
+	}
 
 	public String getNameStatement() {
 		return "yiyin.account";

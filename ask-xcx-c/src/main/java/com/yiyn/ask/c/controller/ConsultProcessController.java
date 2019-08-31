@@ -106,7 +106,7 @@ public class ConsultProcessController {
 		
 		//具备技能列表
 		if(!StringUtils.isEmptyString(userP.getSkilled())){
-			resultMap.put("skillList", userP.getSkilled().split(";"));
+			resultMap.put("skillList", userP.getSkilled().split("；"));
 		}
 		
 		//获取用户是否关注

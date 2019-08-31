@@ -20,4 +20,11 @@
 		set balance = #{balance}
 		where id = #{id}
 	</update>
+	
+    <!-- 提现后更新可提现金额为0 -->
+    <update id="updWithDraw" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
+		update user_account
+		set withdraw_enable = 0
+		where id = #{id}
+	</update>
 </mapper>

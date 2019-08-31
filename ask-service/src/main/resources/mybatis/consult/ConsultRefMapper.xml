@@ -4,7 +4,7 @@
 
 <mapper namespace="yiyin.consultRef">
     <select id="getRefList" resultType="com.yiyn.ask.xcx.consult.po.ConsultRefPo" parameterType="java.util.HashMap">
-        select ref.id,ref.birthday_b,ref.age_b,case sex_b when '1' then '男' else '女' end as sex_b
+        select ref.id,ref.birthday_b,ref.age_b,name_b,case sex_b when '1' then '男' else '女' end as sex_b
         from user_c_ref ref
         where 1 =1
 		and USER_NO = #{no}
@@ -19,9 +19,9 @@
     </select>
     
     <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultRefPo" useGeneratedKeys="true" keyProperty="id">
-		insert into user_c_ref(USER_NO,NAME_M,AGE_M,BIRTHDAY_M,SPECIAL_M,SEX_B,
+		insert into user_c_ref(USER_NO,NAME_M,AGE_M,BIRTHDAY_M,SPECIAL_M,NAME_B,SEX_B,
 		AGE_B,BIRTHDAY_B,EDC_B,BIRTH_WEIGHT_B,SPECIAL_B,BIRTH_WEEK,PREMIE,CREATED_TIME)
-		values(#{user_no},#{name_m},#{age_m},#{birthday_m},#{special_m},#{sex_b},
+		values(#{user_no},#{name_m},#{age_m},#{birthday_m},#{special_m},#{name_b},#{sex_b},
 		#{age_b},#{birthday_b},#{edc_b},#{birth_weight_b},#{special_b},#{birth_week},#{premie},now())
 	</insert>
     
@@ -31,6 +31,7 @@
 		age_m = #{age_m},
 		birthday_m = #{birthday_m},
 		special_m = #{special_m},
+		name_b = #{name_b},
 		sex_b = #{sex_b},
 		age_b = #{age_b},
 		birthday_b = #{birthday_b},

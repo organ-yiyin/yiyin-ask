@@ -12,6 +12,7 @@ public class ConsultRefPo extends BasePo {
 	private String age_m;
 	private String birthday_m;
 	private String special_m; // 妈妈特殊情况
+	private String name_b;
 	private String sex_b;
 	private String age_b;
 	private String birthday_b;
@@ -20,6 +21,12 @@ public class ConsultRefPo extends BasePo {
 	private String special_b;
 	private String birth_week;//出生孕周
 	private String premie; //是否早产儿
+	public String getName_b() {
+		return name_b;
+	}
+	public void setName_b(String name_b) {
+		this.name_b = name_b;
+	}
 	public String getName_m() {
 		return name_m;
 	}

@@ -220,7 +220,7 @@ public class ConsultSheetController {
 					ConsultProcessPo insP = new ConsultProcessPo();
 			    	insP.setConsultation_id(String.valueOf(id));
 			    	insP.setContent(insfile);
-			    	insP.setContent_type(ProcessContentTypeEnum.vedio.getName());
+			    	insP.setContent_type(ProcessContentTypeEnum.video.getName());
 			    	insP.setSend_type(ProcessSendTypeEnum.CUSTOMER.getName());
 			    	consultService.insConsultProcess(insP);
 				}

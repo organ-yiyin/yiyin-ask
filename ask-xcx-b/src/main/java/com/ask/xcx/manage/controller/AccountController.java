@@ -1,5 +1,6 @@
 package com.ask.xcx.manage.controller;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -120,11 +121,12 @@ public class AccountController {
 		if("0".equals(today.substring(0,1)) &&  d >=1 && d <= 5){
 			sfktx = true;
 		}
+		double fd=0;
 		// 提现金额大于余额
 		if(withdraw > balance){
 			resultMap.put("status", "2");
-		// 提现金额不足
-		}else if(withdraw == 0.00){
+		// 提现金额不足(为0)
+		}else if(withdraw == fd){
 			resultMap.put("status", "3");
 		// 提现日期不对
 		}else if(!sfktx){
@@ -133,9 +135,9 @@ public class AccountController {
 			try{
 				AccountWithDrawPo p = new AccountWithDrawPo();
 				p.setAccount_id(account_id);
-				p.setWithdraw(withdraw);
-				p.setWithdraw_act(withdraw * 0.7);
-				p.setService_charge(withdraw * 0.3);
+				p.setWithdraw(new BigDecimal(withdraw));
+				p.setWithdraw_act(new BigDecimal(withdraw * 0.7));
+				p.setService_charge(new BigDecimal(withdraw * 0.3));
 				p.setWithdraw_type(WithDrawTypeEnum.OFFLINE.getCode());
 				p.setStatus(String.valueOf(WithDrawStatusEnum.WAITING_APPROVE.getCode()));
 				p.setCreated_by(user_no);

@@ -79,7 +79,7 @@ public class AskUserCenterController {
 	@RequestMapping(value = "/saveRefInfo.x", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
 	public String saveRefInfo(HttpServletRequest request,
-			HttpServletResponse response,String id,String name_m,String birth_m,String spec_m,String sex_b,
+			HttpServletResponse response,String id,String name_m,String birth_m,String spec_m,String name_b,String sex_b,
 			String birth_b,String edc_b,String weight_b,String spec_b,String sessionid) throws Exception {
 		// 新建成功返回
 		logger.info("关联人信息保存saveRefInfo");
@@ -90,6 +90,7 @@ public class AskUserCenterController {
 			p.setName_m(name_m);
 			p.setBirthday_m(birth_m);
 			p.setSpecial_m(spec_m);
+			p.setName_b(name_b);
 			p.setSex_b(sex_b);
 			p.setBirthday_b(birth_b);
 			p.setEdc_b(edc_b);
@@ -127,7 +128,6 @@ public class AskUserCenterController {
 		logger.info("getUserBList");
 		// 新建成功返回
 		Map<String,Object> resultMap = new HashMap<String,Object>();
-		
 		//获取微信小程序信息
 		WechatXcxDto dto = XcxOAuthService.getWechatXcxDto(sessionid);
 		

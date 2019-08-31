@@ -10,6 +10,7 @@ public class CodePo extends BasePo {
 	private String code_type;
 	private String value;
 	private String name;
+	private String content1;
 	public String getCode_type() {
 		return code_type;
 	}
@@ -27,5 +28,11 @@ public class CodePo extends BasePo {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getContent1() {
+		return content1;
+	}
+	public void setContent1(String content1) {
+		this.content1 = content1;
 	}
 }
