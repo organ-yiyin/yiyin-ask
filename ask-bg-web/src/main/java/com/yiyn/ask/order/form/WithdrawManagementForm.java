@@ -1,28 +1,28 @@
 package com.yiyn.ask.order.form;
 
-import com.yiyn.ask.base.constants.WithdrawStatusEnum;
-import com.yiyn.ask.base.constants.WithdrawTypeEnum;
+import com.yiyn.ask.base.constants.WithDrawStatusEnum;
+import com.yiyn.ask.base.constants.WithDrawTypeEnum;
 import com.yiyn.ask.base.utils.PaginationUtils;
 
 public class WithdrawManagementForm extends PaginationUtils {
 	
-	private WithdrawTypeEnum[] withdrawTypes = WithdrawTypeEnum.values();
+	private WithDrawTypeEnum[] withdrawTypes = WithDrawTypeEnum.values();
 	
-	private WithdrawStatusEnum[] withdrawStatus = WithdrawStatusEnum.values();
+	private WithDrawStatusEnum[] withdrawStatus = WithDrawStatusEnum.values();
 
-	public WithdrawTypeEnum[] getWithdrawTypes() {
+	public WithDrawTypeEnum[] getWithdrawTypes() {
 		return withdrawTypes;
 	}
 
-	public void setWithdrawTypes(WithdrawTypeEnum[] withdrawTypes) {
+	public void setWithdrawTypes(WithDrawTypeEnum[] withdrawTypes) {
 		this.withdrawTypes = withdrawTypes;
 	}
 
-	public WithdrawStatusEnum[] getWithdrawStatus() {
+	public WithDrawStatusEnum[] getWithdrawStatus() {
 		return withdrawStatus;
 	}
 
-	public void setWithdrawStatus(WithdrawStatusEnum[] withdrawStatus) {
+	public void setWithdrawStatus(WithDrawStatusEnum[] withdrawStatus) {
 		this.withdrawStatus = withdrawStatus;
 	}
 	
