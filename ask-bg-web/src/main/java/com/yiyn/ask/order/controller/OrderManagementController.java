@@ -22,6 +22,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
+import com.yiyn.ask.base.constants.ObjectTypeEnum;
+import com.yiyn.ask.base.convert.AttachmentConvert;
+import com.yiyn.ask.base.dao.impl.AttachmentDaoImpl;
+import com.yiyn.ask.base.form.AttachmentForm;
+import com.yiyn.ask.base.po.AttachmentPo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.order.form.OrderForm;
@@ -33,7 +38,6 @@ import com.yiyn.ask.wechat.dto.WechatResultDto;
 import com.yiyn.ask.wechat.service.WechatRefundServiceImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultantSheetBgDaoImpl;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
-import com.yiyn.ask.xcx.consult.service.impl.ConsultService;
 
 @Controller
 @RequestMapping("/order")
@@ -49,13 +53,13 @@ public class OrderManagementController {
 	private ConsultantSheetBgDaoImpl consultantSheetBgDao;
 	
 	@Autowired
-	private ConsultService consultService;
-	
-	@Autowired
 	private UserBDaoImpl userBDao;
 	
 	@Autowired
 	private WechatRefundServiceImpl wechatRefundService;
+	
+	@Autowired
+	private AttachmentDaoImpl attachmentDao;
 	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request,
@@ -110,14 +114,22 @@ public class OrderManagementController {
 		
 		ConsultPo consultPo = this.consultantSheetBgDao.findById(id);
 		UserBPo userB = userBDao.findByUserNo(consultPo.getUser_b_no());
+		List<AttachmentPo> attachments = attachmentDao.findAllByObject(ObjectTypeEnum.ORDER_ATTACHMENT.getCode(), id);
 		
 		OrderForm orderForm = new OrderForm();
 		ModelAndView mv = new ModelAndView( FOLDER_PATH + "/orderDetails.jsp");
 		mv.addObject("info", orderForm);
 		mv.addObject("consultantSheet", consultPo);
 		mv.addObject("userB", userB);
+		mv.addObject("attachments", attachments);
 		
 		return mv;
+	}
+	
+	@RequestMapping(value = "/forwardDetails.do", method = RequestMethod.POST)
+	public ModelAndView forwardDetails_POST(HttpServletRequest request,
+			HttpServletResponse response,@RequestParam("id") Long id) throws Exception {
+		return this.forwardDetails(request, response, id);
 	}
 	
 	/**
@@ -139,10 +151,10 @@ public class OrderManagementController {
 		ConsultStatuEnum consultantStatus = ConsultStatuEnum.buildConsulantStatusByCode(consultPo.getStatus());
 		if(consultantStatus == null) {
 			DwzResponseForm responseForm = DwzResponseForm.createFailResponseForm("当前订单状态为空，无法做后续处理");
-					return new Gson().toJson(responseForm);
+			return new Gson().toJson(responseForm);
 		}
 		if(!ConsultStatuEnum.PAY.getCode().equals(consultPo.getStatus())) {
-			DwzResponseForm responseForm = DwzResponseForm.createFailResponseForm(String.format("当前订单状态为%s，无法做取消订单操作",consultantStatus.getName()));
+			DwzResponseForm responseForm = DwzResponseForm.createFailResponseForm(String.format("当前订单状态为%s，无法取消订单",consultantStatus.getName()));
 			return new Gson().toJson(responseForm);
 		}
 		
@@ -156,6 +168,50 @@ public class OrderManagementController {
 			DwzResponseForm responseForm = DwzResponseForm.createFailResponseForm(refund.getMessage());
 			return new Gson().toJson(responseForm);
 		}
+	}
+	
+	@RequestMapping(value = "/attachment/forwardNewDetails.do", method = RequestMethod.GET)
+	public ModelAndView forwardAttachmentNewDetails(HttpServletRequest request,
+			HttpServletResponse response, @RequestParam("consult_sheet_id") Long consult_sheet_id) throws Exception {
+		logger.info("forwardNewDetails");
+		
+		AttachmentForm attachmentForm = new AttachmentForm();
+		attachmentForm.setObject_type(ObjectTypeEnum.ORDER_ATTACHMENT.getCode());
+		attachmentForm.setObject_id(consult_sheet_id);
+		
+		ModelAndView mv = new ModelAndView( FOLDER_PATH + "/attachmentDetails.jsp");
+		mv.addObject("info", attachmentForm);
+		
+		return mv;
+	}
+	
+	@RequestMapping(value = "/attachment/save.do", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	@Transactional
+	public String save(HttpServletRequest request,
+			HttpServletResponse response, AttachmentForm attachmentForm) throws Exception {
+		logger.info("save");
+		
+		AttachmentPo convertToPo = AttachmentConvert.convertToPo(attachmentForm);
+		attachmentDao.insert(convertToPo);
+		
+		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
+		responseForm.setNavTabId("orderDetails");
+		return new Gson().toJson(responseForm);
+	}
+	
+	@RequestMapping(value = "/attachment/delete.do", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	@Transactional
+	public String delete(HttpServletRequest request,
+			HttpServletResponse response, @RequestParam("id") Long id) throws Exception {
+		logger.info("delete");
+		
+		AttachmentPo findById = this.attachmentDao.findById(id);
+		attachmentDao.deleteById_logic(findById);
+		
+		DwzResponseForm responseForm = DwzResponseForm.createForwardResponseForm(request,URL_PATH_PREFIX + "/forwardDetails.do?id=" + findById.getObject_id());
+		return new Gson().toJson(responseForm);
 	}
 	
 }

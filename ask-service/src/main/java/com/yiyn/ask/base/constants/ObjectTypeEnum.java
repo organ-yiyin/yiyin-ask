@@ -2,7 +2,8 @@ package com.yiyn.ask.base.constants;
 
 public enum ObjectTypeEnum {
 	
-	CONSULTANT_ATTACHMENT(1,"雇员资料","object_id与user_b.id进行关联");
+	CONSULTANT_ATTACHMENT(1,"雇员资料","object_id与user_b.id进行关联"),
+	ORDER_ATTACHMENT(2,"订单附件","object_id与consultation_sheet.id进行关联");
 	
 	Integer code;
 	String name;

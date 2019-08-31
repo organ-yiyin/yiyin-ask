@@ -1,6 +1,6 @@
 package com.yiyn.ask.base.constants;
 
-public enum WithDrawTypeEnum {
+public enum WithdrawTypeEnum {
 	
 	WECHAT("wechat","微信"),
 	OFFLINE("offline","线下");
@@ -8,7 +8,7 @@ public enum WithDrawTypeEnum {
 	String code;
 	String name;
 	
-	private WithDrawTypeEnum(String code, String name){
+	private WithdrawTypeEnum(String code, String name){
 		this.code = code;
 		this.name = name;
 	}

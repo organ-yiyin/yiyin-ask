@@ -33,7 +33,7 @@
 				<ul class="toolBar">
 					<li><a class="add" href="<%=path %>/consultant/attachment/forwardNewDetails.do?object_id=${userForm.id}" target="dialog" rel="newAttachment" mask="true"  width="900" height="400"><span>新增</span></a></li>
 					<li class="line">line</li>
-					<li><a class="delete" href="<%=path %>/consultant/attachment/delete.do?id={attachment_id}" target="navTab"><span>删除</span></a></li>
+					<li><a class="delete" href="<%=path %>/consultant/attachment/delete.do?id={attachment_id}" target="ajaxTodo" title="确定要删除吗？"><span>删除</span></a></li>
 					<li class="line">line</li>
 				</ul>
 			</div>

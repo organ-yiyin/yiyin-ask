@@ -20,12 +20,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.ObjectTypeEnum;
+import com.yiyn.ask.base.convert.AttachmentConvert;
 import com.yiyn.ask.base.dao.impl.AttachmentDaoImpl;
+import com.yiyn.ask.base.form.AttachmentForm;
 import com.yiyn.ask.base.po.AttachmentPo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.OSSClientUtils;
-import com.yiyn.ask.consultant.convert.ConsultantAttachmentConvert;
-import com.yiyn.ask.consultant.form.ConsultantAttachmentForm;
 import com.yiyn.ask.consultant.form.ConsultantAttachmentManagementForm;
 import com.yiyn.ask.sys.convert.UserBConvert;
 import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
@@ -83,7 +83,7 @@ public class ConsultantAttachmentManagmentController {
 			HttpServletResponse response, @RequestParam("object_id") Long id) throws Exception {
 		logger.info("forwardNewDetails");
 		
-		ConsultantAttachmentForm attachmentForm = new ConsultantAttachmentForm();
+		AttachmentForm attachmentForm = new AttachmentForm();
 		attachmentForm.setObject_type(ObjectTypeEnum.CONSULTANT_ATTACHMENT.getCode());
 		attachmentForm.setObject_id(id);
 		
@@ -97,10 +97,10 @@ public class ConsultantAttachmentManagmentController {
 	@ResponseBody
 	@Transactional
 	public String save(HttpServletRequest request,
-			HttpServletResponse response, ConsultantAttachmentForm attachmentForm) throws Exception {
+			HttpServletResponse response, AttachmentForm attachmentForm) throws Exception {
 		logger.info("save");
 		
-		AttachmentPo convertToPo = ConsultantAttachmentConvert.convertToPo(attachmentForm);
+		AttachmentPo convertToPo = AttachmentConvert.convertToPo(attachmentForm);
 		attachmentDao.insert(convertToPo);
 		
 		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
@@ -108,37 +108,17 @@ public class ConsultantAttachmentManagmentController {
 		return new Gson().toJson(responseForm);
 	}
 	
-	@RequestMapping(value = "/upload.do", method = RequestMethod.POST)
-	@ResponseBody
-	public String uploadAttachment(HttpServletRequest request,
-			HttpServletResponse response, @RequestParam("head_image_file") MultipartFile head_image_file) throws Exception {
-		
-		logger.info("uploadAttachment");
-		
-		if(head_image_file.getInputStream().available() > 1000 * 2000){
-			DwzResponseForm rf = DwzResponseForm.createFailResponseForm("文件大小不能超过2000K");
-			return new Gson().toJson(rf);
-		}
-		
-		String fileUrl = ossclientUtils.uploadFile("B端服务人员头像", head_image_file.getInputStream(), 
-				head_image_file.getOriginalFilename());
-		
-		DwzResponseForm rf = DwzResponseForm.createSuccessResponseForm();
-		rf.setData(fileUrl);
-		
-		return new Gson().toJson(rf); //ResponseForm.createSuccessResponseForm();
-	}
-	
-	@RequestMapping(value = "/delete.do", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
+	@RequestMapping(value = "/delete.do", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
 	@Transactional
-	public ModelAndView delete(HttpServletRequest request,
+	public String delete(HttpServletRequest request,
 			HttpServletResponse response, @RequestParam("id") Long id) throws Exception {
 		logger.info("delete");
 		
 		AttachmentPo findById = this.attachmentDao.findById(id);
 		attachmentDao.deleteById_logic(findById);
 		
-		return this.forwardManagementPage(request, response, findById.getObject_id());
+		DwzResponseForm responseForm = DwzResponseForm.createForwardResponseForm(request,URL_PATH_PREFIX + "/management.do?id=" + findById.getObject_id());
+		return new Gson().toJson(responseForm);
 	}
 }

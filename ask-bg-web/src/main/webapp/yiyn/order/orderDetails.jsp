@@ -22,7 +22,7 @@
 <div class="pageContent">
 	<form method="post" onsubmit="return validateCallback(this, navTabAjaxDone)" action="<%=path%>/consult/courseTimeAdd/save.json" class="pageForm required-validate">
 		<div class="pageFormContent" layoutH="60">
-		<input type="hidden" name="order_id" value="${order.order_id}">
+		<input type="hidden" name="consult_sheet_id" value="${consultantSheet.id}">
 		<div class="tabs" currentIndex="0" eventType="click">
 			<div class="tabsHeader">
 				<div class="tabsHeaderContent">
@@ -31,6 +31,7 @@
 						<li><a href="javascript:;"><span>咨询师资料</span></a></li>
 						<li><a href="javascript:;"><span>订单详情</span></a></li>
 						<li><a href="javascript:;"><span>咨询内容(采集文字、音频、视频、照片内容)</span></a></li>
+						<li><a href="javascript:;"><span>附件管理</span></a></li>
 					</ul>
 				</div>
 			</div>
@@ -121,6 +122,50 @@
 						<dd>${consultantSheet.price}
 						</dd>
 					</dl>
+				</div>
+			</div>
+			
+			<div class="tabsContent" style="height:100%;">
+				<div>
+					
+				</div>
+			</div>
+			
+			<div class="tabsContent" style="height:100%;">
+				<div>
+					<div class="panelBar">
+						<ul class="toolBar">
+							<li><a class="add" href="<%=path %>/order/attachment/forwardNewDetails.do?consult_sheet_id=${consultantSheet.id}" target="dialog" rel="newAttachment" mask="true"  width="900" height="400"><span>新增</span></a></li>
+							<li class="line">line</li>
+							<li><a class="delete" href="<%=path %>/order/attachment/delete.do?id={attachment_id}" target="ajaxTodo" title="确定要删除吗？"><span>删除</span></a></li>
+							<li class="line">line</li>
+						</ul>
+					</div>
+					
+					<table class="table" style="width:750px">
+						<thead>
+							<tr>
+								<th width="200px">附件名称</th>
+								<th width="150px">附件类型</th>
+								<th width="400px">附件地址</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${attachments}" var="item" varStatus="s">
+							<tr target="attachment_id" rel="${item.id}">
+								<td>${item.attachment_name}</td>
+								<td>
+									<c:forEach items="${info.attachmentTypes}" var="item_u" varStatus="s">
+										<c:if test="${item_u.code==item.attachment_type}">${item_u.name}</c:if>
+									</c:forEach>
+								</td>
+								<td>${item.oss_url}</td>
+							</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+					<br>
+					<br>
 				</div>
 			</div>
 			

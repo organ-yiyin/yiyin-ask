@@ -5,6 +5,7 @@ public enum AttachmentTypeEnum {
 	
 	IDENTIFY_CERT("idnetify_cert","身份证明"),
 	QUALIFICATION("qualification","资质证明"),
+	TRANSFER("转账凭证","转账凭证"),
 	OTHER("other","其他");
 	
 	String code;

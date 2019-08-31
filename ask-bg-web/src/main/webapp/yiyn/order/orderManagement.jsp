@@ -93,7 +93,7 @@
 <div class="pageContent">
 	<div class="panelBar">
 		<ul class="toolBar">
-			<li><a class="edit" href="<%=path %>/order/forwardDetails.do?id={id}" target="navTab"><span>查看</span></a></li>
+			<li><a class="edit" href="<%=path %>/order/forwardDetails.do?id={id}" target="navTab" rel="orderDetails"><span>查看</span></a></li>
 			<li class="line">line</li>
 			<li><a class="edit" href="javascript:void(0)" onclick="downloadExcel()"><span>导出完整订单</span></a></li>
 		</ul>
