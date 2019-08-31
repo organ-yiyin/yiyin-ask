@@ -30,8 +30,9 @@
 						<li><a href="javascript:;"><span>下单客户资料</span></a></li>
 						<li><a href="javascript:;"><span>咨询师资料</span></a></li>
 						<li><a href="javascript:;"><span>订单详情</span></a></li>
-						<li><a href="javascript:;"><span>咨询内容(采集文字、音频、视频、照片内容)</span></a></li>
+						<li><a href="javascript:;"><span>咨询内容</span></a></li>
 						<li><a href="javascript:;"><span>附件管理</span></a></li>
+						<li><a href="javascript:;"><span>日志</span></a></li>
 					</ul>
 				</div>
 			</div>
@@ -106,7 +107,7 @@
 					<dl>
 						<dt>微信订单号：</dt>
 						<dd>
-							
+							${consultantSheet.pay_odd_num}
 						</dd>
 					</dl>
 					<dl>
@@ -119,8 +120,7 @@
 					</dl>
 					<dl>
 						<dt>总价：</dt>
-						<dd>${consultantSheet.price}
-						</dd>
+						<dd>${consultantSheet.price}</dd>
 					</dl>
 				</div>
 			</div>
@@ -169,6 +169,34 @@
 				</div>
 			</div>
 			
+			<div class="tabsContent" style="height:100%;">
+				<div>
+					<table class="table" style="width:650px">
+						<thead>
+							<tr>
+								<th width="50px">序号</th>
+								<th width="300px">操作</th>
+								<th width="150px">操作人</th>
+								<th width="150px">操作时间</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${logs}" var="item" varStatus="s">
+							<tr>
+								<td>${s.index + 1}</td>
+								<td>${item.log_desc}</td>
+								<td>${item.created_by}</td>
+								<td><fmt:formatDate value="${item.created_time}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+							</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+					
+					<br>
+					<br>
+				</div>
+			</div>
+			
 			<div class="tabsFooter">
 				<div class="tabsFooterContent"></div>
 			</div>
@@ -177,40 +205,14 @@
 		</div>
 		<div class="formBar">
 			<ul>
-				<a class="button" href="<%=path%>/order/adminCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认取消订单并且退款吗？"><span>管理员取消订单</span></a>
 				<c:if test="${consultantSheet.status eq 2}">
-					<a class="button" href="<%=path%>/order/adminCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认取消订单并且退款吗？"><span>管理员取消订单</span></a>
+					<a class="button" href="<%=path%>/order/adminCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认取消订单并且退款吗？"><span>取消订单</span></a>
 				</c:if>
 				<c:if test="${consultantSheet.status eq 3}">
-					<div class="button"><div class="buttonContent"><button type="button" class="close">确认退款</button></div></div>
+					<a class="button" href="<%=path%>/order/adminConfirmCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认同意取消订单并且退款吗？"><span>同意取消订单</span></a>
+					<a class="button" href="<%=path%>/order/adminRejectCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认驳回取消订单吗？"><span>驳回取消订单</span></a>
 				</c:if>
 				
-				<c:if test="${order.order_status == 1}">
-					<li>
-						<a class="button" href="<%=path%>/order/adminApplyCancel.do?order_id=${order.order_id}"  target="_blank" title="确认主动取消订单并且退款？"><span>取消订单</span></a>
-					</li>
-				</c:if>
-				
-				<c:if test="${order.order_status == 2}">
-					<li>
-						<a class="button" href="<%=path%>/order/adminApplyCancel.do?order_id=${order.order_id}" target="_blank" title="确认主动取消订单并且退款？"><span>取消订单</span></a>
-					</li>
-				</c:if>
-				<c:if test="${order.order_status == 6}">
-					<li>
-						<a class="button" href="<%=path%>/order/rejectCancel.do?order_id=${order.order_id}" target="ajaxTodo" title="确认驳回？">
-							<span>驳回</span>
-						</a>
-					</li>
-					<li>
-						<a class="button" href="<%=path%>/order/confirmCancel.do?order_id=${order.order_id}" target="_blank" title="确认退款？">
-							<span>确认退款</span>
-						</a>
-					</li>
-				</c:if>
-				<li>
-					
-				</li>
 			</ul>
 		</div>
 	</form>

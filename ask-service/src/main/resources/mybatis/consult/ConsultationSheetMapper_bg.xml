@@ -63,4 +63,9 @@
 	    select * from consultation_sheet where id = #{id};
 	</select>
 	
+	<select id="updateStatusById" parameterType="com.yiyn.ask.xcx.consult.po.ConsultPo" resultType="com.yiyn.ask.xcx.consult.po.ConsultPo">
+	    update consultation_sheet set status=#{status},updated_by=#{updated_by},updated_time=#{updated_time}
+		where id =#{id};
+	</select>
+	
 </mapper>

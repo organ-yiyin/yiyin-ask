@@ -20,6 +20,11 @@ public class ConsultantSheetBgDaoImpl extends BaseDao<ConsultPo> {
 		return this.getSqlSession().selectOne(this.getNameStatement() + ".searchCountByConditions", paramPage);
 	}
 	
+	public void updateStatusById(ConsultPo t) throws Exception{
+		this.initUpdateInfo(t);
+		this.getSqlSession().update(this.getNameStatement() + ".updateStatusById", t);
+	}
+	
 	@Override
 	public String getNameStatement() {
 		// TODO Auto-generated method stub
