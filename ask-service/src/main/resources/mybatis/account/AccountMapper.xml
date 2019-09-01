@@ -14,10 +14,23 @@
 	  group by t.user_no
     </select>
     
+    <select id="findById" resultType="com.yiyn.ask.xcx.account.po.AccountPo">
+      select *
+	  from user_account 
+	  where id = #{id}
+    </select>
+    
     <!--  通知后更新账户数据 -->
     <update id="updateById" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
 		update user_account
 		set balance = #{balance}
+		where id = #{id}
+	</update>
+	
+	<!--  通知后更新账户数据 -->
+    <update id="updateByIdAftetTransfer" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
+		update user_account
+		set balance=#{balance},withdraw=#{withdraw},updated_by=#{updated_by},updated_time=#{updated_time}
 		where id = #{id}
 	</update>
 	
@@ -27,4 +40,7 @@
 		set withdraw_enable = 0
 		where id = #{id}
 	</update>
+	
+	
+	
 </mapper>

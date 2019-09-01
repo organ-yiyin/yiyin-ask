@@ -55,9 +55,6 @@ public class OrderManagementController {
 	private UserBDaoImpl userBDao;
 
 	@Autowired
-	private WechatRefundServiceImpl wechatRefundService;
-
-	@Autowired
 	private ConsultLogDaoImpl consultLogDao;
 
 	@Autowired

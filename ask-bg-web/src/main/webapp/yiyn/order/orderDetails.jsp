@@ -20,7 +20,7 @@
 </script>
 
 <div class="pageContent">
-	<form method="post" onsubmit="return validateCallback(this, navTabAjaxDone)" action="<%=path%>/consult/courseTimeAdd/save.json" class="pageForm required-validate">
+	
 		<div class="pageFormContent" layoutH="60">
 		<input type="hidden" name="consult_sheet_id" value="${consultantSheet.id}">
 		<div class="tabs" currentIndex="0" eventType="click">
@@ -215,5 +215,5 @@
 				
 			</ul>
 		</div>
-	</form>
+	
 </div>

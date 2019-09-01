@@ -8,7 +8,8 @@ package com.yiyn.ask.base.constants;
 public enum AttachmenetBucketEnum {
 	
 	CONSULTANT_ATTACHMENT(1, "咨询师附件","咨询师附件"),
-	ORDER_ATTACHMENT(2, "订单附件","订单附件");
+	ORDER_ATTACHMENT(2, "订单附件","订单附件"),
+	WITHDRAW_ATTACHMENT(3, "提现附件","提现附件");
 	
 	Integer code;
 	String name;
