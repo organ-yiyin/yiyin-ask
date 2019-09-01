@@ -14,16 +14,6 @@
         order by pay_time desc
     </select>
     
-    <select id="findAccountFlowList" resultType="com.yiyn.ask.xcx.account.po.AccountFlwPo" parameterType="java.util.HashMap">
-        select flow.*,DATE_FORMAT(pay_time, '%m-%d %H:%i:%s') pay_time_format
-        from user_account_flow flow,user_account a
-        where flow.ACCOUNT_ID = a.id
-        and user_no = #{user_no}
-        and DATE_FORMAT(PAY_TIME,'%Y-%m') = #{month}
-        and flow.pay_status = '1'
-        order by pay_time desc
-    </select>
-    
     <!--  通知后插入账户流水数据 -->
     <insert id="insert" parameterType="com.yiyn.ask.xcx.account.po.AccountFlowPo" useGeneratedKeys="true" keyProperty="id">
 		insert into user_account_flow(ACCOUNT_ID,JOURNAL_MONEY,JOURNAL_DIR,
