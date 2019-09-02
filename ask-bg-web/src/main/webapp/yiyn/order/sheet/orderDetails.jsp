@@ -136,6 +136,7 @@
 					<div class="panelBar">
 						<ul class="toolBar">
 							<li><a class="add" href="<%=path %>/order/attachment/forwardNewDetails.do?consult_sheet_id=${consultantSheet.id}" target="dialog" rel="newAttachment" mask="true"  width="900" height="400"><span>新增</span></a></li>
+							<li><a class="edit" href="<%=path %>/order/attachment/forwardUpdateDetails.do?id={attachment_id}" target="dialog" rel="updateAttachment" mask="true"  width="900" height="400"><span>新增</span></a></li>
 							<li class="line">line</li>
 							<li><a class="delete" href="<%=path %>/order/attachment/delete.do?id={attachment_id}" target="ajaxTodo" title="确定要删除吗？"><span>删除</span></a></li>
 							<li class="line">line</li>
@@ -159,7 +160,7 @@
 										<c:if test="${item_u.code==item.attachment_type}">${item_u.name}</c:if>
 									</c:forEach>
 								</td>
-								<td>${item.oss_url}</td>
+								<td><a href="${item.oss_url}" target="_blank">${item.oss_url}</a></td>
 							</tr>
 							</c:forEach>
 						</tbody>

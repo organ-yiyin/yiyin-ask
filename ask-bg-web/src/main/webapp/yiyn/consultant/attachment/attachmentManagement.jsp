@@ -55,7 +55,7 @@
 								<c:if test="${item_u.code==item.attachment_type}">${item_u.name}</c:if>
 							</c:forEach>
 						</td>
-						<td>${item.oss_url}</td>
+						<td><a href="${item.oss_url}" target="_blank">${item.oss_url}</a></td>
 					</tr>
 					</c:forEach>
 				</tbody>

@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -32,6 +33,8 @@ import com.yiyn.ask.order.form.OrderForm;
 import com.yiyn.ask.order.form.OrderManagementForm;
 import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.po.UserBPo;
+import com.yiyn.ask.wechat.dto.WechatRefundResponseDto;
+import com.yiyn.ask.wechat.dto.WechatResultDto;
 import com.yiyn.ask.wechat.service.WechatRefundServiceImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultLogDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultantSheetBgDaoImpl;
@@ -44,7 +47,7 @@ public class OrderManagementController {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public static final String FOLDER_PATH = "/yiyn/order";
+	public static final String FOLDER_PATH = "/yiyn/order/sheet";
 
 	public static final String URL_PATH_PREFIX = "/order";
 
@@ -59,6 +62,9 @@ public class OrderManagementController {
 
 	@Autowired
 	private AttachmentDaoImpl attachmentDao;
+	
+	@Autowired
+	private WechatRefundServiceImpl wechatRefundService;
 
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request, HttpServletResponse response)
@@ -157,37 +163,30 @@ public class OrderManagementController {
 			return new Gson().toJson(responseForm);
 		}
 
-		// 修改订单状态
-		consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
-		this.consultantSheetBgDao.updateStatusById(consultPo);
-		
-		// 记录日志
-		ConsultLogPo t = new ConsultLogPo();
-		t.setLog_type(ConsultStatuEnum.REFUND.getCode());
-		t.setLog_desc("管理员取消订单");
-		t.setConsult_id(id.toString());
-		consultLogDao.insert(t);
-
-		DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
-				String.format("订单%s已取消，总共退款金额为%s", consultPo.getOdd_num(), consultPo.getPrice()));
-		responseForm.setNavTabId("orderDetails");
-		return new Gson().toJson(responseForm);
-
-		// WechatResultDto<WechatRefundResponseDto> refund =
-		// wechatRefundService.refund(consultPo.getOdd_num(),
-		// NumberUtils.createBigDecimal(consultPo.getPrice()),
-		// NumberUtils.createBigDecimal(consultPo.getPrice()));
-		// if(refund.isSuccess()) {
-		// // 修改订单状态
-		// DwzResponseForm responseForm =
-		// DwzResponseForm.createSuccessResponseForm(String.format("订单%s已取消，总共退款金额为%s",consultPo.getOdd_num(),consultPo.getPrice()));
-		// return new Gson().toJson(responseForm);
-		// }
-		// else {
-		// DwzResponseForm responseForm =
-		// DwzResponseForm.createFailResponseForm(refund.getMessage());
-		// return new Gson().toJson(responseForm);
-		// }
+		 WechatResultDto<WechatRefundResponseDto> refund = wechatRefundService.refund(consultPo.getOdd_num(),
+		 NumberUtils.createBigDecimal(consultPo.getPrice()),
+		 NumberUtils.createBigDecimal(consultPo.getPrice()));
+		 if(refund.isSuccess()) {
+			// 修改订单状态
+			consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
+			this.consultantSheetBgDao.updateStatusById(consultPo);
+			
+			// 记录日志
+			ConsultLogPo t = new ConsultLogPo();
+			t.setLog_type(ConsultStatuEnum.REFUND.getCode());
+			t.setLog_desc("管理员取消订单");
+			t.setConsult_id(id.toString());
+			consultLogDao.insert(t);
+				
+			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
+				String.format("订单%s已取消，总共退款金额为%s",consultPo.getOdd_num(),consultPo.getPrice()));
+			responseForm.setNavTabId("orderDetails");
+		 	return new Gson().toJson(responseForm);
+		 }
+		 else {
+			 DwzResponseForm responseForm =DwzResponseForm.createFailResponseForm(refund.getMessage());
+			 return new Gson().toJson(responseForm);
+		 }
 	}
 
 	/**
@@ -217,22 +216,31 @@ public class OrderManagementController {
 					.createFailResponseForm(String.format("当前订单状态为%s，无法同意取消订单", consultantStatus.getName()));
 			return new Gson().toJson(responseForm);
 		}
-
-		// 修改订单状态
-		consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
-		this.consultantSheetBgDao.updateStatusById(consultPo);
 		
-		// 记录日志
-		ConsultLogPo t = new ConsultLogPo();
-		t.setLog_type(ConsultStatuEnum.REFUND.getCode());
-		t.setLog_desc("管理员同意取消订单");
-		t.setConsult_id(id.toString());
-		consultLogDao.insert(t);
-
-		DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
-				String.format("订单%s已同意取消，总共退款金额为%s", consultPo.getOdd_num(), consultPo.getPrice()));
-		responseForm.setNavTabId("orderDetails");
-		return new Gson().toJson(responseForm);
+		WechatResultDto<WechatRefundResponseDto> refund = wechatRefundService.refund(consultPo.getOdd_num(),
+		NumberUtils.createBigDecimal(consultPo.getPrice()),
+		NumberUtils.createBigDecimal(consultPo.getPrice()));
+		if(refund.isSuccess()) {
+			// 修改订单状态
+			consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
+			this.consultantSheetBgDao.updateStatusById(consultPo);
+			
+			// 记录日志
+			ConsultLogPo t = new ConsultLogPo();
+			t.setLog_type(ConsultStatuEnum.REFUND.getCode());
+			t.setLog_desc("管理员同意取消订单");
+			t.setConsult_id(id.toString());
+			consultLogDao.insert(t);
+				
+			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
+					String.format("订单%s已同意取消，总共退款金额为%s", consultPo.getOdd_num(), consultPo.getPrice()));
+			responseForm.setNavTabId("orderDetails");
+			return new Gson().toJson(responseForm);
+		}
+		else {
+			 DwzResponseForm responseForm =DwzResponseForm.createFailResponseForm(refund.getMessage());
+			 return new Gson().toJson(responseForm);
+		}
 	}
 
 	/**
