@@ -199,6 +199,7 @@ public class ConsultSheetController {
 				ConsultProcessPo insP = new ConsultProcessPo();
 		    	insP.setConsultation_id(String.valueOf(id));
 		    	insP.setContent(text);
+		    	insP.setContent1("");
 		    	insP.setContent_type(ProcessContentTypeEnum.TEXT.getName());
 		    	insP.setSend_type(ProcessSendTypeEnum.CUSTOMER.getName());
 		    	consultService.insConsultProcess(insP);
@@ -209,6 +210,7 @@ public class ConsultSheetController {
 					ConsultProcessPo insP = new ConsultProcessPo();
 			    	insP.setConsultation_id(String.valueOf(id));
 			    	insP.setContent(insfile);
+			    	insP.setContent1("");
 			    	insP.setContent_type(ProcessContentTypeEnum.IMG.getName());
 			    	insP.setSend_type(ProcessSendTypeEnum.CUSTOMER.getName());
 			    	consultService.insConsultProcess(insP);
@@ -220,7 +222,8 @@ public class ConsultSheetController {
 					ConsultProcessPo insP = new ConsultProcessPo();
 			    	insP.setConsultation_id(String.valueOf(id));
 			    	insP.setContent(insfile);
-			    	insP.setContent_type(ProcessContentTypeEnum.video.getName());
+			    	insP.setContent1("");
+			    	insP.setContent_type(ProcessContentTypeEnum.VIDEO.getName());
 			    	insP.setSend_type(ProcessSendTypeEnum.CUSTOMER.getName());
 			    	consultService.insConsultProcess(insP);
 				}

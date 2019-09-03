@@ -53,6 +53,7 @@ public class XcxNotifyController {
         String returnCode = (String) notifyResultMap.get("return_code");                // SUCCESS
         String resultCode = (String) notifyResultMap.get("result_code");                // SUCCESS/FAIL
         if("SUCCESS".equals(returnCode) && "SUCCESS".equals(resultCode)) {
+        	logger.info("成功通知+1");
             String appId = notifyResultMap.get("appid");
             String mchId = notifyResultMap.get("mch_id");
             String outTradeNo = notifyResultMap.get("out_trade_no");   // 商户订单号
@@ -64,8 +65,10 @@ public class XcxNotifyController {
 	        ConsultPo p = consultService.getConsultByOdd_Num(outTradeNo);
 	        
             if(totalFee.equals(StringUtils.subZeroAndDot(String.valueOf(new Double(p.getPrice()) * 100)))) {
+            	logger.info("通知金额和记录的金额一致");
             	// 订单状态是否为待支付
                 if(ConsultStatuEnum.PAY_WAIT.getCode().equals(p.getStatus())) {
+                	logger.info("订单状态是待支付状态");
                 	// 更新状态为成功，并且更新业务信息
                     String result = consultService.handlePayTradeOrder(ConsultStatuEnum.PAY.getCode(), transaction_id,timeEnd,p);
                     if("SUCCESS".equals(result)) {

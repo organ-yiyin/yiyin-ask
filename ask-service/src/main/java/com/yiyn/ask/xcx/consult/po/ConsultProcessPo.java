@@ -11,6 +11,8 @@ public class ConsultProcessPo extends BasePo {
 	
 	private String content;//内容
 	
+	private String content1; // 内容1  （包含音频的长度等）
+	
 	private String content_type;//内容类型
 	
 	private String send_type;// 操作类型   customer：客户 server：咨询服务人员
@@ -45,5 +47,13 @@ public class ConsultProcessPo extends BasePo {
 
 	public void setSend_type(String send_type) {
 		this.send_type = send_type;
+	}
+
+	public String getContent1() {
+		return content1;
+	}
+
+	public void setContent1(String content1) {
+		this.content1 = content1;
 	}
 }

@@ -10,7 +10,7 @@
     </select>
     
     <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultProcessPo" useGeneratedKeys="true" keyProperty="id">
-		insert into consultation_process(CONSULTATION_ID,CONTENT,CONTENT_TYPE,SEND_TYPE,CREATED_BY,CREATED_TIME)
-		values(#{consultation_id},#{content},#{content_type},#{send_type},#{created_by},now())
+		insert into consultation_process(CONSULTATION_ID,CONTENT,CONTENT1,CONTENT_TYPE,SEND_TYPE,CREATED_BY,CREATED_TIME)
+		values(#{consultation_id},#{content},#{content1},#{content_type},#{send_type},#{created_by},now())
 	</insert>
 </mapper>

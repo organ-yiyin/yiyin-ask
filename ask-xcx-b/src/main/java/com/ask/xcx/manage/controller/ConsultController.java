@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
+import com.yiyn.ask.base.constants.ProcessContentTypeEnum;
 import com.yiyn.ask.base.utils.OSSClientUtils;
 import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.xcx.center.service.impl.CenterResponseService;
@@ -103,6 +104,7 @@ public class ConsultController {
 		ConsultProcessPo insP = new ConsultProcessPo();
 		insP.setConsultation_id(id);
 		insP.setContent(content);
+		insP.setContent1("");
 		insP.setContent_type("text");
 		insP.setSend_type("server");
 		
@@ -184,13 +186,19 @@ public class ConsultController {
 		insP.setContent_type(fileupd);
 		insP.setCreated_by(user_no);
 		insP.setSend_type("server");
+		insP.setContent1("");
 		// 文件上传
 		String attr = "";
-		if("image".equals(fileupd) || "video".equals(fileupd)){
+		if(ProcessContentTypeEnum.IMG.getName().equals(fileupd) || ProcessContentTypeEnum.VIDEO.getName().equals(fileupd) 
+				|| ProcessContentTypeEnum.AUDIO.getName().equals(fileupd)){
 			MultipartHttpServletRequest req =(MultipartHttpServletRequest)request;
 			MultipartFile files = req.getFile("file"); 
 			attr = uploadImg2Oss(files,user_no);
 			insP.setContent(attr);
+			//音频的话还要插入音频的时长
+			if(ProcessContentTypeEnum.AUDIO.getName().equals(fileupd)){
+				insP.setContent1(content);
+			}
 		}else{
 			insP.setContent(content);
 		}
