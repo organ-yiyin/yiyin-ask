@@ -1,18 +1,20 @@
 package com.yiyn.ask.order.controller;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,11 +30,13 @@ import com.yiyn.ask.base.convert.AttachmentConvert;
 import com.yiyn.ask.base.dao.impl.AttachmentDaoImpl;
 import com.yiyn.ask.base.form.AttachmentForm;
 import com.yiyn.ask.base.po.AttachmentPo;
+import com.yiyn.ask.base.security.SpingSecurityUserBo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.order.form.WithdrawForm;
 import com.yiyn.ask.order.form.WithdrawManagementForm;
+import com.yiyn.ask.order.service.WithdrawManager;
 import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.po.UserBPo;
 import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
@@ -66,6 +70,9 @@ public class WithdrawManagementController {
 	
 	@Autowired
 	private AttachmentDaoImpl attachmentDao;
+	
+	@Autowired
+	private WithdrawManager withdrawManager;
 	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request,
@@ -260,6 +267,41 @@ public class WithdrawManagementController {
 		DwzResponseForm responseForm = DwzResponseForm.createForwardResponseForm(request,
 				URL_PATH_PREFIX + "/forwardDetails.do?id=" + findById.getObject_id());
 		return new Gson().toJson(responseForm);
+	}
+	
+	@RequestMapping(value = "/downloadWithdraw.do", method = RequestMethod.GET)
+	public void downloadWithdraw(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam("user_no") String user_no,
+			@RequestParam("withdraw_type") String withdraw_type,
+			@RequestParam("status") String status) throws Exception {
+		
+		SpingSecurityUserBo userDetails = (SpingSecurityUserBo) (SecurityContextHolder.getContext()  
+			    .getAuthentication()  
+			    .getPrincipal());
+		String fileName = "withdraw_" + SPDateUtils.formatDateDefault(new Date());
+		
+		response.setContentType( "application/vnd.ms-excel" );
+		response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+		ServletOutputStream os = response.getOutputStream();
+		
+		try {
+			PaginationUtils paramPage = new PaginationUtils(9999,1);
+			paramPage.getParamMap().put("user_no", user_no);
+			paramPage.getParamMap().put("withdraw_type", withdraw_type);
+			paramPage.getParamMap().put("status", status);
+			
+			Workbook workbook = this.withdrawManager.downloadWithdrawExcel(paramPage);
+			workbook.write( os );
+			
+			os.flush();
+		}
+		catch( Exception ex ) {
+			ex.printStackTrace();
+		}
+		finally {
+			os.close();
+		}
 	}
 
 }

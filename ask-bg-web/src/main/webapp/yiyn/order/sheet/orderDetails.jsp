@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <%
 	String path = request.getContextPath();
@@ -38,30 +39,89 @@
 			</div>
 			<div class="tabsContent" style="height:100%;">
 				<div>
-					<dl>
-						<dt>客户帐号：</dt>
-						<dd>
-							
-						</dd>
-					</dl>
-					<dl>
-						<dt>客户姓名：</dt>
-						<dd>
-							
-						</dd>
-					</dl>
-					<dl>
-						<dt>客户电话：</dt>
-						<dd>
-							
-						</dd>
-					</dl>
-					<dl>
-						<dt>客户身份证：</dt>
-						<dd>
-							
-						</dd>
-					</dl>
+					<fieldset>
+						<legend>下单账户</legend>
+						<dl>
+							<dt>客户帐号：</dt>
+							<dd>
+								${userC.user_no}
+							</dd>
+						</dl>
+						<dl>
+							<dt>客户姓名：</dt>
+							<dd>
+								${userC.user_name}
+							</dd>
+						</dl>
+						<dl class="nowrap">
+							<dt>客户电话：</dt>
+							<dd>
+								${userC.user_phone}
+							</dd>
+						</dl>
+					</fieldset>
+					<fieldset>
+						<legend>妈妈信息</legend>
+						<dl>
+							<dt>姓名：</dt>
+							<dd>
+								${consultRef.name_m}
+							</dd>
+						</dl>
+						<dl>
+							<dt>生日：</dt>
+							<dd>
+								${consultRef.birthday_m}
+							</dd>
+						</dl>
+						<dl>
+							<dt>特殊情况：</dt>
+							<dd>
+								${consultRef.special_m}
+							</dd>
+						</dl>
+					</fieldset>
+					
+					<fieldset>
+						<legend>宝宝信息</legend>
+						<dl>
+							<dt>姓名：</dt>
+							<dd>
+								${consultRef.name_b}
+							</dd>
+						</dl>
+						<dl>
+							<dt>性别：</dt>
+							<dd>
+								${consultRef.sex_b}
+							</dd>
+						</dl>
+						<dl>
+							<dt>出生日期：</dt>
+							<dd>
+								${consultRef.birthday_b}
+							</dd>
+						</dl>
+						<dl>
+							<dt>预产期：</dt>
+							<dd>
+								${consultRef.edc_b}
+							</dd>
+						</dl>
+						<dl>
+							<dt>出生体重：</dt>
+							<dd>
+								${consultRef.birth_weight_b}
+							</dd>
+						</dl>
+						<dl class="nowrap">
+							<dt>特殊情况：</dt>
+							<dd>
+								${consultRef.special_b}
+							</dd>
+						</dl>
+					</fieldset>
+					
 				</div>
 			</div>
 			<div class="tabsContent" style="height:100%;">
@@ -111,6 +171,18 @@
 						</dd>
 					</dl>
 					<dl>
+						<dt>下单时间：</dt>
+						<dd>
+							
+						</dd>
+					</dl>
+					<dl>
+						<dt>结束时间：</dt>
+						<dd>
+							
+						</dd>
+					</dl>
+					<dl>
 						<dt>订单状态：</dt>
 						<dd>
 							<c:forEach items="${info.consultStatusList}" var="item_u" varStatus="s">
@@ -119,9 +191,14 @@
 						</dd>
 					</dl>
 					<dl>
-						<dt>总价：</dt>
+						<dt>订单金额：</dt>
 						<dd>${consultantSheet.price}</dd>
 					</dl>
+					<dl>
+						<dt>咨询师收入：</dt>
+						<dd>${consultantSheet.price*0.7}</dd>
+					</dl>
+					
 				</div>
 			</div>
 			

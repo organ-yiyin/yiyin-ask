@@ -2,7 +2,7 @@ package com.yiyn.ask.base.constants;
 
 public enum ConsultingTypeEnum {
 	
-	BUYU(1,"哺育"),MIRU(2,"泌乳"),ZAOCHANER(3,"早产儿"),ALL(9,"所有");
+	BUYU(1,"哺乳"),ZAOCHANER(2,"早产儿"),ALL(9,"所有");
 	
 	Integer code;
 	String text;

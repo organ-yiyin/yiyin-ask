@@ -11,6 +11,13 @@
 		order by ref.CREATED_TIME desc
     </select>
     
+    <select id="findById" resultType="com.yiyn.ask.xcx.consult.po.ConsultRefPo">
+        select *
+        from user_c_ref
+        where 1 =1
+		and id = #{value}
+    </select>
+    
     <select id="getRefInfo" resultType="com.yiyn.ask.xcx.consult.po.ConsultRefPo" parameterType="String">
         select *
         from user_c_ref

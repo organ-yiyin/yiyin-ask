@@ -99,15 +99,16 @@
 		</ul>
 	</div>
 
-	<table class="table" style="width:850px" layoutH="165">
+	<table class="table" style="width:890px" layoutH="165">
 		<thead>
 			<tr>
-				<th width="150px">下单账户</th>
+				<th width="100px">下单账户</th>
+				<th width="120px">客户姓名</th>
 				<th width="150px">订单号</th>
-				<th width="150px">下单日期</th>
-				<th width="150px">取消订单日期</th>
-				<th width="150px">退款日期</th>
+				<th width="200px">下单日期</th>
+				<th width="100px">订单金额</th>
 				<th width="100px">订单状态</th>
+				<th width="120px">咨询师姓名</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -115,15 +116,16 @@
 			<c:forEach items="${info.data}" var="item" varStatus="s">
 			<tr target="id" rel="${item['ID']}">
 				<td>${item['c_user_phone']}</td>
+				<td>${item['ucr_name_m']}</td>
 				<td>${item['ODD_NUM']}</td>
-				<td><f:formatDate value="${item['BOOKING_TIME']}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-				<td><f:formatDate value="${item['APPLY_CANCEL_TIME']}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-				<td><f:formatDate value="${item['REFUND_TIME']}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+				<td><f:formatDate value="${item['CREATED_TIME']}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+				<td>${item['PRICE']}</td>
 				<td>
 					<c:forEach items="${info.consultStatusList}" var="item_u" varStatus="s">
 						<c:if test="${item_u.code==item['STATUS']}">${item_u.name}</c:if>
 					</c:forEach>
 				</td>
+				<td>${item['b_user_name']}</td>
 			</tr>
 			</c:forEach>
 		</tbody>

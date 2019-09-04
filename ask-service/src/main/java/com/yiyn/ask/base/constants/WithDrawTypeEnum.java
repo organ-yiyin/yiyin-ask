@@ -1,5 +1,7 @@
 package com.yiyn.ask.base.constants;
 
+import org.apache.commons.lang3.StringUtils;
+
 public enum WithDrawTypeEnum {
 	
 	WECHAT("wechat","微信"),
@@ -29,7 +31,11 @@ public enum WithDrawTypeEnum {
 		this.name = name;
 	}
 	
-	public static WithDrawTypeEnum findByCode(Integer code) {
+	public static WithDrawTypeEnum findByCode(String code) {
+		if(StringUtils.isEmpty(code)) {
+			return null;
+		}
+		
 		for(WithDrawTypeEnum item : WithDrawTypeEnum.values()) {
 			if(item.getCode().equals(code)) {
 				return item;

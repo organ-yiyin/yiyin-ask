@@ -8,6 +8,22 @@
 	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 
+<script>
+	var downloadExcel = function(){
+		alertMsg.confirm("确认导出提现数据吗？", {
+			okCall: function(){
+				var url = "<%=path %>/withdraw/downloadWithdraw.do";
+				url = url + "?user_no=" + $("#user_no").val();
+				url = url + "&withdraw_type=" + $("#withdraw_type").val();
+				url = url + "&status=" + $("#status").val();
+				
+				window.location.href=url;
+			}
+		});
+	};
+	
+</script>
+
 <div class="pageHeader">
 
 	<form id="pagerForm" onsubmit="return navTabSearch(this)" action="<%=path %>/withdraw/search.do" method="post">
@@ -22,13 +38,13 @@
 					提现账户：
 				</td>
 				<td>
-					<input type="text" name="user_no" value="${info.paramMap['user_no']}" />
+					<input type="text" name="user_no" id="user_no" value="${info.paramMap['user_no']}" />
 				</td>
 				<td>
 					提现类型：
 				</td>
 				<td>
-					<select name="withdraw_type" class="combox">
+					<select name="withdraw_type" id="withdraw_type" class="combox">
 						<option value="">请选择</option>
 						<c:forEach items="${info.withdrawTypes}" var="p">
 							<option <c:if test="${p.code eq info.paramMap['withdraw_type']}">selected</c:if> value="${p.code}">${p.name}</option>	
@@ -39,7 +55,7 @@
 					状态：
 				</td>
 				<td>
-					<select name="status" class="combox">
+					<select name="status" id="status" class="combox">
 						<option value="">请选择</option>
 						<c:forEach items="${info.withdrawStatus}" var="p">
 							<option <c:if test="${p.code eq info.paramMap['status']}">selected</c:if> value="${p.code}">${p.name}</option>	
@@ -65,16 +81,19 @@
 		<ul class="toolBar">
 			<li><a class="edit" href="<%=path %>/withdraw/forwardDetails.do?id={id}" target="navTab" rel="withdrawDetails"><span>查看</span></a></li>
 			<li class="line">line</li>
+			<li><a class="icon" href="javascript:void(0)" onclick="downloadExcel()"><span>导出</span></a></li>
 		</ul>
 	</div>
 
-	<table class="table" style="width:700px" layoutH="140">
+	<table class="table" style="width:950px" layoutH="140">
 		<thead>
 			<tr>
 				<th width="150px">提现账户</th>
 				<th width="100px">提现金额</th>
+				<th width="100px">实际到账金额</th>
 				<th width="100px">提现类型</th>
 				<th width="100px">状态</th>
+				<th width="150px">提现申请时间</th>
 				<th width="150px">操作时间</th>
 				<th width="100px">操作人</th>
 			</tr>
@@ -85,6 +104,7 @@
 			<tr target="id" rel="${item['ID']}">
 				<td>${item['ub_user_no']}</td>
 				<td>${item['WITHDRAW']}</td>
+				<td>${item['WITHDRAW_ACT']}</td>
 				<td>
 					<c:forEach items="${info.withdrawTypes}" var="item_u" varStatus="s">
 						<c:if test="${item_u.code==item['WITHDRAW_TYPE']}">${item_u.name}</c:if>
@@ -95,6 +115,7 @@
 						<c:if test="${item_u.code==item['STATUS']}">${item_u.name}</c:if>
 					</c:forEach>
 				</td>
+				<td><f:formatDate value="${item['CREATED_TIME']}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<td><f:formatDate value="${item['UPDATED_TIME']}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<td>${item['UPDATED_BY']}</td>
 			</tr>

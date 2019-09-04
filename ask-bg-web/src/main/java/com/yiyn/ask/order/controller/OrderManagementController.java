@@ -37,9 +37,13 @@ import com.yiyn.ask.wechat.dto.WechatRefundResponseDto;
 import com.yiyn.ask.wechat.dto.WechatResultDto;
 import com.yiyn.ask.wechat.service.WechatRefundServiceImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultLogDaoImpl;
+import com.yiyn.ask.xcx.consult.dao.impl.ConsultRefDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultantSheetBgDaoImpl;
 import com.yiyn.ask.xcx.consult.po.ConsultLogPo;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
+import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
+import com.yiyn.ask.xcx.user.dao.impl.UserCDaoImpl;
+import com.yiyn.ask.xcx.user.po.UserCPo;
 
 @Controller
 @RequestMapping("/order")
@@ -56,6 +60,9 @@ public class OrderManagementController {
 
 	@Autowired
 	private UserBDaoImpl userBDao;
+	
+	@Autowired
+	private UserCDaoImpl userCDao;
 
 	@Autowired
 	private ConsultLogDaoImpl consultLogDao;
@@ -65,6 +72,9 @@ public class OrderManagementController {
 	
 	@Autowired
 	private WechatRefundServiceImpl wechatRefundService;
+	
+	@Autowired
+	private ConsultRefDaoImpl consultRefDao;
 
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request, HttpServletResponse response)
@@ -72,6 +82,7 @@ public class OrderManagementController {
 		logger.info("forwardManagementPage");
 
 		OrderManagementForm returnPage = new OrderManagementForm();
+		returnPage.setNumPerPage(50);
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderManagement.jsp");
 		mv.addObject("info", returnPage);
 
@@ -79,7 +90,7 @@ public class OrderManagementController {
 	}
 
 	@RequestMapping(value = "/search.do", method = RequestMethod.POST)
-	public ModelAndView searchUserList(HttpServletRequest request, HttpServletResponse response,
+	public ModelAndView search(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam("user_c_phone") String user_c_phone, @RequestParam("odd_num") String odd_num,
 			@RequestParam("status") String status, @RequestParam("start_booking_time") String start_booking_time,
 			@RequestParam("end_booking_time") String end_booking_time, @RequestParam("pageNum") String pageNum,
@@ -114,6 +125,9 @@ public class OrderManagementController {
 
 		ConsultPo consultPo = this.consultantSheetBgDao.findById(id);
 		UserBPo userB = userBDao.findByUserNo(consultPo.getUser_b_no());
+		UserCPo userC = userCDao.findByUserno(consultPo.getUser_c_no());
+		ConsultRefPo consultRef = consultRefDao.findById(Long.valueOf(consultPo.getUser_ref_id()));
+		
 		List<AttachmentPo> attachments = attachmentDao.findAllByObject(ObjectTypeEnum.ORDER_ATTACHMENT.getCode(), id);
 		
 		List<ConsultLogPo> logs = this.consultLogDao.findByConsultId(id);
@@ -121,8 +135,11 @@ public class OrderManagementController {
 		OrderForm orderForm = new OrderForm();
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderDetails.jsp");
 		mv.addObject("info", orderForm);
+		
 		mv.addObject("consultantSheet", consultPo);
 		mv.addObject("userB", userB);
+		mv.addObject("userC", userC);
+		mv.addObject("consultRef", consultRef);
 		mv.addObject("attachments", attachments);
 		mv.addObject("logs", logs);
 
