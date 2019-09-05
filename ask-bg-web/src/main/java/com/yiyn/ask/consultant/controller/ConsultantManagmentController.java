@@ -1,13 +1,16 @@
 package com.yiyn.ask.consultant.controller;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -24,13 +27,17 @@ import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
+import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.consultant.form.ConsultantManagementForm;
+import com.yiyn.ask.consultant.service.ConsultantManager;
 import com.yiyn.ask.sys.convert.UserBConvert;
 import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.form.UserBForm;
 import com.yiyn.ask.sys.po.UserBPo;
 import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
 import com.yiyn.ask.xcx.account.po.AccountPo;
+import com.yiyn.ask.xcx.user.dao.impl.UserTagDaoImpl;
+import com.yiyn.ask.xcx.user.po.UserTagPo;
 
 @Controller
 @RequestMapping("/consultant")
@@ -48,8 +55,14 @@ public class ConsultantManagmentController {
 	@Autowired
 	private AccountDaoImpl accountDao;
 	
+	@Autowired
+	  private UserTagDaoImpl userTagDao;
+	
+	@Autowired
+	private ConsultantManager consultantManager;
+	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
-	public ModelAndView forwardManagementPage(HttpServletRequest request,
+	public ModelAndView forwardManagement(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		logger.info("forwardManagementPage");
 		
@@ -65,7 +78,7 @@ public class ConsultantManagmentController {
 			HttpServletResponse response, 
 			@RequestParam("user_no") String user_no,
 			@RequestParam("user_name") String user_name,
-			@RequestParam("user_type") Integer user_type,
+			@RequestParam("advice_type") Integer advice_type,
 			@RequestParam("pageNum") String pageNum,
 			@RequestParam("numPerPage") String numPerPage) throws Exception {
 		logger.info("searchUserList");
@@ -74,7 +87,7 @@ public class ConsultantManagmentController {
 				Integer.parseInt(numPerPage), Integer.parseInt(pageNum));
 		paramPage.getParamMap().put("user_no", user_no);
 		paramPage.getParamMap().put("user_name", user_name);
-		paramPage.getParamMap().put("user_type",user_type );
+		paramPage.getParamMap().put("advice_type", advice_type);
 		
 		int totalCount = this.userBDao.searchCountByConditions(paramPage);
 		List<UserBPo> pos =  this.userBDao.searchByConditions(paramPage);
@@ -109,9 +122,11 @@ public class ConsultantManagmentController {
 		
 		UserBPo userBPo = this.userBDao.findById(id);
 		UserBForm userForm = UserBConvert.convertToForm(userBPo);
+		List<UserTagPo> tagList = userTagDao.getUserTagList(userBPo.getUser_no());
 		
 		ModelAndView mv = new ModelAndView( FOLDER_PATH + "/consultantUpdateDetails.jsp");
 		mv.addObject("info", userForm);
+		mv.addObject("tagList", tagList);
 		
 		return mv;
 	}
@@ -183,5 +198,37 @@ public class ConsultantManagmentController {
 		this.userBDao.updatePasswordById(userPo);
 		
 		return new Gson().toJson(DwzResponseForm.createCloseCurrentResponseForm());
+	}
+	
+	@RequestMapping(value = "/downloadConsults.do", method = RequestMethod.GET)
+	public void downloadConsults(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam("user_no") String user_no,
+			@RequestParam("user_name") String user_name,
+			@RequestParam("advice_type") Integer advice_type) throws Exception {
+		
+		String fileName = "user_b_" + SPDateUtils.formatDateDefault(new Date());
+		
+		response.setContentType( "application/vnd.ms-excel" );
+		response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+		ServletOutputStream os = response.getOutputStream();
+		
+		try {
+			PaginationUtils paramPage = new PaginationUtils(9999,1);
+			paramPage.getParamMap().put("user_no", user_no);
+			paramPage.getParamMap().put("user_name", user_name);
+			paramPage.getParamMap().put("advice_type", advice_type);
+
+			Workbook workbook = this.consultantManager.downloadWithdrawExcel(paramPage);
+			workbook.write( os );
+			
+			os.flush();
+		}
+		catch( Exception ex ) {
+			ex.printStackTrace();
+		}
+		finally {
+			os.close();
+		}
 	}
 }

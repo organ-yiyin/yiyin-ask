@@ -36,23 +36,25 @@
 					<input type="text" name="user_id_num" value="${info.user_id_num}" />
 				</dd>
 			</dl>
-			<dl class="">
+			<dl class="nowrap">
 				<dt>用户手机：</dt>
 				<dd>
 					<input type="text" name="user_phone" value="${info.user_phone}"/>
 				</dd>
 			</dl>
 			<dl>
-				<dt>用户类型</dt>
+				<dt>开户行：</dt>
 				<dd>
-					<select class="combox required" name="user_type" class="required">
- 						<option value="">请选择</option>
-						<c:forEach items="${info.userTypes}" var="item" varStatus="s">
-							<option value="${item.code}" <c:if test="${item.code==info.user_type}">selected</c:if>>${item.text}</option>
-						</c:forEach>
- 					</select>
- 				</dd>
- 			</dl>
+					<input type="text" name="bank_name" value="${info.bank_name}"/>
+				</dd>
+			</dl>
+			<dl>
+				<dt>银行账号：</dt>
+				<dd>
+					<input type="text" name="bank_account" value="${info.bank_account}"/>
+				</dd>
+			</dl>
+			
 			<dl class="nowrap">
 				<dt>头像：</dt>
 				<dd>
@@ -65,7 +67,7 @@
 					<select name="order_set" class="combox required">
 						<option value="">请选择</option>
 						<c:forEach items="${info.orderSets}" var="p">
-							<option <c:if test="${p.code eq info.order_set}">selected</c:if> value="${p.code}">${p.text}</option>	
+							<option <c:if test="${p.code eq info.order_set}">selected</c:if> value="${p.code}">${p.name}</option>	
 						</c:forEach>
 					</select>
 				</dd>
@@ -84,7 +86,7 @@
 					<select name="advice_type" class="combox required">
 						<option value="">请选择</option>
 						<c:forEach items="${info.consultingTypes}" var="p">
-							<option <c:if test="${p.code eq info.advice_type}">selected</c:if> value="${p.code}">${p.text}</option>	
+							<option <c:if test="${p.code eq info.advice_type}">selected</c:if> value="${p.code}">${p.name}</option>	
 						</c:forEach>
 					</select>
 				</dd>

@@ -1,15 +1,20 @@
 package com.yiyn.ask.base.constants;
 
+/**
+ * 咨询类型
+ * @author Administrator
+ *
+ */
 public enum ConsultingTypeEnum {
 	
 	BUYU(1,"哺乳"),ZAOCHANER(2,"早产儿"),ALL(9,"所有");
 	
 	Integer code;
-	String text;
+	String name;
 	
-	private ConsultingTypeEnum(Integer code, String text){
+	private ConsultingTypeEnum(Integer code, String name){
 		this.code = code;
-		this.text = text;
+		this.name = name;
 	}
 
 	public Integer getCode() {
@@ -20,12 +25,24 @@ public enum ConsultingTypeEnum {
 		this.code = code;
 	}
 
-	public String getText() {
-		return text;
+	public String getName() {
+		return name;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public static ConsultingTypeEnum findEnumByCode(Integer code) {
+		if(code == null) {
+			return null;
+		}
+		for(ConsultingTypeEnum status : ConsultingTypeEnum.values()) {
+			if(status.getCode().equals(code)) {
+				return status;
+			}
+		}
+		return null;
 	}
 	
 }

@@ -3,6 +3,32 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="yiyin.consultRef">
+	
+	<select id="searchByConditions"
+		parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="java.util.HashMap">
+		select * from user_c_ref
+		where 1=1
+		<if test="paramMap.name_m != null and '' != paramMap.name_m">
+			AND name_m like CONCAT('%',#{paramMap.name_m},'%')
+		</if>
+		<if test="paramMap.name_b != null and '' != paramMap.name_b">
+			AND name_b like CONCAT('%',#{paramMap.name_b},'%')
+		</if>
+		order by CREATED_TIME desc
+		limit #{startIndex}, #{numPerPage}
+	</select>
+	
+	<select id="searchCountByConditions" parameterType="java.util.HashMap" resultType="int">
+	    select count(*) from user_c_ref
+		where 1=1
+		<if test="paramMap.name_m != null and '' != paramMap.name_m">
+			AND name_m like CONCAT('%',#{paramMap.name_m},'%')
+		</if>
+		<if test="paramMap.name_b != null and '' != paramMap.name_b">
+			AND name_b like CONCAT('%',#{paramMap.name_b},'%')
+		</if>
+	</select>
+
     <select id="getRefList" resultType="com.yiyn.ask.xcx.consult.po.ConsultRefPo" parameterType="java.util.HashMap">
         select ref.id,ref.birthday_b,ref.age_b,name_b,case sex_b when '1' then '男' else '女' end as sex_b
         from user_c_ref ref

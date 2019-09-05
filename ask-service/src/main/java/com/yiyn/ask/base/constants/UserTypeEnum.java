@@ -5,11 +5,11 @@ public enum UserTypeEnum {
 	MANAGER(1,"管理员"),SERVER(2,"服务人员");
 	
 	Integer code;
-	String text;
+	String name;
 	
-	private UserTypeEnum(Integer code, String text){
+	private UserTypeEnum(Integer code, String name){
 		this.code = code;
-		this.text = text;
+		this.name = name;
 	}
 
 	public Integer getCode() {
@@ -20,12 +20,14 @@ public enum UserTypeEnum {
 		this.code = code;
 	}
 
-	public String getText() {
-		return text;
+	public String getName() {
+		return name;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setName(String name) {
+		this.name = name;
 	}
+
+	
 	
 }

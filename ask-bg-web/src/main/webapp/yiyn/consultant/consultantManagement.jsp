@@ -7,6 +7,22 @@
 	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 
+<script>
+	var downloadExcel = function(){
+		alertMsg.confirm("确认导出咨询师数据吗？", {
+			okCall: function(){
+				var url = "<%=path %>/consultant/downloadConsults.do";
+				url = url + "?user_no=" + $("#user_no").val();
+				url = url + "&user_name=" + $("#user_name").val();
+				url = url + "&advice_type=" + $("#advice_type").val();
+				
+				window.location.href=url;
+			}
+		});
+	};
+	
+</script>
+
 <div class="pageHeader">
 
 	<form id="pagerForm" onsubmit="return navTabSearch(this)" action="<%=path %>/consultant/search.do" method="post">
@@ -21,22 +37,22 @@
 					用户名：
 				</td>
 				<td>
-					<input type="text" name="user_no" value="${info.paramMap['user_no']}" />
+					<input type="text" name="user_no" id="user_no" value="${info.paramMap['user_no']}" />
 				</td>
 				<td>
 					用户姓名：
 				</td>
 				<td>
-					<input type="text" name="user_name" value="${info.paramMap['user_name']}" />
+					<input type="text" name="user_name" id="user_name" value="${info.paramMap['user_name']}" />
 				</td>
 				<td>
-					用户类型：
+					咨询类型：
 				</td>
 				<td>
-					<select class="combox" name="user_type">
+					<select name="advice_type" id="advice_type" class="combox">
 						<option value="">请选择</option>
-						<c:forEach items="${info.userTypes}" var="item_u" varStatus="s">
-							<option value="${item_u.code}" <c:if test="${item_u.code==info.paramMap['user_type']}">selected</c:if>>${item_u.text}</option>
+						<c:forEach items="${info.consultingTypes}" var="p">
+							<option <c:if test="${p.code eq info.paramMap['advice_type']}">selected</c:if> value="${p.code}">${p.name}</option>	
 						</c:forEach>
 					</select>
 				</td>
@@ -65,15 +81,20 @@
 			</li>
 			<li class="line">line</li>
 			<li><a class="edit" href="<%=path %>/consultant/attachment/management.do?id={id}" target="navTab" rel="attachmentManagement"><span>附件管理</span></a></li>
+			<li class="line">line</li>
+			<li><a class="icon" href="javascript:void(0)" onclick="downloadExcel()"><span>导出</span></a></li>
 			</ul>
 	</div>
 
-	<table class="table" style="width:500px" layoutH="140">
+	<table class="table" style="width:720px" layoutH="140">
 		<thead>
 			<tr>
-				<th width="200px">用户名</th>
-				<th width="200px">用户姓名</th>
-				<th width="100px">用户类型</th>
+				<th width="150px">用户名</th>
+				<th width="150px">用户姓名</th>
+				<th width="120px">用户手机</th>
+				<th width="100px">咨询类型</th>
+				<th width="100px">接单设置</th>
+				<th width="100px">从业年限</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -81,11 +102,18 @@
 			<tr target="id" rel="${item.id}">
 				<td>${item.user_no}</td>
 				<td>${item.user_name}</td>
+				<td>${item.user_phone}</td>
 				<td>
-					<c:forEach items="${info.userTypes}" var="item_u" varStatus="s">
-						<c:if test="${item_u.code==item.user_type}">${item_u.text}</c:if>
+					<c:forEach items="${info.consultingTypes}" var="item_t" varStatus="s">
+						<c:if test="${item_t.code==item.advice_type}">${item_t.name}</c:if>
 					</c:forEach>
 				</td>
+				<td>
+					<c:forEach items="${info.orderSets}" var="item_t" varStatus="s">
+						<c:if test="${item_t.code==item.order_set}">${item_t.name}</c:if>
+					</c:forEach>
+				</td>
+				<td>${item.work_year}</td>
 			</tr>
 			</c:forEach>
 		</tbody>

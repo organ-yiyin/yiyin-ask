@@ -129,6 +129,7 @@ $(function(){
 								<ul>
 									<li><a href="<%= path%>/order/management.do" target="navTab" rel="/order/managemnt">服务订单管理</a></li>
 									<li><a href="<%= path%>/withdraw/management.do" target="navTab" rel="/withdraw/managemnt">提现管理</a></li>
+									<li><a href="<%= path%>/comments/management.do" target="navTab" rel="/comments/managemnt">评价管理</a></li>
 								</ul>
 							</li>
 						</ul>
@@ -144,6 +145,15 @@ $(function(){
 									<li><a href="<%= path%>/consultant/management.do" target="navTab" rel="/consultant/management">服务人员管理</a></li>
 								</ul>
 							</li>
+						</ul>
+					</div>
+					
+					<div class="accordionHeader">
+						<h2><span>Folder</span>客户管理</h2>
+					</div>
+					<div class="accordionContent">
+						<ul class="tree treeFolder">
+							<li><a href="<%= path%>/customer/management.do" target="navTab" rel="/customer/ad/management">客户管理</a></li>
 						</ul>
 					</div>
 					

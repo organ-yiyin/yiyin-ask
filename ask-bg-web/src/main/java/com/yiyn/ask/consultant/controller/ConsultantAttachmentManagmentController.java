@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
@@ -25,7 +24,6 @@ import com.yiyn.ask.base.dao.impl.AttachmentDaoImpl;
 import com.yiyn.ask.base.form.AttachmentForm;
 import com.yiyn.ask.base.po.AttachmentPo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
-import com.yiyn.ask.base.utils.OSSClientUtils;
 import com.yiyn.ask.consultant.form.ConsultantAttachmentManagementForm;
 import com.yiyn.ask.sys.convert.UserBConvert;
 import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
@@ -46,9 +44,6 @@ public class ConsultantAttachmentManagmentController {
 	
 	@Resource(name="userBDao_bg")
 	private UserBDaoImpl userBDao;
-	
-	@Autowired
-	private OSSClientUtils ossclientUtils;
 	
 	@Autowired
 	private AttachmentDaoImpl attachmentDao;

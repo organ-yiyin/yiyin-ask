@@ -14,29 +14,40 @@
 		<input type="hidden" name="id" id="id" value="${info.id}"/>
 		
 		<div class="pageFormContent" layoutH="56">
-			<dl class="">
+			<dl class="nowrap">
 				<dt>用户名：</dt>
 				<dd>
 					<input type="text" name="user_no" class="required" value="${info.user_no}" readonly />
 				</dd>
 			</dl>
-			<dl class="nowrap">
+			<dl class="">
 				<dt>用户姓名：</dt>
 				<dd>
 					<input type="text" name="user_name" class="required" value="${info.user_name}"/>
-				</dd>
-			</dl>
-			
-			<dl class="">
-				<dt>用户手机：</dt>
-				<dd>
-					<input type="text" name="user_phone" value="${info.user_phone}"/>
 				</dd>
 			</dl>
 			<dl class="">
 				<dt>身份证号：</dt>
 				<dd>
 					<input type="text" name="user_id_num" value="${info.user_id_num}" />
+				</dd>
+			</dl>
+			<dl class="nowrap">
+				<dt>用户手机：</dt>
+				<dd>
+					<input type="text" name="user_phone" value="${info.user_phone}"/>
+				</dd>
+			</dl>
+			<dl>
+				<dt>开户行：</dt>
+				<dd>
+					<input type="text" name="bank_name" value="${info.bank_name}"/>
+				</dd>
+			</dl>
+			<dl>
+				<dt>银行账号：</dt>
+				<dd>
+					<input type="text" name="bank_account" value="${info.bank_account}"/>
 				</dd>
 			</dl>
 			<dl class="nowrap">
@@ -51,7 +62,7 @@
 					<select name="order_set" class="combox required">
 						<option value="">请选择</option>
 						<c:forEach items="${info.orderSets}" var="p">
-							<option <c:if test="${p.code eq info.order_set}">selected</c:if> value="${p.code}">${p.text}</option>	
+							<option <c:if test="${p.code eq info.order_set}">selected</c:if> value="${p.code}">${p.name}</option>	
 						</c:forEach>
 					</select>
 				</dd>
@@ -70,7 +81,7 @@
 					<select name="advice_type" class="combox required">
 						<option value="">请选择</option>
 						<c:forEach items="${info.consultingTypes}" var="p">
-							<option <c:if test="${p.code eq info.advice_type}">selected</c:if> value="${p.code}">${p.text}</option>	
+							<option <c:if test="${p.code eq info.advice_type}">selected</c:if> value="${p.code}">${p.name}</option>	
 						</c:forEach>
 					</select>
 				</dd>
@@ -127,6 +138,32 @@
 					<textarea name="user_desc" cols="80" rows="8">${info.user_desc}</textarea>
 				</dd>
 			</dl>
+			
+			<dl class="nowrap">
+				<dt>标签列表：</dt>
+				<dd>
+					<table class="table" targetType="dialog" width="370px">
+						<thead>
+							<tr>
+								<th width="70px">标签值</th>
+								<th width="300px">标签名称</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${tagList}" var="tag">
+								<tr>
+									<td>${tag.value}</td>
+									<td>${tag.name}</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</dd>
+			</dl>
+			
+			<br>
+			<br>
+			
 			
 			<div class="divider"></div>
 			<dl>

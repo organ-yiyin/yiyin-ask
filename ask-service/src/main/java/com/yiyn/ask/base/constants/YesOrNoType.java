@@ -1,5 +1,7 @@
 package com.yiyn.ask.base.constants;
 
+import org.apache.commons.lang3.StringUtils;
+
 public enum YesOrNoType {
 	
 	YES("Y","是"),NO("N","否");
@@ -34,6 +36,9 @@ public enum YesOrNoType {
 	}
 	
 	public static YesOrNoType getByValue(String pValue){
+		if(StringUtils.isEmpty(pValue)) {
+			return null;
+		}
 		
 		for(YesOrNoType cs : YesOrNoType.values()){
 			if(cs.getCode().equals(pValue)){
