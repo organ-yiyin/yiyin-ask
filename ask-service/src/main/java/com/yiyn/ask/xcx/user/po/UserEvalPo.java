@@ -12,6 +12,9 @@ public class UserEvalPo extends BasePo {
 	private String consultation_id;
 	private int stars;
 	private String eva_desc;
+	
+	private String is_hidden;
+	
 	public String getUser_b_no() {
 		return user_b_no;
 	}
@@ -42,4 +45,11 @@ public class UserEvalPo extends BasePo {
 	public void setEva_desc(String eva_desc) {
 		this.eva_desc = eva_desc;
 	}
+	public String getIs_hidden() {
+		return is_hidden;
+	}
+	public void setIs_hidden(String is_hidden) {
+		this.is_hidden = is_hidden;
+	}
+	
 }

@@ -3,8 +3,11 @@ package com.yiyn.ask.order.form;
 import com.yiyn.ask.base.constants.AttachmentTypeEnum;
 import com.yiyn.ask.base.constants.WithDrawStatusEnum;
 import com.yiyn.ask.base.constants.WithDrawTypeEnum;
+import com.yiyn.ask.base.form.BaseForm;
 
-public class WithdrawForm {
+public class WithdrawForm extends BaseForm {
+
+	private static final long serialVersionUID = 5539046475866364327L;
 
 	private WithDrawTypeEnum[] withdrawTypes = WithDrawTypeEnum.values();
 

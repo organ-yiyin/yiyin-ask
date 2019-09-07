@@ -3,6 +3,77 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="yiyin.eval">
+	
+	<select id="searchByConditions_bg" parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="java.util.HashMap">
+        select ce.*,
+        cs.odd_num as cs_odd_num,
+        uc.user_phone as uc_user_phone, 
+        ub.user_name as ub_user_name,ub.user_phone as ub_user_phone
+        from consultation_evaluate ce,user_b ub, user_c uc,consultation_sheet cs
+        where ce.user_b_no=ub.USER_NO and ce.USER_C_NO = uc.USER_NO
+        and ce.CONSULTATION_ID = cs.id
+        <if test="paramMap.odd_num != null and '' != paramMap.odd_num">
+			AND cs.odd_num = #{paramMap.odd_num}
+		</if>
+		<if test="paramMap.user_c_phone != null and '' != paramMap.user_c_phone">
+			AND uc.user_phone = #{paramMap.user_c_phone}
+		</if>
+		<if test="paramMap.user_b_name != null and '' != paramMap.user_b_name">
+			AND ub.user_name like CONCAT('%',#{paramMap.user_b_name},'%')
+		</if>
+		<if test="paramMap.user_b_phone != null and '' != paramMap.user_b_phone">
+			AND ub.user_phone = #{paramMap.user_b_phone}
+		</if>
+		<if test="paramMap.start_star != null and '' != paramMap.start_star">
+			<![CDATA[
+			AND ce.stars >= #{paramMap.start_star}
+			 ]]>
+		</if>
+		<if test="paramMap.end_star != null and '' != paramMap.end_star">
+			<![CDATA[
+			AND ce.stars <= #{paramMap.end_star}
+			]]>
+		</if>
+        order by ce.CREATED_TIME desc
+		limit #{startIndex}, #{numPerPage}
+		
+    </select>
+    
+    <select id="searchCountByConditions_bg" parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="int">
+        select count(*) 
+        from consultation_evaluate ce,user_b ub, user_c uc,consultation_sheet cs
+        where ce.user_b_no=ub.USER_NO and ce.USER_C_NO = uc.USER_NO
+        and ce.CONSULTATION_ID = cs.id
+        <if test="paramMap.odd_num != null and '' != paramMap.odd_num">
+			AND cs.odd_num = #{paramMap.odd_num}
+		</if>
+		<if test="paramMap.user_c_phone != null and '' != paramMap.user_c_phone">
+			AND uc.user_phone = #{paramMap.user_c_phone}
+		</if>
+		<if test="paramMap.user_b_name != null and '' != paramMap.user_b_name">
+			AND ub.user_name like CONCAT('%',#{paramMap.user_b_name},'%')
+		</if>
+		<if test="paramMap.user_b_phone != null and '' != paramMap.user_b_phone">
+			AND ub.user_phone = #{paramMap.user_b_phone}
+		</if>
+		<if test="paramMap.start_star != null and '' != paramMap.start_star">
+			<![CDATA[
+			AND ce.stars >= #{paramMap.start_star}
+			 ]]>
+		</if>
+		<if test="paramMap.end_star != null and '' != paramMap.end_star">
+			<![CDATA[
+			AND ce.stars <= #{paramMap.end_star}
+			]]>
+		</if>
+    </select>
+    
+    <select id="findById" resultType="com.yiyn.ask.xcx.user.po.UserEvalPo">
+        SELECT * 
+        FROM consultation_evaluate 
+        where id = #{id}
+    </select>
+
     <select id="findUserEval" resultType="com.yiyn.ask.xcx.user.po.UserEvalPo" parameterType="String">
         SELECT *,DATE_FORMAT(e.CREATED_TIME,'%Y-%m-%d') as created_time_format
         FROM consultation_evaluate e
@@ -22,4 +93,13 @@
 		from consultation_sheet
 		where id = #{consultation_id}
 	</insert>
+	
+	<update id="updateByAdmin_bg" parameterType="com.yiyn.ask.xcx.user.po.UserEvalPo">
+		update consultation_evaluate
+		set
+		stars=#{stars},eva_desc=#{eva_desc},is_hidden=#{is_hidden},
+		updated_by=#{updated_by},updated_time=#{updated_time}
+		where id =#{id};
+	</update>
+	
 </mapper>

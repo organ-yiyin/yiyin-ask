@@ -73,8 +73,9 @@
 					下单日期：
 				</td>
 				<td>
-					<input type="text" class="date" name="start_booking_time" size="7" value="${param.start_booking_time}" readonly="true" />
-					<input type="text" class="date" name="end_booking_time" size="7" value="${param.end_booking_time}" readonly="true" />
+					<input type="text" class="date" name="start_booking_time" size="6" value="${param.start_booking_time}" readonly="true" />
+					至
+					<input type="text" class="date" name="end_booking_time" size="6" value="${param.end_booking_time}" readonly="true" />
 				</td>
 			</tr>
 			
