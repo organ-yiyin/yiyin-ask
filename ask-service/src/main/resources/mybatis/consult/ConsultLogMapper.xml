@@ -4,7 +4,7 @@
 
 <mapper namespace="yiyin.consultLog">
     <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultLogPo" useGeneratedKeys="true" keyProperty="id">
-		insert into consultation_sheet_log(LOG_TYPE,CONSULT_ID,LOG_DESC,CREATED_BY,CREATED_TIME)
-		values(#{log_type},#{consult_id},#{log_desc},#{created_by},now())
+		insert into consultation_sheet_log(LOG_TYPE,CONSULT_ID,LOG_DESC,LOG_USER_TYPE,CREATED_BY,CREATED_TIME)
+		values(#{log_type},#{consult_id},#{log_desc},#{log_user_type},#{created_by},now())
 	</insert>
 </mapper>
