@@ -7,4 +7,14 @@
 		insert into consultation_sheet_log(LOG_TYPE,CONSULT_ID,LOG_DESC,LOG_USER_TYPE,CREATED_BY,CREATED_TIME)
 		values(#{log_type},#{consult_id},#{log_desc},#{log_user_type},#{created_by},now())
 	</insert>
+	
+	<select id="findByConsultId"
+		parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="com.yiyn.ask.xcx.consult.po.ConsultLogPo">
+		select * 
+		from consultation_sheet_log
+		where 1=1
+		and consult_id=#{consult_id}
+		order by created_time asc
+	</select>
+	
 </mapper>

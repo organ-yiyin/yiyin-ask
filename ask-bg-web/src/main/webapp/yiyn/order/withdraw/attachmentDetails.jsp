@@ -25,8 +25,8 @@
 		       url:'<%=path%>/attachment/upload.do',//处理图片脚本
 		       secureuri :false,
 		       fileElementId :'head_image_file',//file控件id
-		       data:{
-		    	   attachment_bucket:1
+		       data : {
+		    	   attachment_bucket:3
 		       },
 		       dataType : 'json',
 		       success : function (data, status){
@@ -47,7 +47,7 @@
 </script>
 
 <div class="pageContent">
-	<form method="post" action="<%=path %>/consultant/attachment/save.do" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
+	<form method="post" action="<%=path %>/order/attachment/save.do" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
 		
 		<input type="hidden" name="object_type" id="object_type" value="${info.object_type}"/>
 		<input type="hidden" name="object_id" id="object_id" value="${info.object_id}"/>

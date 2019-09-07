@@ -1,10 +1,15 @@
 package com.yiyn.ask.base.constants;
 
-
+/**
+ * 附件类型
+ * @author Administrator
+ *
+ */
 public enum AttachmentTypeEnum {
 	
 	IDENTIFY_CERT("idnetify_cert","身份证明"),
 	QUALIFICATION("qualification","资质证明"),
+	TRANSFER("transfer","转账凭证"),
 	OTHER("other","其他");
 	
 	String code;

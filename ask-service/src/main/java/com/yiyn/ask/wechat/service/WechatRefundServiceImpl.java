@@ -89,13 +89,14 @@ public class WechatRefundServiceImpl {
 		
 		// 此字段是通信标识，非交易标识，交易是否成功需要查看result_code来判断
 		if ("SUCCESS".equals(return_code)) {
-			if("SUCCESS".equals(reponseDto.getResult_code())) {
+			String result_code = rootElement.elementText("result_code");
+			if("SUCCESS".equals(result_code)) {
 				reponseDto.setAppid(rootElement.elementText("appid"));
 				reponseDto.setMch_id(rootElement.elementText("mch_id"));
 				reponseDto.setNonce_str(rootElement.elementText("nonce_str"));
 				reponseDto.setSign(rootElement.elementText("sign"));
 				// SUCCESS/FAIL 
-				reponseDto.setResult_code(rootElement.elementText("result_code"));
+				reponseDto.setResult_code(result_code);
 				reponseDto.setErr_code(rootElement.elementText("err_code"));
 				reponseDto.setErr_code_des(rootElement.elementText("err_code_des"));
 				reponseDto.setDevice_info(rootElement.elementText("device_info"));
@@ -111,7 +112,6 @@ public class WechatRefundServiceImpl {
 				result.setSuccess(true);
 			}
 			else {
-				
 				reponseDto.setErr_code(rootElement.elementText("err_code"));
 				reponseDto.setErr_code_des(rootElement.elementText("err_code_des"));
 				result.setMessage(reponseDto.getErr_code_des());

@@ -1,13 +1,13 @@
-package com.yiyn.ask.consultant.convert;
+package com.yiyn.ask.base.convert;
 
 import org.springframework.beans.BeanUtils;
 
+import com.yiyn.ask.base.form.AttachmentForm;
 import com.yiyn.ask.base.po.AttachmentPo;
-import com.yiyn.ask.consultant.form.ConsultantAttachmentForm;
 
-public class ConsultantAttachmentConvert {
+public class AttachmentConvert {
 	
-	public static AttachmentPo convertToPo(ConsultantAttachmentForm source) {
+	public static AttachmentPo convertToPo(AttachmentForm source) {
 		if(source == null) {
 			return null;
 		}

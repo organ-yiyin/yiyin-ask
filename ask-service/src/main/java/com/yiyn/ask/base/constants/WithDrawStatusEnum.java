@@ -30,4 +30,13 @@ public enum WithDrawStatusEnum {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public static WithDrawStatusEnum findByCode(Integer code) {
+		for(WithDrawStatusEnum item : WithDrawStatusEnum.values()) {
+			if(item.getCode().equals(code)) {
+				return item;
+			}
+		}
+		return null;
+	}
 }

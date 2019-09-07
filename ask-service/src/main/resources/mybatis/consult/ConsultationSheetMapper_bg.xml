@@ -6,10 +6,13 @@
 	<select id="searchByConditions"
 		parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="java.util.HashMap">
 		select cs.*,
-		c.user_phone as c_user_phone from consultation_sheet cs,user_c c
+		c.user_phone as c_user_phone,
+		b.user_name as b_user_name,
+		ucr.name_m as ucr_name_m
+		from 
+		consultation_sheet cs,user_c c, user_b b, user_c_ref ucr
 		where 1=1
-		and cs.user_c_no = c.user_no
-		
+		and cs.user_c_no = c.user_no and cs.user_b_no = b.user_no and cs.user_ref_id=ucr.id
 		<if test="paramMap.user_c_phone != null and '' != paramMap.user_c_phone">
 			AND c.user_phone = #{paramMap.user_c_phone}
 		</if>
@@ -29,7 +32,7 @@
               AND DATE_FORMAT(cs.booking_time,'%Y-%m-%d')  <=  #{paramMap.end_booking_time} 
                ]]>
 		</if>
-		order by cs.CREATED_BY desc
+		order by cs.CREATED_TIME desc
 		limit #{startIndex}, #{numPerPage}
 	</select>
 	
@@ -61,6 +64,11 @@
 	
 	<select id="findById" parameterType="java.util.HashMap" resultType="com.yiyn.ask.xcx.consult.po.ConsultPo">
 	    select * from consultation_sheet where id = #{id};
+	</select>
+	
+	<select id="updateStatusById" parameterType="com.yiyn.ask.xcx.consult.po.ConsultPo" resultType="com.yiyn.ask.xcx.consult.po.ConsultPo">
+	    update consultation_sheet set status=#{status},updated_by=#{updated_by},updated_time=#{updated_time}
+		where id =#{id};
 	</select>
 	
 </mapper>

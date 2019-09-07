@@ -18,6 +18,10 @@ public class UserBPo extends BasePo {
 	private String user_phone;
 	// 身份证号
 	private String user_id_num;
+	// 开户行
+	private String bank_name;
+	// 银行账号
+	private String bank_account;
 	// 用户类型(1：管理员 2：服务人员)
 	private Integer user_type;
 	// 用户头像
@@ -207,6 +211,22 @@ public class UserBPo extends BasePo {
 
 	public void setIs_hidden(String is_hidden) {
 		this.is_hidden = is_hidden;
+	}
+
+	public String getBank_name() {
+		return bank_name;
+	}
+
+	public void setBank_name(String bank_name) {
+		this.bank_name = bank_name;
+	}
+
+	public String getBank_account() {
+		return bank_account;
+	}
+
+	public void setBank_account(String bank_account) {
+		this.bank_account = bank_account;
 	}
 
 }

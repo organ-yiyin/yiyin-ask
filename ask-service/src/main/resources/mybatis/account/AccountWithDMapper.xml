@@ -42,4 +42,13 @@
         </if>
 	</select>
 	
+	<select id="findById" resultType="com.yiyn.ask.xcx.account.po.AccountWithDrawPo">
+		select * from user_withdraw where id=#{id}
+	</select>
+	
+	<select id="updateStatusById" parameterType="com.yiyn.ask.xcx.account.po.AccountWithDrawPo" resultType="com.yiyn.ask.xcx.account.po.AccountWithDrawPo">
+	    update user_withdraw set status=#{status},updated_by=#{updated_by},updated_time=#{updated_time}
+		where id =#{id};
+	</select>
+	
 </mapper>

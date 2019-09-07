@@ -20,6 +20,11 @@ public class UserWithdrawDaoImpl extends BaseDao<AccountWithDrawPo> {
 	public Integer searchCountByConditions_bg(PaginationUtils paramPage) throws Exception {
 		return this.getSqlSession().selectOne(this.getNameStatement() + ".searchCountByConditions_bg", paramPage);
 	}
+	
+	public void updateStatusById(AccountWithDrawPo t) throws Exception{
+		this.initUpdateInfo(t);
+		this.getSqlSession().update(this.getNameStatement() + ".updateStatusById", t);
+	}
 
 	public String getNameStatement() {
 		return "yiyin.withdraw";

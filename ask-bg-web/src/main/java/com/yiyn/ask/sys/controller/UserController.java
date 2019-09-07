@@ -43,8 +43,6 @@ public class UserController {
 	@Resource(name="userDao")
 	private UserDaoImpl userDao;
 	
-	
-	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardUserManagementPage(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {

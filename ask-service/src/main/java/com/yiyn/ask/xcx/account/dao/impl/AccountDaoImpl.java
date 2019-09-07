@@ -14,6 +14,11 @@ public class AccountDaoImpl extends BaseDao<AccountPo> {
 	public void updWithDraw(AccountPo p)throws Exception {
 		this.getSqlSession().update(this.getNameStatement() + ".updWithDraw", p);
 	}
+	
+	public void updateByIdAftetTransfer(AccountPo p)throws Exception {
+		this.initUpdateInfo(p);
+		this.getSqlSession().update(this.getNameStatement() + ".updateByIdAftetTransfer", p);
+	}
 
 	public String getNameStatement() {
 		return "yiyin.account";

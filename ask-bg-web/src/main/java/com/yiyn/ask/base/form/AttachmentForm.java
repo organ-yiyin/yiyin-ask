@@ -1,9 +1,9 @@
-package com.yiyn.ask.consultant.form;
+package com.yiyn.ask.base.form;
 
 import com.yiyn.ask.base.constants.AttachmentTypeEnum;
 import com.yiyn.ask.base.form.BaseForm;
 
-public class ConsultantAttachmentForm extends BaseForm{
+public class AttachmentForm extends BaseForm{
 
 	private static final long serialVersionUID = 826117806278824251L;
 	

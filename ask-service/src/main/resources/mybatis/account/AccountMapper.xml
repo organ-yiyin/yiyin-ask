@@ -3,6 +3,14 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="yiyin.account">
+	
+	<insert id="insert" parameterType="com.yiyn.ask.xcx.account.po.AccountPo" useGeneratedKeys="true" keyProperty="id">
+		insert into user_account(user_b_id,user_no,balance,withdraw,user_type,user_name,revision,
+		delete_flag,created_by,created_time,updated_by,updated_time)
+		values (#{user_b_id},#{user_no},#{balance},#{withdraw},#{user_type},#{user_name},#{revision},
+		#{delete_flag},#{created_by},#{created_time},#{updated_by},#{updated_time});
+	</insert>
+
     <select id="getAccountInfo" resultType="com.yiyn.ask.xcx.account.po.AccountPo" parameterType="String">
       select t.user_no,t.id,
       cast(t.WITHDRAW_enable as decimal(9,2)) as withdraw_enable,
@@ -14,10 +22,23 @@
 	  group by t.user_no
     </select>
     
+    <select id="findById" resultType="com.yiyn.ask.xcx.account.po.AccountPo">
+      select *
+	  from user_account 
+	  where id = #{id}
+    </select>
+    
     <!--  通知后更新账户数据 -->
     <update id="updateById" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
 		update user_account
 		set balance = #{balance}
+		where id = #{id}
+	</update>
+	
+	<!--  通知后更新账户数据 -->
+    <update id="updateByIdAftetTransfer" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
+		update user_account
+		set balance=#{balance},withdraw=#{withdraw},updated_by=#{updated_by},updated_time=#{updated_time}
 		where id = #{id}
 	</update>
 	

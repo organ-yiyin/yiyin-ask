@@ -2,14 +2,14 @@ package com.yiyn.ask.base.constants;
 
 public enum OrderSetEnum {
 	
-	Y_ORDER(1,"接单"),N_ORDER(2,"不接单");
+	Y_ORDER(1,"不接单"),N_ORDER(2,"接单");
 	
 	Integer code;
-	String text;
+	String name;
 	
-	private OrderSetEnum(Integer code, String text){
+	private OrderSetEnum(Integer code, String name){
 		this.code = code;
-		this.text = text;
+		this.name = name;
 	}
 
 	public Integer getCode() {
@@ -20,12 +20,12 @@ public enum OrderSetEnum {
 		this.code = code;
 	}
 
-	public String getText() {
-		return text;
+	public String getName() {
+		return name;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 }
