@@ -1,6 +1,7 @@
 package com.yiyn.ask.c.controller;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,6 +108,8 @@ public class ConsultProcessController {
 		//具备技能列表
 		if(!StringUtils.isEmptyString(userP.getSkilled())){
 			resultMap.put("skillList", userP.getSkilled().split("；"));
+		}else{
+			resultMap.put("skillList", "");
 		}
 		
 		//获取用户是否关注

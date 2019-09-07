@@ -152,6 +152,7 @@ public class ConsultController {
 			logP.setLog_type(statu);
 			logP.setLog_desc(desc);
 			logP.setConsult_id(id);
+			logP.setLog_user_type("B");
 			logP.setCreated_by(user_no);
 			consultService.insConsultLog(logP);
 			
@@ -175,7 +176,7 @@ public class ConsultController {
 	@RequestMapping(value = "/savePorcess.x", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
 	public String savePorcess(HttpServletRequest request,
-			HttpServletResponse response, String id,String content,String user_no,String fileupd)
+			HttpServletResponse response, String id,String content,String user_no,String status,String fileupd)
 			throws Exception {
 		logger.info("savePorcess");
 		// 新建成功返回
@@ -202,13 +203,21 @@ public class ConsultController {
 		}else{
 			insP.setContent(content);
 		}
+		
+		// 根据咨询单状态查找咨询单，如果咨询单状态为申请退款或者已退款的情况下，则不改变此状态
+		boolean sfupd = true;
+		if("3".equals(status) || "4".equals(status)){
+			sfupd = false;
+		}
 		ConsultPo updP = new ConsultPo();
 		updP.setId(new Long(id));
 		updP.setStatus(ConsultStatuEnum.ANS.getCode());
 		updP.setUpdated_by(user_no);
 		try{
 			consultService.insConsultProcess(insP);
-			consultService.updConsultStatus(updP);
+			if(sfupd){
+				consultService.updConsultStatus(updP);
+			}
 			resultMap.put("status", "1");
 		}catch(Exception e){
 			e.printStackTrace();

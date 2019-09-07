@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.c.wechat.controller.XcxOAuthService;
 import com.yiyn.ask.wechat.dto.WechatXcxDto;
+import com.yiyn.ask.xcx.center.service.impl.CodeService;
 import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
 import com.yiyn.ask.xcx.user.service.impl.UserService;
 
@@ -28,6 +29,9 @@ public class AskUserCenterController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private CodeService codeService;
 	
 	/**
 	 * @param request
@@ -133,6 +137,25 @@ public class AskUserCenterController {
 		
 		//查找c端用户关注咨询师列表
 		resultMap.put("reList", userService.getCollectionConsultList(dto.getDb_open_id()));
+		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * 初始化开始提问页面，加载咨询人关联信息以及问题类型
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/initAbout.x", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String initAbout(HttpServletRequest request,
+			HttpServletResponse response)
+			throws Exception {
+		logger.info("initAbout");
+		// 新建成功返回
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		resultMap.put("reList", codeService.findCodeList("ABOUT"));
 		return new Gson().toJson(resultMap);
 	}
 }

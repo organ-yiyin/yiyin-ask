@@ -116,6 +116,7 @@ public class ConsultSheetController {
 			logP.setLog_type(statu);
 			logP.setLog_desc(desc);
 			logP.setConsult_id(id);
+			logP.setLog_user_type("C");
 			logP.setCreated_by(dto.getDb_open_id());
 			consultService.insConsultLog(logP);
 			
