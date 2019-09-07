@@ -50,12 +50,23 @@ public class ConsultPo extends BasePo {
 	// 查看订单是否被服务人员回答过
 	private int sfhd;
 	
+	// 是否可退单，订单结束后72小时内都可有退单按钮存在
+	private int sfktd;
+	
 	public int getSfhd() {
 		return sfhd;
 	}
 
 	public void setSfhd(int sfhd) {
 		this.sfhd = sfhd;
+	}
+
+	public int getSfktd() {
+		return sfktd;
+	}
+
+	public void setSfktd(int sfktd) {
+		this.sfktd = sfktd;
 	}
 
 	public String getPay_odd_num() {

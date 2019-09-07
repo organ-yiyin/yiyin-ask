@@ -13,7 +13,9 @@
          <result column="status" property="status"/>
          <result column="status_show" property="status_show"/>
          <result column="problem_desc" property="problem_desc"/>
+         <result column="sfhd" property="sfhd"/>
          <result column="created_time_format" property="created_time_format"/>
+         <result column="updated_time" property="updated_time"/>
          <association property="refPo" javaType="com.yiyn.ask.xcx.consult.po.ConsultRefPo">
 	        <result property="name_m" column="name_m"/>
 	        <result property="name_b" column="name_b"/>
@@ -23,8 +25,8 @@
     
     <select id="getConsultList" resultMap="ConsultListMap" parameterType="java.util.HashMap">
         select t.*,ref.name_m,ref.name_b,case sex_b when '1' then '男' else '女' end as sex_b,
-		case status when '1' then '待支付' when '2' then '退单' when '3' then '已申请退款' when '4' then '已退款' 
-		when '5' then '已回答' else '已结束' end as status_show,
+		case status when '3' then '退单审核' when '4' then '已退单' else '' end as status_show,
+		(select count(1) from consultation_sheet_log log where log.log_type = '5' and log.CONSULT_ID = t.id) as sfhd,
 		DATE_FORMAT(t.CREATED_TIME,'%Y-%m-%d %H:%i:%s') as created_time_format
         from consultation_sheet t,user_c_ref ref
         where t.user_ref_id = ref.id
@@ -42,6 +44,7 @@
          <result column="status_show" property="status_show"/>
          <result column="problem_desc" property="problem_desc"/>
          <result column="prepay_id" property="prepay_id"/>
+         <result column="ques_num" property="ques_num"/>
          <result column="created_time_format" property="created_time_format"/>
 	     <association property="userPo" javaType="com.yiyn.ask.xcx.user.po.UserPo">
 	        <result property="user_headimg" column="user_headimg"/>

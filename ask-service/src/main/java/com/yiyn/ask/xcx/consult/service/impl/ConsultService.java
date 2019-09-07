@@ -3,6 +3,7 @@ package com.yiyn.ask.xcx.consult.service.impl;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
 import com.yiyn.ask.base.constants.ProcessContentTypeEnum;
 import com.yiyn.ask.base.constants.ProcessSendTypeEnum;
+import com.yiyn.ask.base.utils.DateUtils;
 import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
 import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
@@ -82,18 +84,31 @@ public class ConsultService {
 				   cPo.setUserPo(p);
 				   
 				   // 已支付、申请退款、已回答的放到未完成里
-				   if("2".equals(status) || "3".equals(status) || "5".equals(status)){
+				   if("1".equals(status) || "2".equals(status) || "3".equals(status) || "5".equals(status)){
 					   wList.add(cPo);
 				   // 已退款、已结束的放到已完成里
 				   }else if("4".equals(status) || "6".equals(status)){
 					   yList.add(cPo);
 				   }
 			   }else{
-				   // 已支付的和申请退款的放到未完成里
-				   if("2".equals(status) || "3".equals(status)){
+				   // 已结束的订单72小时内都有退单按钮
+				   if("6".equals(status) || "3".equals(status) || "4".equals(status)){
+					   Date updated_time = cPo.getUpdated_time();
+					   // 日期加三天
+					   Date upd_newTime = DateUtils.calculateDate(updated_time, 5, 3);
+					   // 跟当前日期比较，小于0 则代表订单结束后3天比当前日期还小，说明订单已超时，sfktd设置为0
+					   if(DateUtils.compareDateWithNow(upd_newTime) < 0){
+						   cPo.setSfktd(0);
+					   }else{
+						   cPo.setSfktd(1);
+					   }
+				   }
+				   
+				   // 已支付、申请退款、已回答的放到未完成里
+				   if("2".equals(status) || "3".equals(status) || "5".equals(status)){
 					   wList.add(cPo);
-				   // 已退款、已回答、已结束的放到已完成里
-				   }else if("4".equals(status) || "5".equals(status) || "6".equals(status)){
+				   // 已退款、已结束的放到已完成里
+				   }else if("4".equals(status) || "6".equals(status)){
 					   yList.add(cPo);
 				   }
 			   }
@@ -159,7 +174,47 @@ public class ConsultService {
     * @throws Exception
     */
    public List<ConsultProcessPo> getConsultProcessList(String id) throws Exception{
-	   return consultProcessDao.getConsultProcessList(id);
+	   List<ConsultProcessPo> re = consultProcessDao.getConsultProcessList(id);
+	   
+	   if(re != null && re.size() !=0){
+		   boolean show = false;
+		   Date compareTime = null;
+		   String type = "";
+		   for(int i =0;i<re.size();i++){
+			   ConsultProcessPo r = re.get(i);
+			   Date created_time = r.getCreated_time();
+			   if(i == 0 || (!StringUtils.isEmptyString(type) && !type.equals(r.getSend_type()))){
+				   show = true;
+				   type = r.getSend_type(); // 发送人类型
+			   }else{
+				   // 如果是5分钟内的都不显示
+				   Date date2 = DateUtils.calculateDate(created_time, 12, -5);
+				   // 如果发送日期-5大于前面一条消息的时间，则需要显示时间
+				   int k = DateUtils.compareDate(compareTime,date2);
+				   if(k < 0){
+					   show = true;
+				   }
+			   }
+			   
+			   compareTime = r.getCreated_time();
+			   if(show){
+				   r.setShowTime("1");// 显示时间
+				   // 如果创建日期为今天，则不显示日期，只显示时分
+				   if(DateUtils.format(created_time, "yyyy-MM-dd").equals(DateUtils.format(new Date(), "yyyy-MM-dd"))){
+					   r.setCreated_time_format(DateUtils.format(created_time, "HH:mm"));
+				   // 如果创建日期为昨日，则显示昨日 xx小时xx分
+				   }else if(DateUtils.format(created_time, "yyyy-MM-dd").equals(DateUtils.format(DateUtils.calculateDate(new Date(), 5, -1), "yyyy-MM-dd"))){
+					   r.setCreated_time_format("昨日 " + DateUtils.format(created_time, "HH:mm"));
+				   // 否则显示
+				   }else{
+					   r.setCreated_time_format(DateUtils.format(created_time, DateUtils.DATE_CHN));
+				   }
+			   }
+			   show = false;
+		   }
+	   }
+	   
+	   return re;
    }
    
    public void insConsultProcess(ConsultProcessPo p) throws Exception{

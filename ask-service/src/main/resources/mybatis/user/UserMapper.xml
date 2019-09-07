@@ -21,7 +21,7 @@
         and user_type = 2
     </select>
     
-    <!-- 查找大咖推荐 -->
+    <!-- 查找大咖推荐  不接单的不展示  隐藏的也不显示-->
     <select id="findRecommendList" resultType="com.yiyn.ask.xcx.user.po.UserPo">
         SELECT user.*,case when t.consultEval is null then 5 else t.consultEval end as consultEval
         FROM user_b user left join (SELECT
@@ -29,10 +29,13 @@
 		FROM
 			consultation_evaluate e
 			group by e.USER_B_NO) t on t.user_b_no = user.user_no
-        where user_type = 2 and RECOMMEND ='Y'
+        where user_type = 2 
+        and RECOMMEND ='Y' 
+        and order_set = 2
+        and is_hidden = 'N'
     </select>
     
-    <!-- c端用户关注咨询师列表 -->
+    <!-- c端用户关注咨询师列表 不接单的灰掉  隐藏的不显示-->
     <select id="getCollectionConsultList" resultType="com.yiyn.ask.xcx.user.po.UserPo" parameterType="String">
         SELECT u.*,case when t.consultEval is null then 5 else t.consultEval end as  consultEval
 			FROM user_c_collection c,
@@ -43,7 +46,8 @@
 			where u.user_type = 2 
 			and u.user_no =c.USER_NO_B
 			and c.user_no_c = #{value}
-		order by c.CREATED_TIME desc
+			and is_hidden = 'N'
+		order by u.ORDER_SET desc,c.CREATED_TIME desc
     </select>
     
     <!-- 根据名称或者其他信息查找 服务人员列表  -->
@@ -64,7 +68,7 @@
 				FROM
 					consultation_evaluate e
 					group by e.USER_B_NO) t on t.user_b_no = user.user_no
-		WHERE user.user_type = 2
+		WHERE user.user_type = 2 and user.is_hidden = 'N'
         <if test="advice_type != null">
             <if test="advice_type == 1">
 			and advice_type in('1','2','9')
@@ -78,36 +82,37 @@
 		</if>
 		limit 0,50
 		) t
+		order by t.ORDER_SET desc
 		<!-- 全部排序 -->
 		<if test="pxtype == 1">
-			order by t.consultEval desc,t.consultCount desc,t.advice_val desc
+			,t.consultEval desc,t.consultCount desc,t.advice_val desc
 		</if>
 		<!-- 评分排序 -->
 		<if test="pxtype == 2">
-			order by t.consultEval desc
+			,t.consultEval desc
 		</if>
 		<!-- 咨询量排序 -->
 		<if test="pxtype == 3">
-			order by t.consultCount desc
+			,t.consultCount desc
 		</if>
 		<!-- 价格升序 -->
 		<if test="pxtype == 4">
-			order by t.ADVICE_VAL asc
+			,t.ADVICE_VAL asc
 		</if>
 		<!-- 价格降序 -->
 		<if test="pxtype == 5">
-			order by t.ADVICE_VAL desc
+			,t.ADVICE_VAL desc
 		</if>
     </select>
     
     <select id="findUserInfo" resultType="com.yiyn.ask.xcx.user.po.UserPo" parameterType="String">
-        SELECT user.user_headimg,user.user_name,user.order_set,user.advice_val,user.advice_num,
+        SELECT user.user_headimg,user.user_name,user.order_set,
+        user.is_hidden,user.advice_val,user.advice_num,
         case when t.consultEval is null then 5 else t.consultEval end as consultEval,
         (select count(*) from consultation_sheet s where s.user_b_no = user.user_no) as consultCount
         FROM user_b user left join (SELECT
 			round(sum(e.stars)/count(1),1) consultEval,user_b_no
-		FROM
-			consultation_evaluate e
+		FROM consultation_evaluate e
 			group by e.USER_B_NO) t on t.user_b_no = user.user_no
         where user_no = #{value}
     </select>

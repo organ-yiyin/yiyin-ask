@@ -4,9 +4,10 @@
 
 <mapper namespace="yiyin.consultProcess">
     <select id="getConsultProcessList" resultType="com.yiyn.ask.xcx.consult.po.ConsultProcessPo" parameterType="String">
-        SELECT *, DATE_FORMAT(p.CREATED_TIME,'%Y-%m-%d %H:%i:%s') as created_time_format
-			FROM `consultation_process` p
+        SELECT *, DATE_FORMAT(p.CREATED_TIME,'%Y-%m-%d %H:%i') as created_time_format
+		FROM `consultation_process` p
        	where p.CONSULTATION_ID = #{value}
+       	order by p.CREATED_TIME asc
     </select>
     
     <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultProcessPo" useGeneratedKeys="true" keyProperty="id">

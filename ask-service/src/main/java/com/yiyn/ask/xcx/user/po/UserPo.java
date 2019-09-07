@@ -35,6 +35,8 @@ public class UserPo extends BasePo {
 	private String consultCount; // 咨询量
 	
 	private String share_link; // 二维码分享链接
+	
+	private String is_hidden;// 是否隐藏
 	public String getShare_link() {
 		return share_link;
 	}
@@ -137,5 +139,11 @@ public class UserPo extends BasePo {
 	}
 	public void setUser_desc(String user_desc) {
 		this.user_desc = user_desc;
+	}
+	public String getIs_hidden() {
+		return is_hidden;
+	}
+	public void setIs_hidden(String is_hidden) {
+		this.is_hidden = is_hidden;
 	}
 }

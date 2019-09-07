@@ -21,6 +21,8 @@ public class DateUtils {
     public static final String DATE_WHOLE_FULL_STR = "yyyyMMddHHmmssS";
     public static final String DATE_WHOLE_FULL_STR2 = "yyyyMMddHHmmssSSS";
     
+    public static final String DATE_CHN = "yyyy年M月d日 HH:mm";
+    
     
      
     /**
@@ -71,6 +73,16 @@ public class DateUtils {
      */
     public static int compareDateWithNow(Date date1){
         Date date2 = new Date();
+        int rnum =date1.compareTo(date2);
+        return rnum;
+    }
+    
+    /**
+     * 两个时间比较 date类型
+     * @param date
+     * @return
+     */
+    public static int compareDate(Date date1,Date date2){
         int rnum =date1.compareTo(date2);
         return rnum;
     }
@@ -173,7 +185,7 @@ public class DateUtils {
     
     /**
      * 日期计算
-     * 
+     * 1则代表的是对年份操作，2是对月份操作，3是对星期操作，5是对日期操作，11是对小时操作，12是对分钟操作，13是对秒操作，14是对毫秒操作
      * @param originalCalendar
      * @param field Calendar.DAY_OF_MONTH
      * @param value

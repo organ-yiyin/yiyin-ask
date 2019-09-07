@@ -7,7 +7,9 @@
         select ad_url as banner_link,
         pic_url as banner_img,
         description as banner_desc
-        from yiyn_ad order by id desc
+        from yiyn_ad 
+        where DELETE_FLAG = 'N'
+        order by id desc
         limit 0,3
     </select>
 </mapper>

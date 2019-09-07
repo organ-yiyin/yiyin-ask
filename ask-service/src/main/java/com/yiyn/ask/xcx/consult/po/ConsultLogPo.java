@@ -12,6 +12,8 @@ public class ConsultLogPo extends BasePo {
 	private String consult_id;
 	
 	private String log_desc;
+	
+	private String log_user_type;
 
 	public String getLog_type() {
 		return log_type;
@@ -35,5 +37,13 @@ public class ConsultLogPo extends BasePo {
 
 	public void setLog_desc(String log_desc) {
 		this.log_desc = log_desc;
+	}
+
+	public String getLog_user_type() {
+		return log_user_type;
+	}
+
+	public void setLog_user_type(String log_user_type) {
+		this.log_user_type = log_user_type;
 	}
 }
