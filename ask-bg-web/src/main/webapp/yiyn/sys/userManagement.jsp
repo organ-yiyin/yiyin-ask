@@ -60,6 +60,8 @@
 			<li class="line">line</li>
 			<li><a class="edit" href="<%=path %>/sys/user/forwardUpdateDetails.do?id={id}" target="navTab"><span>修改</span></a></li>
 			<li class="line">line</li>
+			<li><a class="edit" href="<%=path %>/sys/user/authority/forwardDetails.do?id={id}" target="navTab"><span>权限管理</span></a></li>
+			<li class="line">line</li>
 			<li>
 				<a class="edit" href="<%=path%>/sys/user/forwardResetPass.do?id={id}" target="navTab" rel="user.resetPass"><span>重置密码</span></a>
 			</li>
