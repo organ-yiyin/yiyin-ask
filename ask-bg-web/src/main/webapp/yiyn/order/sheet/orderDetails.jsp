@@ -3,6 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ page import="org.apache.commons.lang.math.NumberUtils"%>
+<%@ page import="com.yiyn.ask.xcx.consult.po.ConsultPo"%>
+<%@ page import="java.math.BigDecimal"%>
 
 <%
 	String path = request.getContextPath();
@@ -22,7 +25,7 @@
 
 <div class="pageContent">
 	
-		<div class="pageFormContent" layoutH="60">
+		<div class="pageFormContent" layoutH="56">
 		<input type="hidden" name="consult_sheet_id" value="${consultantSheet.id}">
 		<div class="tabs" currentIndex="0" eventType="click">
 			<div class="tabsHeader">
@@ -33,10 +36,11 @@
 						<li><a href="javascript:;"><span>订单详情</span></a></li>
 						<li><a href="javascript:;"><span>咨询内容</span></a></li>
 						<li><a href="javascript:;"><span>附件管理</span></a></li>
-						<li><a href="javascript:;"><span>日志</span></a></li>
 					</ul>
 				</div>
 			</div>
+			
+			<!-- 下单客户资料  -->
 			<div class="tabsContent" style="height:100%;">
 				<div>
 					<fieldset>
@@ -93,7 +97,9 @@
 						<dl>
 							<dt>性别：</dt>
 							<dd>
-								${consultRef.sex_b}
+								<c:forEach items="${info.genders}" var="item_u" varStatus="s">
+									<c:if test="${item_u.code==consultRef.sex_b}">${item_u.name}</c:if>
+								</c:forEach>
 							</dd>
 						</dl>
 						<dl>
@@ -124,6 +130,8 @@
 					
 				</div>
 			</div>
+			
+			<!-- 咨询师资料  -->
 			<div class="tabsContent" style="height:100%;">
 				<div>
 					<dl>
@@ -151,6 +159,9 @@
 						</dd>
 					</dl>
 				</div>
+			</div>
+			
+			<div class="tabsContent" style="height:100%;">
 				<div>
 					<dl>
 						<dt>订单序号：</dt>
@@ -196,18 +207,64 @@
 					</dl>
 					<dl>
 						<dt>咨询师收入：</dt>
-						<dd>${consultantSheet.price*0.7}</dd>
+						<dd>
+						<%
+							BigDecimal price = NumberUtils.createBigDecimal(((ConsultPo)request.getAttribute("consultantSheet")).getPrice());
+							if(price != null){
+								price = price.multiply(NumberUtils.createBigDecimal("0.7"));
+							}
+						%>
+						<%= price.toPlainString() %>
+						</dd>
 					</dl>
-					
+					<dl class="nowrap">
+						<dt>操作轨迹：</dt>
+						<dd style="width:800px">
+							<table class="table" targetType="dialog" width="800px">
+								<thead>
+									<tr>
+										<th width="50px">序号</th>
+										<th width="100px">操作</th>
+										<th width="250px">描述/理由</th>
+										<th width="150px">操作人</th>
+										<th width="100px">操作人来源</th>
+										<th width="150px">操作时间</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${logs}" var="item" varStatus="s">
+									<tr>
+										<td>${s.index + 1}</td>
+										<td>
+											<c:forEach items="${info.consultStatusList}" var="item_u" varStatus="s">
+												<c:if test="${item_u.code==item.log_type}">${item_u.name}</c:if>
+											</c:forEach>
+										</td>
+										<td>${item.log_desc}</td>
+										<td>${item.created_by}</td>
+										<td>
+											<c:forEach items="${info.logUserTypes}" var="item_u" varStatus="s">
+												<c:if test="${item_u.code==item.log_user_type}">${item_u.name}</c:if>
+											</c:forEach>
+										</td>
+										<td><fmt:formatDate value="${item.created_time}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+									</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+						</dd>
+					</dl>
 				</div>
 			</div>
 			
+			<!-- 咨询内容 -->
 			<div class="tabsContent" style="height:100%;">
 				<div>
-					
+					爱爱爱
 				</div>
 			</div>
 			
+			<!-- 附件管理-->
 			<div class="tabsContent" style="height:100%;">
 				<div>
 					<div class="panelBar">
@@ -242,34 +299,6 @@
 							</c:forEach>
 						</tbody>
 					</table>
-					<br>
-					<br>
-				</div>
-			</div>
-			
-			<div class="tabsContent" style="height:100%;">
-				<div>
-					<table class="table" style="width:650px">
-						<thead>
-							<tr>
-								<th width="50px">序号</th>
-								<th width="300px">操作</th>
-								<th width="150px">操作人</th>
-								<th width="150px">操作时间</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach items="${logs}" var="item" varStatus="s">
-							<tr>
-								<td>${s.index + 1}</td>
-								<td>${item.log_desc}</td>
-								<td>${item.created_by}</td>
-								<td><fmt:formatDate value="${item.created_time}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-							</tr>
-							</c:forEach>
-						</tbody>
-					</table>
-					
 					<br>
 					<br>
 				</div>

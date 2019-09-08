@@ -64,7 +64,7 @@ public class CommentsManagementController {
 		CommentsManagementForm returnPage = new CommentsManagementForm();
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/commentsManagement.jsp");
 		mv.addObject("info", returnPage);
-
+		
 		return mv;
 	}
 	

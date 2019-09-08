@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
+import com.yiyn.ask.base.constants.LogUserTypeEnum;
 import com.yiyn.ask.base.constants.ObjectTypeEnum;
 import com.yiyn.ask.base.convert.AttachmentConvert;
 import com.yiyn.ask.base.dao.impl.AttachmentDaoImpl;
@@ -135,7 +136,6 @@ public class OrderManagementController {
 		OrderForm orderForm = new OrderForm();
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderDetails.jsp");
 		mv.addObject("info", orderForm);
-		
 		mv.addObject("consultantSheet", consultPo);
 		mv.addObject("userB", userB);
 		mv.addObject("userC", userC);
@@ -193,6 +193,7 @@ public class OrderManagementController {
 			t.setLog_type(ConsultStatuEnum.REFUND.getCode());
 			t.setLog_desc("管理员取消订单");
 			t.setConsult_id(id.toString());
+			t.setLog_user_type(LogUserTypeEnum.USER_BG.getCode());
 			consultLogDao.insert(t);
 				
 			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
@@ -247,6 +248,8 @@ public class OrderManagementController {
 			t.setLog_type(ConsultStatuEnum.REFUND.getCode());
 			t.setLog_desc("管理员同意取消订单");
 			t.setConsult_id(id.toString());
+			t.setLog_user_type(LogUserTypeEnum.USER_BG.getCode());
+			
 			consultLogDao.insert(t);
 				
 			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
@@ -297,6 +300,7 @@ public class OrderManagementController {
 		t.setLog_type(ConsultStatuEnum.PAY.getCode());
 		t.setLog_desc("管理员驳回取消订单");
 		t.setConsult_id(id.toString());
+		t.setLog_user_type(LogUserTypeEnum.USER_BG.getCode());
 		consultLogDao.insert(t);
 
 		DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm("驳回取消订单");
