@@ -30,18 +30,23 @@ import com.yiyn.ask.base.form.AttachmentForm;
 import com.yiyn.ask.base.po.AttachmentPo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
-import com.yiyn.ask.order.form.OrderForm;
+import com.yiyn.ask.order.convert.ConsultationSheetConvert;
+import com.yiyn.ask.order.form.ConsultationSheetForm;
 import com.yiyn.ask.order.form.OrderManagementForm;
 import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.po.UserBPo;
 import com.yiyn.ask.wechat.dto.WechatRefundResponseDto;
 import com.yiyn.ask.wechat.dto.WechatResultDto;
 import com.yiyn.ask.wechat.service.WechatRefundServiceImpl;
+import com.yiyn.ask.xcx.center.dao.impl.CodeDaoImpl;
+import com.yiyn.ask.xcx.center.po.CodePo;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultLogDaoImpl;
+import com.yiyn.ask.xcx.consult.dao.impl.ConsultProcessDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultRefDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultantSheetBgDaoImpl;
 import com.yiyn.ask.xcx.consult.po.ConsultLogPo;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
+import com.yiyn.ask.xcx.consult.po.ConsultProcessPo;
 import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
 import com.yiyn.ask.xcx.user.dao.impl.UserCDaoImpl;
 import com.yiyn.ask.xcx.user.po.UserCPo;
@@ -76,6 +81,12 @@ public class OrderManagementController {
 	
 	@Autowired
 	private ConsultRefDaoImpl consultRefDao;
+	
+	@Autowired
+	private ConsultProcessDaoImpl consultProceessDao;
+	
+	@Autowired
+	private CodeDaoImpl codeDao;
 
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request, HttpServletResponse response)
@@ -123,20 +134,23 @@ public class OrderManagementController {
 	public ModelAndView forwardDetails(HttpServletRequest request, HttpServletResponse response,
 			@RequestParam("id") Long id) throws Exception {
 		logger.info("forwardDetails");
-
+		
 		ConsultPo consultPo = this.consultantSheetBgDao.findById(id);
+		ConsultationSheetForm consultantSheet = ConsultationSheetConvert.convertToForm(consultPo);
+		List<CodePo> qus_types = codeDao.findCodeList("QUS_TYPE");
+		consultantSheet.setQus_types(qus_types);
+		
 		UserBPo userB = userBDao.findByUserNo(consultPo.getUser_b_no());
 		UserCPo userC = userCDao.findByUserno(consultPo.getUser_c_no());
-		ConsultRefPo consultRef = consultRefDao.findById(Long.valueOf(consultPo.getUser_ref_id()));
-		
+		ConsultRefPo consultRef = consultRefDao.findById(Long.valueOf(consultPo.getUser_ref_id()));		
 		List<AttachmentPo> attachments = attachmentDao.findAllByObject(ObjectTypeEnum.ORDER_ATTACHMENT.getCode(), id);
-		
 		List<ConsultLogPo> logs = this.consultLogDao.findByConsultId(id);
-		
-		OrderForm orderForm = new OrderForm();
+		List<ConsultProcessPo> consultProcessList = consultProceessDao.getConsultProcessList(id.toString());
+
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderDetails.jsp");
-		mv.addObject("info", orderForm);
-		mv.addObject("consultantSheet", consultPo);
+		mv.addObject("info", consultantSheet);
+		mv.addObject("consultantSheet",consultantSheet);
+		mv.addObject("consultProcessList", consultProcessList);
 		mv.addObject("userB", userB);
 		mv.addObject("userC", userC);
 		mv.addObject("consultRef", consultRef);

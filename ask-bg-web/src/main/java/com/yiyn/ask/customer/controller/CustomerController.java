@@ -15,19 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yiyn.ask.base.constants.ObjectTypeEnum;
-import com.yiyn.ask.base.po.AttachmentPo;
 import com.yiyn.ask.base.utils.PaginationUtils;
-import com.yiyn.ask.consultant.form.ConsultantManagementForm;
 import com.yiyn.ask.customer.form.CustomerManagementForm;
-import com.yiyn.ask.order.form.OrderForm;
-import com.yiyn.ask.sys.convert.UserBConvert;
-import com.yiyn.ask.sys.po.UserBPo;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultRefDaoImpl;
-import com.yiyn.ask.xcx.consult.po.ConsultLogPo;
-import com.yiyn.ask.xcx.consult.po.ConsultPo;
 import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
-import com.yiyn.ask.xcx.user.po.UserCPo;
 
 @Controller
 @RequestMapping("/customer")

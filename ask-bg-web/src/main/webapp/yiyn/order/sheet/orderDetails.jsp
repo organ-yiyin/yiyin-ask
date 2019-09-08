@@ -4,13 +4,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ page import="org.apache.commons.lang.math.NumberUtils"%>
-<%@ page import="com.yiyn.ask.xcx.consult.po.ConsultPo"%>
+<%@ page import="com.yiyn.ask.order.form.ConsultationSheetForm"%>
 <%@ page import="java.math.BigDecimal"%>
-
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
+<link href="<%= path %>/widget/mWechat/m-wechat.css" rel="stylesheet" type="text/css" media="screen"/>
 
 <script>
 	var downloadExcel = function(){
@@ -209,7 +209,7 @@
 						<dt>咨询师收入：</dt>
 						<dd>
 						<%
-							BigDecimal price = NumberUtils.createBigDecimal(((ConsultPo)request.getAttribute("consultantSheet")).getPrice());
+							BigDecimal price = NumberUtils.createBigDecimal(((ConsultationSheetForm)request.getAttribute("consultantSheet")).getPrice());
 							if(price != null){
 								price = price.multiply(NumberUtils.createBigDecimal("0.7"));
 							}
@@ -260,7 +260,96 @@
 			<!-- 咨询内容 -->
 			<div class="tabsContent" style="height:100%;">
 				<div>
-					爱爱爱
+					<dl>
+						<dt>问题描述：</dt>
+						<dd>
+							${consultantSheet.problem_desc}
+						</dd>
+					</dl>
+					<dl>
+						<dt>问题类型：</dt>
+						<dd>
+							<c:forEach items="${info.qus_types}" var="item_u" varStatus="s">
+								<c:if test="${item_u.value==consultantSheet.problem_type}">${item_u.name}</c:if>
+							</c:forEach>
+						</dd>
+					</dl>
+					<dl class="nowrap">
+						<dt>图片：</dt>
+						<dd style="width:500px">
+							<table class="table" targetType="dialog" style="width:500px">
+								<thead>
+									<tr>
+										<th width="50px">序号</th>
+										<th width="450px">链接</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${info.problem_img_list}" var="item_s" varStatus="s">
+									<tr>
+										<td>${s.index + 1}</td>
+										<td>
+											<a href="${item_s}" target="_blank">${item_s}</a>
+										</td>
+									</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+						</dd>
+					</dl>
+					<br>
+					<div class="divider"></div>
+					<br>
+					<br>
+					<div style="">
+						<div class="mobile-page">
+						<c:forEach items="${consultProcessList}" var="item" varStatus="s">
+							
+							<c:if test="${item.send_type == 'customer'}">
+								<div class="admin-group">
+									<img class="admin-img" src="<%= path %>/images/timg.jpg"/>
+									<div class="admin-msg">
+						                <i class="triangle-admin"></i>
+						                
+						                <span class="admin-reply">
+						                	<c:if test="${item.content_type eq 'text'}">
+						                		${item.content}
+						                	</c:if>
+						                	<c:if test="${item.content_type eq 'image'}">
+						                		<img class="" style="width:80px;height:80px" src="${item.content}"/>
+						                	</c:if>
+						                	<c:if test="${item.content_type eq 'video'}">
+						                		${item.content}
+						                	</c:if>
+						                </span>
+									</div>
+								</div>
+							</c:if>
+							
+							<c:if test="${item.send_type == 'server'}">
+								<div class="user-group">
+									<div class="user-msg">
+						                <span class="user-reply">
+						                	<c:if test="${item.content_type eq 'text'}">
+						                		${item.content}
+						                	</c:if>
+						                	<c:if test="${item.content_type eq 'image'}">
+						                		<img class="" style="width:80px;height:80px" src="${item.content}"/>
+						                	</c:if>
+						                	<c:if test="${item.content_type eq 'video'}">
+						                		${item.content}
+						                	</c:if>
+						                </span>
+						                <i class="triangle-user"></i>
+									</div>
+									<img class="user-img" src="<%= path %>/images/logoz.png"/>
+								</div>
+								
+							</c:if>
+							
+						</c:forEach>
+						</div>
+					</div>
 				</div>
 			</div>
 			
@@ -299,8 +388,6 @@
 							</c:forEach>
 						</tbody>
 					</table>
-					<br>
-					<br>
 				</div>
 			</div>
 			
