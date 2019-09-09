@@ -41,10 +41,4 @@
 		where id = #{id}
 	</update>
 	
-    <insert id="insert" parameterType="com.yiyn.ask.xcx.account.po.AccountPo" useGeneratedKeys="true" keyProperty="id">
-		insert into user_account(user_b_id,user_no,balance,withdraw,user_type,user_name,revision,
-		delete_flag,created_by,created_time,updated_by,updated_time)
-		values (#{user_b_id},#{user_no},#{balance},#{withdraw},#{user_type},#{user_name},#{revision},
-		#{delete_flag},#{created_by},#{created_time},#{updated_by},#{updated_time});
-	</insert>
 </mapper>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ page import="com.yiyn.ask.base.constants.AuthorityCode"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 	String path = request.getContextPath();
@@ -119,63 +120,72 @@ $(function(){
 			<div id="sidebar">
 
 				<div class="accordion" fillSpace="sidebar">
-					
+					<% if(AuthorityCode.isAuthorized(AuthorityCode.order_management,AuthorityCode.order_withdraw_management,AuthorityCode.order_comments_management)){%>
 					<div class="accordionHeader">
 						<h2><span>Folder</span>订单管理</h2>
 					</div>
 					<div class="accordionContent">
 						<ul class="tree treeFolder">
-							<li><a href="javascript:void();">订单管理</a>
-								<ul>
-									<li><a href="<%= path%>/order/management.do" target="navTab" rel="/order/managemnt">服务订单管理</a></li>
-									<li><a href="<%= path%>/withdraw/management.do" target="navTab" rel="/withdraw/managemnt">提现管理</a></li>
-									<li><a href="<%= path%>/comments/management.do" target="navTab" rel="/comments/managemnt">评价管理</a></li>
-								</ul>
-							</li>
+							<% if(AuthorityCode.isAuthorized(AuthorityCode.order_management)){%>
+							<li><a href="<%= path%>/order/management.do" target="navTab" rel="/order/managemnt">服务订单管理</a></li>
+							<% } %>
+							<% if(AuthorityCode.isAuthorized(AuthorityCode.order_withdraw_management)){%>
+							<li><a href="<%= path%>/withdraw/management.do" target="navTab" rel="/withdraw/managemnt">提现管理</a></li>
+							<% } %>
+							<% if(AuthorityCode.isAuthorized(AuthorityCode.order_comments_management)){%>
+							<li><a href="<%= path%>/comments/management.do" target="navTab" rel="/comments/managemnt">评价管理</a></li>
+							<% } %>
 						</ul>
 					</div>
+					<% } %>
 					
+					<% if(AuthorityCode.isAuthorized(AuthorityCode.userb_management)){%>
 					<div class="accordionHeader">
 						<h2><span>Folder</span>服务人员管理</h2>
 					</div>
 					<div class="accordionContent">
 						<ul class="tree treeFolder">
-							<li><a href="javascript:void();">服务人员管理</a>
-								<ul>
-									<li><a href="<%= path%>/consultant/management.do" target="navTab" rel="/consultant/management">服务人员管理</a></li>
-								</ul>
-							</li>
+							<% if(AuthorityCode.isAuthorized(AuthorityCode.userb_management)){%>
+							<li><a href="<%= path%>/consultant/management.do" target="navTab" rel="/consultant/management">服务人员管理</a></li>
+							<% } %>
 						</ul>
 					</div>
+					<% } %>
 					
+					<% if(AuthorityCode.isAuthorized(AuthorityCode.customer_management)){%>
 					<div class="accordionHeader">
 						<h2><span>Folder</span>客户管理</h2>
 					</div>
 					<div class="accordionContent">
 						<ul class="tree treeFolder">
+							<% if(AuthorityCode.isAuthorized(AuthorityCode.customer_management)){%>
 							<li><a href="<%= path%>/customer/management.do" target="navTab" rel="/customer/ad/management">客户管理</a></li>
+							<% } %>
 						</ul>
 					</div>
+					<% } %>
 					
+					<% if(AuthorityCode.isAuthorized(AuthorityCode.ad_management)){%>
 					<div class="accordionHeader">
 						<h2><span>Folder</span>营销管理</h2>
 					</div>
 					<div class="accordionContent">
 						<ul class="tree treeFolder">
+							<% if(AuthorityCode.isAuthorized(AuthorityCode.ad_management)){%>
 							<li><a href="<%= path%>/market/ad/management.do" target="navTab" rel="/market/ad/management">广告管理</a></li>
+							<% } %>
 						</ul>
 					</div>
+					<% } %>
 					
 					<div class="accordionHeader">
 						<h2><span>Folder</span>系统管理</h2>
 					</div>
 					<div class="accordionContent">	
 						<ul class="tree treeFolder">
-							<li><a href="javascript:void();">用户权限管理</a>
-								<ul>
-									<li><a href="<%= path%>/sys/user/management.do" target="navTab" rel="/sys/user/management">用户管理</a></li>
-								</ul>
-							</li>
+							<% if(AuthorityCode.isAuthorized(AuthorityCode.sys_user_management)){%>
+							<li><a href="<%= path%>/sys/user/management.do" target="navTab" rel="/sys/user/management">用户管理</a></li>
+							<% } %>
 						</ul>
 						<ul class="tree treeFolder">
 							<li><a href="<%= path%>/sys/user/forwardPassword.do" target="navTab" rel="/sys/user/forwardPassword">个人密码修改</a></li>

@@ -10,7 +10,7 @@ import com.yiyn.ask.base.constants.YesOrNoType;
 @SuppressWarnings("rawtypes")
 public class PaginationUtils{
 
-	private int numPerPage = 10;// 每页大小
+	private int numPerPage = 50;// 每页大小
 
 	private int totalCount;// 总共多少条
 
