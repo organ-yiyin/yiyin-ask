@@ -9,7 +9,7 @@
         description as banner_desc
         from yiyn_ad 
         where DELETE_FLAG = 'N'
-        order by id desc
-        limit 0,3
+        order by id asc
+        limit 0,5
     </select>
 </mapper>

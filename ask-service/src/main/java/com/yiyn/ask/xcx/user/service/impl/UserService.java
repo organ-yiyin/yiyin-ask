@@ -131,8 +131,8 @@ public class UserService {
 	   return inP;
    }
    
-   public List<UserEvalPo> findUserEval(String userno) throws Exception{
-	   return userEvalDao.findUserEval(userno);
+   public List<UserEvalPo> findUserEval(Map<String,String> m) throws Exception{
+	   return userEvalDao.findUserEval(m);
    }
    
    public void insetUser(UserPo p) throws Exception{

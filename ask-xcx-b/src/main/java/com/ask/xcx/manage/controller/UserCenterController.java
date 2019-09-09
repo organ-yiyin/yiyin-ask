@@ -71,7 +71,11 @@ public class UserCenterController {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		UserPo po = userService.findUserInfo(user_no);
 		resultMap.put("info",po);
-		resultMap.put("evalList",userService.findUserEval(user_no));
+		
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("user_no", user_no);
+		param.put("user_type", "B");
+		resultMap.put("evalList",userService.findUserEval(param));
 		return new Gson().toJson(resultMap);
 	}
 	

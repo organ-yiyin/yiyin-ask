@@ -3,10 +3,14 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="yiyin.eval">
-    <select id="findUserEval" resultType="com.yiyn.ask.xcx.user.po.UserEvalPo" parameterType="String">
+    <select id="findUserEval" resultType="com.yiyn.ask.xcx.user.po.UserEvalPo" parameterType="java.util.HashMap">
         SELECT *,DATE_FORMAT(e.CREATED_TIME,'%Y-%m-%d') as created_time_format
         FROM consultation_evaluate e
-        where e.user_b_no = #{value}
+        where e.user_b_no = #{user_no}
+        <!-- C端不显示隐藏的评价  -->
+		<if test="user_type == 'C'.toString()">
+			and e.is_hidden = 'N'
+		</if>
 		order by e.CREATED_TIME desc 
 		limit 0,10
     </select>

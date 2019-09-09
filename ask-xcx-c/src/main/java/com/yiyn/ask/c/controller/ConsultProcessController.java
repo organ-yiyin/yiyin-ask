@@ -103,7 +103,10 @@ public class ConsultProcessController {
 		resultMap.put("info", userP);
 		
 		// 评价
-		resultMap.put("evalList",userService.findUserEval(user_no));
+		Map<String, String> evalP = new HashMap<String, String>();
+		evalP.put("user_no", user_no);
+		evalP.put("user_type", "C");
+		resultMap.put("evalList",userService.findUserEval(evalP));
 		
 		//具备技能列表
 		if(!StringUtils.isEmptyString(userP.getSkilled())){

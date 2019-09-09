@@ -2,6 +2,7 @@ package com.yiyn.ask.xcx.user.dao.impl;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -15,9 +16,9 @@ import com.yiyn.ask.xcx.user.po.UserEvalPo;
  */
 public class UserEvalDaoImpl extends BaseDao<UserEvalPo> {
 	
-	public List<UserEvalPo> findUserEval(String userno) throws Exception {
+	public List<UserEvalPo> findUserEval(Map<String,String> m) throws Exception {
 		return this.getSqlSession().selectList(
-				this.getNameStatement() + ".findUserEval", userno);
+				this.getNameStatement() + ".findUserEval", m);
 	}
 	
 	public String getNameStatement() {
