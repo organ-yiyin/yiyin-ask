@@ -28,4 +28,15 @@ public enum GenderEnum {
 		this.name = name;
 	}
 	
+	public static GenderEnum findEnumByCode(Integer code) {
+		if(code == null) {
+			return null;
+		}
+		for(GenderEnum status : GenderEnum.values()) {
+			if(status.getCode().equals(code)) {
+				return status;
+			}
+		}
+		return null;
+	}
 }

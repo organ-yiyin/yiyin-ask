@@ -2,6 +2,7 @@ package com.yiyn.ask.consultant.service;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
@@ -10,6 +11,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yiyn.ask.base.constants.ConsultingTypeEnum;
@@ -19,12 +21,17 @@ import com.yiyn.ask.base.utils.excel.ExcelUtil;
 import com.yiyn.ask.order.service.WithdrawManager;
 import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.po.UserBPo;
+import com.yiyn.ask.xcx.user.dao.impl.UserTagDaoImpl;
+import com.yiyn.ask.xcx.user.po.UserTagPo;
 
 @Service
 public class ConsultantManager {
 	
 	@Resource(name="userBDao_bg")
 	private UserBDaoImpl userBDao;
+	
+	@Autowired
+	private UserTagDaoImpl userTagDao;
 	
 	public Workbook downloadWithdrawExcel(PaginationUtils paramPage) throws Exception{
 		
@@ -62,6 +69,15 @@ public class ConsultantManager {
 			
 			YesOrNoType recommend = YesOrNoType.getByValue(userBPo.getRecommend());
 			ExcelUtil.setCellStringValue(row, cellIndex++, recommend == null ? "" : recommend.getText());
+			
+			YesOrNoType is_hidden = YesOrNoType.getByValue(userBPo.getIs_hidden());
+			ExcelUtil.setCellStringValue(row, cellIndex++, is_hidden == null ? "" : is_hidden.getText());
+			
+			List<UserTagPo> tagList = userTagDao.getUserTagList(userBPo.getUser_no());
+			List<String> collect = tagList.stream().map(UserTagPo::getName).collect(Collectors.toList());
+			String tags = String.join(",", collect);
+			ExcelUtil.setCellStringValue(row, cellIndex++, tags);
+			
 		}
 		
 		return workbook;

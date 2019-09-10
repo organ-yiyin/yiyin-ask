@@ -12,20 +12,12 @@
 	var downloadExcel = function(){
 		alertMsg.confirm("如果导出的数据很多，速度会很慢，请耐心等待！确认导出订单数据吗？", {
 			okCall: function(){
-				var url = "<%=path %>/order/course/downloadOrders.do";
-				url = url + "?username=" + $("#username").val();
-				url = url + "&centre_id=" + $("#centre_id").val();
-				url = url + "&order_code=" + $("#order_code").val();
-				url = url + "&course_type=" + $("#course_type").val();
-				url = url + "&course_id=" + $("#course_id").val();
-				url = url + "&authorize_course_time_id=" + $("#authorize_course_time_id").val();
-				url = url + "&course_start_time=" + $("#course_start_time").val();
-				url = url + "&course_end_time=" + $("#course_end_time").val();
-				url = url + "&startTime=" + $("#startTime").val();
-				url = url + "&endTime=" + $("#endTime").val();
-				url = url + "&operationStartTime=";
-				url = url + "&operationEndTime=";
-				url = url + "&order_status=" + $("#order_status").val();
+				var url = "<%=path %>/order/downloadOrders.do";
+				url = url + "?user_c_phone=" + $("#user_c_phone").val();
+				url = url + "&odd_num=" + $("#odd_num").val();
+				url = url + "&status=" + $("#status").val();
+				url = url + "&start_booking_time=" + $("#start_booking_time").val();
+				url = url + "&end_booking_time=" + $("#end_booking_time").val();
 				
 				window.location.href=url;
 			}
@@ -45,22 +37,22 @@
 		<table class="searchContent">
 			<tr>
 				<td>
-					下单账户：
+					客户电话：
 				</td>
 				<td>
-					<input type="text" name="user_c_phone" value="${info.paramMap['user_c_phone']}" />
+					<input type="text" name="user_c_phone" id="user_c_phone" value="${info.paramMap['user_c_phone']}" />
 				</td>
 				<td>
 					订单号：
 				</td>
 				<td>
-					<input type="text" name="odd_num" value="${info.paramMap['odd_num']}" />
+					<input type="text" name="odd_num" id="odd_num" value="${info.paramMap['odd_num']}" />
 				</td>
 				<td>
 					状态：
 				</td>
 				<td>
-					<select name="status" class="combox">
+					<select name="status" id="status" class="combox">
 						<option value="">请选择</option>
 						<c:forEach items="${info.consultStatusList}" var="p">
 							<option <c:if test="${p.code eq info.paramMap['status']}">selected</c:if> value="${p.code}">${p.name}</option>	
@@ -73,9 +65,9 @@
 					下单日期：
 				</td>
 				<td>
-					<input type="text" class="date" name="start_booking_time" size="6" value="${param.start_booking_time}" readonly="true" />
+					<input type="text" class="date" name="start_booking_time" id="start_booking_time" size="8" value="${param.start_booking_time}" readonly="true" />
 					至
-					<input type="text" class="date" name="end_booking_time" size="6" value="${param.end_booking_time}" readonly="true" />
+					<input type="text" class="date" name="end_booking_time" id="end_booking_time" size="8" value="${param.end_booking_time}" readonly="true" />
 				</td>
 			</tr>
 			
@@ -103,8 +95,8 @@
 	<table class="table" style="width:890px" layoutH="165">
 		<thead>
 			<tr>
-				<th width="100px">下单账户</th>
-				<th width="120px">客户姓名</th>
+				<th width="100px">客户电话</th>
+				<th width="120px">妈妈姓名</th>
 				<th width="150px">订单号</th>
 				<th width="200px">下单日期</th>
 				<th width="100px">订单金额</th>

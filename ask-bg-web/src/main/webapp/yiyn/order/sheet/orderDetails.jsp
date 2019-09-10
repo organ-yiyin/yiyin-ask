@@ -175,7 +175,7 @@
 							${consultantSheet.odd_num}
 						</dd>
 					</dl>
-					<dl>
+					<dl class="nowrap">
 						<dt>微信订单号：</dt>
 						<dd>
 							${consultantSheet.pay_odd_num}
@@ -184,13 +184,7 @@
 					<dl>
 						<dt>下单时间：</dt>
 						<dd>
-							
-						</dd>
-					</dl>
-					<dl>
-						<dt>结束时间：</dt>
-						<dd>
-							
+							<fmt:formatDate value="${consultantSheet.created_time}" pattern="yyyy-MM-dd HH:mm:ss" />
 						</dd>
 					</dl>
 					<dl>
@@ -217,15 +211,19 @@
 						<%= price.toPlainString() %>
 						</dd>
 					</dl>
+					<dl>
+						<dt>第三方支付类型：</dt>
+						<dd>微信支付</dd>
+					</dl>
 					<dl class="nowrap">
 						<dt>操作轨迹：</dt>
 						<dd style="width:800px">
-							<table class="table" targetType="dialog" width="800px">
+							<table class="table" targetType="dialog" width="800px" nowrapTD="false">
 								<thead>
 									<tr>
 										<th width="50px">序号</th>
 										<th width="100px">操作</th>
-										<th width="250px">描述/理由</th>
+										<th style="width:250px">描述/理由</th>
 										<th width="150px">操作人</th>
 										<th width="100px">操作人来源</th>
 										<th width="150px">操作时间</th>
@@ -240,7 +238,7 @@
 												<c:if test="${item_u.code==item.log_type}">${item_u.name}</c:if>
 											</c:forEach>
 										</td>
-										<td>${item.log_desc}</td>
+										<td>${item.log_desc}111</td>
 										<td>${item.created_by}</td>
 										<td>
 											<c:forEach items="${info.logUserTypes}" var="item_u" varStatus="s">

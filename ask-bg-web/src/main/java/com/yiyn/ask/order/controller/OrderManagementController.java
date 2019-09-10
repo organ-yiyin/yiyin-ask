@@ -1,17 +1,21 @@
 package com.yiyn.ask.order.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,11 +32,14 @@ import com.yiyn.ask.base.convert.AttachmentConvert;
 import com.yiyn.ask.base.dao.impl.AttachmentDaoImpl;
 import com.yiyn.ask.base.form.AttachmentForm;
 import com.yiyn.ask.base.po.AttachmentPo;
+import com.yiyn.ask.base.security.SpingSecurityUserBo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
+import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.order.convert.ConsultationSheetConvert;
 import com.yiyn.ask.order.form.ConsultationSheetForm;
 import com.yiyn.ask.order.form.OrderManagementForm;
+import com.yiyn.ask.order.service.OrderManager;
 import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.po.UserBPo;
 import com.yiyn.ask.wechat.dto.WechatRefundResponseDto;
@@ -87,6 +94,9 @@ public class OrderManagementController {
 	
 	@Autowired
 	private CodeDaoImpl codeDao;
+	
+	@Autowired
+	private OrderManager orderManager;
 
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request, HttpServletResponse response)
@@ -322,6 +332,42 @@ public class OrderManagementController {
 		return new Gson().toJson(responseForm);
 
 	}
+	
+	
+	@RequestMapping(value = "/downloadOrders.do", method = RequestMethod.GET)
+	public void downloadWithdraw(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam("user_c_phone") String user_c_phone, @RequestParam("odd_num") String odd_num,
+			@RequestParam("status") String status, @RequestParam("start_booking_time") String start_booking_time,
+			@RequestParam("end_booking_time") String end_booking_time) throws Exception {
+		
+		String fileName = "orders_" + SPDateUtils.formatDateDefault(new Date());
+		
+		response.setContentType( "application/vnd.ms-excel" );
+		response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+		ServletOutputStream os = response.getOutputStream();
+		
+		try {
+			PaginationUtils paramPage = new PaginationUtils(9999,1);
+			paramPage.getParamMap().put("user_c_phone", user_c_phone);
+			paramPage.getParamMap().put("odd_num", odd_num);
+			paramPage.getParamMap().put("status", status);
+			paramPage.getParamMap().put("start_booking_time", start_booking_time);
+			paramPage.getParamMap().put("end_booking_time", end_booking_time);
+			
+			Workbook workbook = this.orderManager.downloadOrdersExcel(paramPage);
+			workbook.write( os );
+			
+			os.flush();
+		}
+		catch( Exception ex ) {
+			ex.printStackTrace();
+		}
+		finally {
+			os.close();
+		}
+	}
+
 
 	@RequestMapping(value = "/attachment/forwardNewDetails.do", method = RequestMethod.GET)
 	public ModelAndView forwardAttachmentNewDetails(HttpServletRequest request, HttpServletResponse response,

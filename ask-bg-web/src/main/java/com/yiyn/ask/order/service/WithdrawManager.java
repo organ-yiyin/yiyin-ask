@@ -49,6 +49,10 @@ public class WithdrawManager {
 			
 			int cellIndex = 0;
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ub_user_no"));
+			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ub_user_name"));
+			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ub_user_id_num"));
+			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ub_bank_name"));
+			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ub_bank_account"));
 			Cell withdrawCell = ExcelUtil.getCell(row, cellIndex++);
 			withdrawCell.setCellStyle(numberCellStyle);
 			withdrawCell.setCellValue(((BigDecimal)dataMap.get("WITHDRAW")).doubleValue());

@@ -116,7 +116,7 @@
 			<dl class="">
 				<dt>是否隐藏：</dt>
 				<dd>
-					<select name="is_hidden" class="combox">
+					<select name="is_hidden" class="combox required">
 						<option value="">请选择</option>
 						<c:forEach items="${info.yesOrNoTypes}" var="p">
 							<option <c:if test="${p.code eq info.is_hidden}">selected</c:if> value="${p.code}">${p.text}</option>	

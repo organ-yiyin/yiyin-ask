@@ -86,7 +86,7 @@
 			</ul>
 	</div>
 
-	<table class="table" style="width:720px" layoutH="140">
+	<table class="table" style="width:800px" layoutH="140">
 		<thead>
 			<tr>
 				<th width="150px">用户名</th>
@@ -95,6 +95,7 @@
 				<th width="100px">咨询类型</th>
 				<th width="100px">接单设置</th>
 				<th width="100px">从业年限</th>
+				<th width="80px">是否隐藏</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -114,6 +115,11 @@
 					</c:forEach>
 				</td>
 				<td>${item.work_year}</td>
+				<td>
+					<c:forEach items="${info.yesOrNoTypes}" var="item_t" varStatus="s">
+						<c:if test="${item_t.code==item.is_hidden}">${item_t.text}</c:if>
+					</c:forEach>
+				</td>
 			</tr>
 			</c:forEach>
 		</tbody>

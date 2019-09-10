@@ -6,9 +6,9 @@
 	<select id="searchByConditions"
 		parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="java.util.HashMap">
 		select cs.*,
-		c.user_phone as c_user_phone,
-		b.user_name as b_user_name,
-		ucr.name_m as ucr_name_m
+		c.user_no as c_user_no,c.user_phone as c_user_phone,c.user_name as c_user_name,c.reg_time as c_reg_time,
+		b.user_name as b_user_name,b.user_phone as b_user_phone,
+		ucr.name_m as ucr_name_m,ucr.name_b as ucr_name_b
 		from 
 		consultation_sheet cs,user_c c, user_b b, user_c_ref ucr
 		where 1=1
@@ -24,12 +24,12 @@
 		</if>
 		<if test="paramMap.start_booking_time!=null and paramMap.start_booking_time!=''">
 			<![CDATA[
-              AND DATE_FORMAT(cs.booking_time,'%Y-%m-%d')  >=  #{paramMap.start_booking_time} 
+              AND DATE_FORMAT(cs.CREATED_TIME,'%Y-%m-%d')  >=  #{paramMap.start_booking_time} 
                ]]>
 		</if>
 		<if test="paramMap.end_booking_time!=null and paramMap.end_booking_time!=''">
 			<![CDATA[
-              AND DATE_FORMAT(cs.booking_time,'%Y-%m-%d')  <=  #{paramMap.end_booking_time} 
+              AND DATE_FORMAT(cs.CREATED_TIME,'%Y-%m-%d')  <=  #{paramMap.end_booking_time} 
                ]]>
 		</if>
 		order by cs.CREATED_TIME desc
@@ -52,12 +52,12 @@
 		</if>
 		<if test="paramMap.start_booking_time!=null and paramMap.start_booking_time!=''">
 			<![CDATA[
-              AND DATE_FORMAT(cs.booking_time,'%Y-%m-%d')  >=  #{paramMap.start_booking_time} 
+              AND DATE_FORMAT(cs.CREATED_TIME,'%Y-%m-%d')  >=  #{paramMap.start_booking_time} 
                ]]>
 		</if>
 		<if test="paramMap.end_booking_time!=null and paramMap.end_booking_time!=''">
 			<![CDATA[
-              AND DATE_FORMAT(cs.booking_time,'%Y-%m-%d')  <=  #{paramMap.end_booking_time} 
+              AND DATE_FORMAT(cs.CREATED_TIME,'%Y-%m-%d')  <=  #{paramMap.end_booking_time} 
                ]]>
 		</if>
 	</select>

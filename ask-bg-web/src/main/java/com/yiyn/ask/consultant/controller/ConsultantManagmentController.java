@@ -56,7 +56,7 @@ public class ConsultantManagmentController {
 	private AccountDaoImpl accountDao;
 	
 	@Autowired
-	  private UserTagDaoImpl userTagDao;
+	private UserTagDaoImpl userTagDao;
 	
 	@Autowired
 	private ConsultantManager consultantManager;

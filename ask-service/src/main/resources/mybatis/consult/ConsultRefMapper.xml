@@ -4,10 +4,18 @@
 
 <mapper namespace="yiyin.consultRef">
 	
-	<select id="searchByConditions"
+	<select id="searchByConditions_bg"
 		parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="java.util.HashMap">
-		select * from user_c_ref
-		where 1=1
+		select ucr.*,
+		uc.user_phone as uc_user_phone
+		from user_c_ref ucr,user_c uc
+		where 1=1 and ucr.user_no=uc.user_no
+		<if test="paramMap.usre_c_phone != null and '' != paramMap.usre_c_phone">
+			AND uc.user_phone = #{paramMap.usre_c_phone}
+		</if>
+		<if test="paramMap.name_m != null and '' != paramMap.name_m">
+			AND name_m like CONCAT('%',#{paramMap.name_m},'%')
+		</if>
 		<if test="paramMap.name_m != null and '' != paramMap.name_m">
 			AND name_m like CONCAT('%',#{paramMap.name_m},'%')
 		</if>
@@ -18,9 +26,16 @@
 		limit #{startIndex}, #{numPerPage}
 	</select>
 	
-	<select id="searchCountByConditions" parameterType="java.util.HashMap" resultType="int">
-	    select count(*) from user_c_ref
-		where 1=1
+	<select id="searchCountByConditions_bg" parameterType="java.util.HashMap" resultType="int">
+	    select count(*) from 
+		user_c_ref ucr,user_c uc
+		where 1=1 and ucr.user_no=uc.user_no
+		<if test="paramMap.usre_c_phone != null and '' != paramMap.usre_c_phone">
+			AND uc.user_phone = #{paramMap.usre_c_phone}
+		</if>
+		<if test="paramMap.name_m != null and '' != paramMap.name_m">
+			AND name_m like CONCAT('%',#{paramMap.name_m},'%')
+		</if>
 		<if test="paramMap.name_m != null and '' != paramMap.name_m">
 			AND name_m like CONCAT('%',#{paramMap.name_m},'%')
 		</if>
