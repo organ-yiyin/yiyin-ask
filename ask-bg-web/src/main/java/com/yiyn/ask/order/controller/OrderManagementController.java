@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +31,6 @@ import com.yiyn.ask.base.convert.AttachmentConvert;
 import com.yiyn.ask.base.dao.impl.AttachmentDaoImpl;
 import com.yiyn.ask.base.form.AttachmentForm;
 import com.yiyn.ask.base.po.AttachmentPo;
-import com.yiyn.ask.base.security.SpingSecurityUserBo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
@@ -158,7 +156,6 @@ public class OrderManagementController {
 		List<ConsultProcessPo> consultProcessList = consultProceessDao.getConsultProcessList(id.toString());
 
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderDetails.jsp");
-		mv.addObject("info", consultantSheet);
 		mv.addObject("consultantSheet",consultantSheet);
 		mv.addObject("consultProcessList", consultProcessList);
 		mv.addObject("userB", userB);
@@ -330,12 +327,26 @@ public class OrderManagementController {
 		DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm("驳回取消订单");
 		responseForm.setNavTabId("orderDetails");
 		return new Gson().toJson(responseForm);
+	}
+	
+	@RequestMapping(value = "/forwardWechatDetails.do", method = RequestMethod.GET)
+	public ModelAndView forwardWechatDetails(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam("id") Long id) throws Exception {
+		logger.info("forwardWechatDetails");
+		
+		ConsultPo consultPo = this.consultantSheetBgDao.findById(id);
+		ConsultationSheetForm consultantSheet = ConsultationSheetConvert.convertToForm(consultPo);
+		List<ConsultProcessPo> consultProcessList = consultProceessDao.getConsultProcessList(id.toString());
 
+		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderWechat.jsp");
+		mv.addObject("consultantSheet", consultantSheet);
+		mv.addObject("consultProcessList", consultProcessList);
+		return mv;
 	}
 	
 	
 	@RequestMapping(value = "/downloadOrders.do", method = RequestMethod.GET)
-	public void downloadWithdraw(HttpServletRequest request,
+	public void downloadOrders(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam("user_c_phone") String user_c_phone, @RequestParam("odd_num") String odd_num,
 			@RequestParam("status") String status, @RequestParam("start_booking_time") String start_booking_time,

@@ -14,6 +14,8 @@ public class AdPo extends BasePo{
 	private String ad_url;
 	// 图片地址
 	private String pic_url;
+	// 排序,数字越小排前面
+	private Integer order_num;
 	// 描述
 	private String description;
 	// 点击次数
@@ -55,6 +57,11 @@ public class AdPo extends BasePo{
 	public void setVisit_count(int visit_count) {
 		this.visit_count = visit_count;
 	}
-
+	public Integer getOrder_num() {
+		return order_num;
+	}
+	public void setOrder_num(Integer order_num) {
+		this.order_num = order_num;
+	}
 	
 }

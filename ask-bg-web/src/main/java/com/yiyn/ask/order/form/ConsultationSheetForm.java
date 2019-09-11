@@ -5,8 +5,10 @@ import java.util.List;
 
 import com.yiyn.ask.base.constants.AttachmentTypeEnum;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
+import com.yiyn.ask.base.constants.ContentTypeEnum;
 import com.yiyn.ask.base.constants.GenderEnum;
 import com.yiyn.ask.base.constants.LogUserTypeEnum;
+import com.yiyn.ask.base.constants.SendTypeEnum;
 import com.yiyn.ask.base.form.BaseForm;
 import com.yiyn.ask.xcx.center.po.CodePo;
 
@@ -46,6 +48,8 @@ public class ConsultationSheetForm extends BaseForm {
 	private int ques_num;
 	
 	private String[] problem_img_list;
+	
+	private String[] problem_video_list;
 
 	private ConsultStatuEnum[] consultStatusList = ConsultStatuEnum.values();
 	
@@ -56,6 +60,10 @@ public class ConsultationSheetForm extends BaseForm {
 	private LogUserTypeEnum[] logUserTypes = LogUserTypeEnum.values();
 	
 	private List<CodePo> qus_types = new ArrayList<>();
+	
+	private ContentTypeEnum[] contentTypes = ContentTypeEnum.values();
+	
+	private SendTypeEnum[] sendTypes = SendTypeEnum.values();
 
 	public ConsultStatuEnum[] getConsultStatusList() {
 		return consultStatusList;
@@ -231,6 +239,30 @@ public class ConsultationSheetForm extends BaseForm {
 
 	public void setProblem_img_list(String[] problem_img_list) {
 		this.problem_img_list = problem_img_list;
+	}
+
+	public String[] getProblem_video_list() {
+		return problem_video_list;
+	}
+
+	public void setProblem_video_list(String[] problem_video_list) {
+		this.problem_video_list = problem_video_list;
+	}
+
+	public ContentTypeEnum[] getContentTypes() {
+		return contentTypes;
+	}
+
+	public void setContentTypes(ContentTypeEnum[] contentTypes) {
+		this.contentTypes = contentTypes;
+	}
+
+	public SendTypeEnum[] getSendTypes() {
+		return sendTypes;
+	}
+
+	public void setSendTypes(SendTypeEnum[] sendTypes) {
+		this.sendTypes = sendTypes;
 	}
 	
 }

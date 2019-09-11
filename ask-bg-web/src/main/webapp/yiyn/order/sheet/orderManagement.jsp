@@ -92,9 +92,10 @@
 		</ul>
 	</div>
 
-	<table class="table" style="width:890px" layoutH="165">
+	<table class="table" style="width:950px" layoutH="165">
 		<thead>
 			<tr>
+				<th width="60px">订单序号</th>
 				<th width="100px">客户电话</th>
 				<th width="120px">妈妈姓名</th>
 				<th width="150px">订单号</th>
@@ -108,6 +109,7 @@
 			
 			<c:forEach items="${info.data}" var="item" varStatus="s">
 			<tr target="id" rel="${item['ID']}">
+				<td>${item['ID']}</td>
 				<td>${item['c_user_phone']}</td>
 				<td>${item['ucr_name_m']}</td>
 				<td>${item['ODD_NUM']}</td>

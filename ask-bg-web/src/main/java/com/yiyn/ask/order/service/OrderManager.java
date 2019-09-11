@@ -1,12 +1,15 @@
 package com.yiyn.ask.order.service;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -17,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
+import com.yiyn.ask.base.constants.GenderEnum;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.base.utils.excel.ExcelUtil;
@@ -54,15 +58,36 @@ public class OrderManager {
 			Row row = ExcelUtil.getRow(valSheet, i + 2);
 			
 			int cellIndex = 0;
-			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("c_user_no"));
-			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("c_user_name"));
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("c_user_phone"));
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_name_m"));
+			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_birthday_m"));
+			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_special_m"));
+			
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_name_b"));
+			String ucr_sex_b = (String)dataMap.get("ucr_sex_b");
+			if(StringUtils.isEmpty(ucr_sex_b)) {
+				ExcelUtil.setCellStringValue(row, cellIndex++, "");
+			}
+			else {
+				GenderEnum gender = GenderEnum.findEnumByCode(Integer.valueOf(ucr_sex_b));
+				ExcelUtil.setCellStringValue(row, cellIndex++, gender == null ? "" : gender.getName());
+			}
+			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_birthday_b"));
+			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_edc_b"));
+			String ucr_birth_weight_b = (String)dataMap.get("ucr_birth_weight_b");
+			if(StringUtils.isEmpty(ucr_birth_weight_b)) {
+				ExcelUtil.setCellStringValue(row, cellIndex++, "");
+			}
+			else {
+				Cell weightCell = ExcelUtil.getCell(row, cellIndex++);
+				weightCell.setCellStyle(numberCellStyle);
+				weightCell.setCellValue(Double.valueOf(ucr_birth_weight_b).doubleValue());
+			}
+			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_special_b"));
 			
 			Date c_reg_time = (Date)dataMap.get("c_reg_time");
 			ExcelUtil.setCellStringValue(row, cellIndex++, SPDateUtils.formatDateTimeDefault(c_reg_time));
-			
+
 			Cell orderIndex = ExcelUtil.getCell(row, cellIndex++);
 			orderIndex.setCellStyle(numberCellStyle);
 			orderIndex.setCellValue(((Long)dataMap.get("ID")).toString());
@@ -81,6 +106,12 @@ public class OrderManager {
 			Cell priceCell = ExcelUtil.getCell(row, cellIndex++);
 			priceCell.setCellStyle(numberCellStyle);
 			priceCell.setCellValue(((Double)dataMap.get("PRICE")).doubleValue());
+			
+			Cell cPriceCell = ExcelUtil.getCell(row, cellIndex++);
+			cPriceCell.setCellStyle(numberCellStyle);
+			BigDecimal price = BigDecimal.valueOf((Double)dataMap.get("PRICE"));
+			BigDecimal cPrice = price.multiply(NumberUtils.createBigDecimal("0.7"));
+			cPriceCell.setCellValue(cPrice.doubleValue());
 			
 			ExcelUtil.setCellStringValue(row, cellIndex++, "微信支付");
 			

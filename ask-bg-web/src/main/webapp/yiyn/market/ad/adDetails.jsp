@@ -24,12 +24,6 @@
 		
 		<div class="pageFormContent" layoutH="56">
 			<dl class="nowrap">
-				<dt>广告标题：</dt>
-				<dd>
-					<input class="required" maxlength="200" name="ad_title" type="text" size="60" value="${info.ad_title}" />
-				</dd>
-			</dl>
-			<dl class="nowrap">
 				<dt>广告位置：</dt>
 				<dd>
 					<select class="combox required" name="ad_position">
@@ -38,6 +32,12 @@
 							<option value="${item.code}" <c:if test="${item.code eq info.ad_position}">selected</c:if>>${item.name}</option>
 						</c:forEach>
 					</select>
+				</dd>
+			</dl>
+			<dl class="nowrap">
+				<dt>广告标题：</dt>
+				<dd>
+					<input class="required" maxlength="200" name="ad_title" type="text" size="60" value="${info.ad_title}" />
 				</dd>
 			</dl>
 			<dl class="nowrap">
@@ -50,6 +50,12 @@
 				<dt>图片链接：</dt>
 				<dd>
 					<input maxlength="200" name="pic_url" type="text" size="60" value="${info.pic_url}" />
+				</dd>
+			</dl>
+			<dl class="nowrap">
+				<dt>排序(数字越小排前面)：</dt>
+				<dd>
+					<input name="order_num" type="text" class="digits required" value="${info.order_num}" />
 				</dd>
 			</dl>
 			<dl class="nowrap">
