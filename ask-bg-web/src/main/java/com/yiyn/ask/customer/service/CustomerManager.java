@@ -1,6 +1,7 @@
 package com.yiyn.ask.customer.service;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.yiyn.ask.base.constants.GenderEnum;
 import com.yiyn.ask.base.utils.PaginationUtils;
+import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.base.utils.excel.ExcelUtil;
 import com.yiyn.ask.order.service.WithdrawManager;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultRefDaoImpl;
@@ -45,6 +47,9 @@ public class CustomerManager {
 			
 			int cellIndex = 0;
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("uc_user_phone"));
+			Date uc_reg_time = (Date)dataMap.get("uc_reg_time");
+			ExcelUtil.setCellStringValue(row, cellIndex++, SPDateUtils.formatDateTimeDefault(uc_reg_time));
+			
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("NAME_M"));
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("BIRTHDAY_M"));
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("SPECIAL_M"));

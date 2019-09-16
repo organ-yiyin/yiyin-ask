@@ -55,14 +55,14 @@ public class CustomerController {
 	}
 	
 	@RequestMapping(value = "/search.do", method = RequestMethod.POST)
-	public ModelAndView searchUserList(HttpServletRequest request,
+	public ModelAndView search(HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam("usre_c_phone") String usre_c_phone,
 			@RequestParam("name_m") String name_m,
 			@RequestParam("name_b") String name_b,
 			@RequestParam("pageNum") String pageNum,
 			@RequestParam("numPerPage") String numPerPage) throws Exception {
-		logger.info("searchUserList");
+		logger.info("search");
 
 		PaginationUtils paramPage = new PaginationUtils(
 				Integer.parseInt(numPerPage), Integer.parseInt(pageNum));
@@ -98,7 +98,7 @@ public class CustomerController {
 	}
 	
 	@RequestMapping(value = "/downloadCustomers.do", method = RequestMethod.GET)
-	public void downloadConsults(HttpServletRequest request,
+	public void downloadCustomers(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam("usre_c_phone") String usre_c_phone,
 			@RequestParam("name_m") String name_m,

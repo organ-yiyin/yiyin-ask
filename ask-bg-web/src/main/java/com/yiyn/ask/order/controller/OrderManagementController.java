@@ -43,6 +43,10 @@ import com.yiyn.ask.sys.po.UserBPo;
 import com.yiyn.ask.wechat.dto.WechatRefundResponseDto;
 import com.yiyn.ask.wechat.dto.WechatResultDto;
 import com.yiyn.ask.wechat.service.WechatRefundServiceImpl;
+import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
+import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
+import com.yiyn.ask.xcx.account.po.AccountFlowPo;
+import com.yiyn.ask.xcx.account.po.AccountPo;
 import com.yiyn.ask.xcx.center.dao.impl.CodeDaoImpl;
 import com.yiyn.ask.xcx.center.po.CodePo;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultLogDaoImpl;
@@ -95,6 +99,12 @@ public class OrderManagementController {
 	
 	@Autowired
 	private OrderManager orderManager;
+	
+	@Autowired
+	private AccountDaoImpl accountDao;
+	
+	@Autowired
+	private AccountFlowDaoImpl accountFlowDao;
 
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request, HttpServletResponse response)
@@ -212,10 +222,25 @@ public class OrderManagementController {
 			// 记录日志
 			ConsultLogPo t = new ConsultLogPo();
 			t.setLog_type(ConsultStatuEnum.REFUND.getCode());
-			t.setLog_desc("管理员取消订单");
+			t.setLog_desc("管理员主动发起取消订单");
 			t.setConsult_id(id.toString());
 			t.setLog_user_type(LogUserTypeEnum.USER_BG.getCode());
 			consultLogDao.insert(t);
+			
+			// 插入帐号流水
+			AccountPo account = this.accountDao.getAccountInfo(consultPo.getUser_b_no());
+			AccountFlowPo flowP = new AccountFlowPo();
+			flowP.setAccount_id(account.getId());
+			flowP.setJournal_money(NumberUtils.createBigDecimal(consultPo.getPrice()).doubleValue());
+			flowP.setJournal_dir("2");// 1：流入，2：流出
+			flowP.setJournal_type("3");// 1：用户支付，2：提现：3：退款
+			flowP.setOrder_id(consultPo.getOdd_num());
+			flowP.setPay_type("WXPAY");
+			flowP.setPay_time(SPDateUtils.formatDateTimeDefault(new Date()));
+			flowP.setJournal_remark("管理员主动发起取消订单");
+			flowP.setPay_status("1");//1:成功；2：待处理
+			flowP.setPay_channel_no("WXXCX");
+			accountFlowDao.insert(flowP);
 				
 			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
 				String.format("订单%s已取消，总共退款金额为%s",consultPo.getOdd_num(),consultPo.getPrice()));
@@ -270,8 +295,21 @@ public class OrderManagementController {
 			t.setLog_desc("管理员同意取消订单");
 			t.setConsult_id(id.toString());
 			t.setLog_user_type(LogUserTypeEnum.USER_BG.getCode());
-			
 			consultLogDao.insert(t);
+			
+			AccountPo account = this.accountDao.getAccountInfo(consultPo.getUser_b_no());
+			AccountFlowPo flowP = new AccountFlowPo();
+			flowP.setAccount_id(account.getId());
+			flowP.setJournal_money(NumberUtils.createBigDecimal(consultPo.getPrice()).doubleValue());
+			flowP.setJournal_dir("2");// 1：流入，2：流出
+			flowP.setJournal_type("3");// 1：用户支付，2：提现：3：退款
+			flowP.setOrder_id(consultPo.getOdd_num());
+			flowP.setPay_type("WXPAY");
+			flowP.setPay_time(SPDateUtils.formatDateTimeDefault(new Date()));
+			flowP.setJournal_remark("管理员同意取消订单");
+			flowP.setPay_status("1");//1:成功；2：待处理
+			flowP.setPay_channel_no("WXXCX");
+			accountFlowDao.insert(flowP);
 				
 			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
 					String.format("订单%s已同意取消，总共退款金额为%s", consultPo.getOdd_num(), consultPo.getPrice()));

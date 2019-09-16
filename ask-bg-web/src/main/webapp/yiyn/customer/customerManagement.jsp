@@ -73,10 +73,11 @@
 		</ul>
 	</div>
 
-	<table class="table" style="width:520px" layoutH="140">
+	<table class="table" style="width:670px" layoutH="140">
 		<thead>
 			<tr>
 				<th width="120px">下单用户手机号</th>
+				<th width="150px">注册日期</th>
 				<th width="100px">妈妈姓名</th>
 				<th width="100px">妈妈生日</th>
 				<th width="100px">宝宝姓名</th>
@@ -87,6 +88,7 @@
 			<c:forEach items="${info.data}" var="item" varStatus="s">
 			<tr target="id" rel="${item['ID']}">
 				<td>${item.uc_user_phone}</td>
+				<td><f:formatDate value="${item.uc_reg_time}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<td>${item.NAME_M}</td>
 				<td>${item.BIRTHDAY_M}</td>
 				<td>${item.NAME_B}</td>

@@ -7,7 +7,7 @@
 	<select id="searchByConditions_bg"
 		parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="java.util.HashMap">
 		select ucr.*,
-		uc.user_phone as uc_user_phone
+		uc.user_phone as uc_user_phone,uc.reg_time as uc_reg_time
 		from user_c_ref ucr,user_c uc
 		where 1=1 and ucr.user_no=uc.user_no
 		<if test="paramMap.usre_c_phone != null and '' != paramMap.usre_c_phone">
