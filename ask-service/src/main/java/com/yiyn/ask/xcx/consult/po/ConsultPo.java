@@ -1,5 +1,7 @@
 package com.yiyn.ask.xcx.consult.po;
 
+import java.util.Date;
+
 import com.yiyn.ask.base.po.BasePo;
 import com.yiyn.ask.xcx.user.po.UserEvalPo;
 import com.yiyn.ask.xcx.user.po.UserPo;
@@ -30,6 +32,8 @@ public class ConsultPo extends BasePo {
 	
 	private String problem_imgs;
 	private String problem_video;
+	
+	private Date refund_time;
 	
 	private String status;
 	
@@ -220,4 +224,13 @@ public class ConsultPo extends BasePo {
 	public void setPrepay_id(String prepay_id) {
 		this.prepay_id = prepay_id;
 	}
+
+	public Date getRefund_time() {
+		return refund_time;
+	}
+
+	public void setRefund_time(Date refund_time) {
+		this.refund_time = refund_time;
+	}
+
 }

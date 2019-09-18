@@ -72,4 +72,9 @@
 		where id =#{id};
 	</select>
 	
+	<select id="refundById" parameterType="com.yiyn.ask.xcx.consult.po.ConsultPo" resultType="com.yiyn.ask.xcx.consult.po.ConsultPo">
+	    update consultation_sheet set status=#{status},refund_time=#{refund_time},updated_by=#{updated_by},updated_time=#{updated_time}
+		where id =#{id};
+	</select>
+	
 </mapper>

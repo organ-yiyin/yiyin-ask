@@ -217,7 +217,8 @@ public class OrderManagementController {
 		 if(refund.isSuccess()) {
 			// 修改订单状态
 			consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
-			this.consultantSheetBgDao.updateStatusById(consultPo);
+			consultPo.setRefund_time(new Date());
+			this.consultantSheetBgDao.refundById(consultPo);
 			
 			// 记录日志
 			ConsultLogPo t = new ConsultLogPo();
@@ -287,7 +288,8 @@ public class OrderManagementController {
 		if(refund.isSuccess()) {
 			// 修改订单状态
 			consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
-			this.consultantSheetBgDao.updateStatusById(consultPo);
+			consultPo.setRefund_time(new Date());
+			this.consultantSheetBgDao.refundById(consultPo);
 			
 			// 记录日志
 			ConsultLogPo t = new ConsultLogPo();
