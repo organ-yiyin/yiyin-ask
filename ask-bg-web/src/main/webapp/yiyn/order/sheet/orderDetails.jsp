@@ -13,13 +13,7 @@
 <link href="<%= path %>/widget/mWechat/m-wechat.css" rel="stylesheet" type="text/css" media="screen"/>
 
 <script>
-	var downloadExcel = function(){
-		alertMsg.confirm("确认取消订单吗？", {
-			okCall: function(){
-				
-			}
-		});
-	};
+	
 </script>
 
 <div class="pageContent">
@@ -237,7 +231,7 @@
 												<c:if test="${item_u.code==item.log_type}">${item_u.name}</c:if>
 											</c:forEach>
 										</td>
-										<td>${item.log_desc}111</td>
+										<td>${item.log_desc}</td>
 										<td>${item.created_by}</td>
 										<td>
 											<c:forEach items="${consultantSheet.logUserTypes}" var="item_u" varStatus="s">
@@ -410,9 +404,9 @@
 		</div>
 		<div class="formBar">
 			<ul>
-				<c:if test="${consultantSheet.status eq 2}">
+				<%-- <c:if test="${consultantSheet.status eq 2}">
 					<a class="button" href="<%=path%>/order/adminCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认取消订单并且退款吗？"><span>取消订单</span></a>
-				</c:if>
+				</c:if> --%>
 				<c:if test="${consultantSheet.status eq 3}">
 					<a class="button" href="<%=path%>/order/adminConfirmCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认同意取消订单并且退款吗？"><span>同意取消订单</span></a>
 					<a class="button" href="<%=path%>/order/adminRejectCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认驳回取消订单吗？"><span>驳回取消订单</span></a>

@@ -102,8 +102,8 @@ public class OrderManager {
 			
 			Date created_time = (Date)dataMap.get("CREATED_TIME");
 			ExcelUtil.setCellStringValue(row, cellIndex++, SPDateUtils.formatDateTimeDefault(created_time));
-			//Date pay_time = (Date)dataMap.get("REFUND_TIME");
-			ExcelUtil.setCellStringValue(row, cellIndex++, "");
+			Date pay_time = (Date)dataMap.get("PAY_TIME");
+			ExcelUtil.setCellStringValue(row, cellIndex++, SPDateUtils.formatDateTimeDefault(pay_time));
 			Date refund_time = (Date)dataMap.get("REFUND_TIME");
 			ExcelUtil.setCellStringValue(row, cellIndex++, SPDateUtils.formatDateTimeDefault(refund_time));
 			
