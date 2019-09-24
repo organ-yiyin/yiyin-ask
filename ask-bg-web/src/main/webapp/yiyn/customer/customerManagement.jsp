@@ -9,7 +9,7 @@
 %>
 
 <script>
-	var downloadExcel = function(){
+	var downloadCustomerExcel = function(){
 		alertMsg.confirm("确认导出提现数据吗？", {
 			okCall: function(){
 				var url = "<%=path %>/customer/downloadCustomers.do";
@@ -69,7 +69,7 @@
 		<ul class="toolBar">
 			<li><a class="edit" href="<%=path %>/customer/forwardDetails.do?id={id}" target="navTab" rel="customerDetails"><span>查看</span></a></li>
 			<li class="line">line</li>
-			<li><a class="icon" href="javascript:void(0)" onclick="downloadExcel()"><span>导出</span></a></li>
+			<li><a class="icon" href="javascript:void(0)" onclick="downloadCustomerExcel()"><span>导出</span></a></li>
 		</ul>
 	</div>
 

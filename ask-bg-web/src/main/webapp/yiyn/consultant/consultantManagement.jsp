@@ -8,7 +8,7 @@
 %>
 
 <script>
-	var downloadExcel = function(){
+	var downloadConsultantExcel = function(){
 		alertMsg.confirm("确认导出咨询师数据吗？", {
 			okCall: function(){
 				var url = "<%=path %>/consultant/downloadConsults.do";
@@ -82,7 +82,7 @@
 			<li class="line">line</li>
 			<li><a class="edit" href="<%=path %>/consultant/attachment/management.do?id={id}" target="navTab" rel="attachmentManagement"><span>附件管理</span></a></li>
 			<li class="line">line</li>
-			<li><a class="icon" href="javascript:void(0)" onclick="downloadExcel()"><span>导出</span></a></li>
+			<li><a class="icon" href="javascript:void(0)" onclick="downloadConsultantExcel()"><span>导出</span></a></li>
 			</ul>
 	</div>
 

@@ -316,7 +316,7 @@
 					<br>
 					<dl class="nowrap">
 						<dt>以下为全部聊天记录：</dt>
-						<dd><a class="button" href="<%= path %>/order/forwardWechatDetails.do?id=${consultantSheet.id}" target="dialog" rel="orderWechat" mask="true" title="聊天记录(仿微信)" width="500" height="700"><span>将以下表格中的聊天记录转为仿微信方式查看</span></a><br /><br /></dd>
+						<dd><a class="button" href="<%= path %>/order/forwardWechatDetails.do?id=${consultantSheet.id}" target="dialog" rel="orderWechat" mask="true" title="聊天记录(仿微信)" width="500" height="600"><span>将以下表格中的聊天记录转为仿微信方式查看</span></a><br /><br /></dd>
 					</dl>
 
 					<div style="width:900px">

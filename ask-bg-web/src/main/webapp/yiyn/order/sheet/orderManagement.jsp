@@ -9,7 +9,7 @@
 %>
 
 <script>
-	var downloadExcel = function(){
+	var downloadOrderExcel = function(){
 		alertMsg.confirm("如果导出的数据很多，速度会很慢，请耐心等待！确认导出订单数据吗？", {
 			okCall: function(){
 				var url = "<%=path %>/order/downloadOrders.do";
@@ -88,7 +88,7 @@
 		<ul class="toolBar">
 			<li><a class="edit" href="<%=path %>/order/forwardDetails.do?id={id}" target="navTab" rel="orderDetails"><span>查看</span></a></li>
 			<li class="line">line</li>
-			<li><a class="edit" href="javascript:void(0)" id="downloadOrders" onclick="downloadExcel()"><span>导出完整订单</span></a></li>
+			<li><a class="edit" href="javascript:void(0)" id="downloadOrders" onclick="downloadOrderExcel()"><span>导出完整订单</span></a></li>
 		</ul>
 	</div>
 

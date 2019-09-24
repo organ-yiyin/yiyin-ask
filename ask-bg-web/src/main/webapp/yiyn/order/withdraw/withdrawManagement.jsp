@@ -9,7 +9,7 @@
 %>
 
 <script>
-	var downloadExcel = function(){
+	var downloadWithdrawExcel = function(){
 		alertMsg.confirm("确认导出提现数据吗？", {
 			okCall: function(){
 				var url = "<%=path %>/withdraw/downloadWithdraw.do";
@@ -81,7 +81,7 @@
 		<ul class="toolBar">
 			<li><a class="edit" href="<%=path %>/withdraw/forwardDetails.do?id={id}" target="navTab" rel="withdrawDetails"><span>查看</span></a></li>
 			<li class="line">line</li>
-			<li><a class="icon" href="javascript:void(0)" onclick="downloadExcel()"><span>导出</span></a></li>
+			<li><a class="icon" href="javascript:void(0)" onclick="downloadWithdrawExcel()"><span>导出</span></a></li>
 		</ul>
 	</div>
 
