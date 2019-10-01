@@ -10,7 +10,7 @@
 
 <script>
 	var downloadCustomerExcel = function(){
-		alertMsg.confirm("确认导出提现数据吗？", {
+		alertMsg.confirm("确认导出客户数据吗？", {
 			okCall: function(){
 				var url = "<%=path %>/customer/downloadCustomers.do";
 				url = url + "?usre_c_phone=" + $("#usre_c_phone").val();
