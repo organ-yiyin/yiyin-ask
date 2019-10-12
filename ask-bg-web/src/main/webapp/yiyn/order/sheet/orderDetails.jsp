@@ -404,12 +404,12 @@
 		</div>
 		<div class="formBar">
 			<ul>
-				<%-- <c:if test="${consultantSheet.status eq 2}">
-					<a class="button" href="<%=path%>/order/adminCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认取消订单并且退款吗？"><span>取消订单</span></a>
-				</c:if> --%>
+				<c:if test="${consultantSheet.status eq 2}">
+					<a class="button" href="<%=path%>/order/adminCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认取消订单并且退款吗？"><span>管理员主动取消订单</span></a>
+				</c:if>
 				<c:if test="${consultantSheet.status eq 3}">
-					<a class="button" href="<%=path%>/order/adminConfirmCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认同意取消订单并且退款吗？"><span>同意取消订单</span></a>
-					<a class="button" href="<%=path%>/order/adminRejectCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认驳回取消订单吗？"><span>驳回取消订单</span></a>
+					<a class="button" href="<%=path%>/order/adminConfirmCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认同意取消订单并且退款吗？"><span>同意用户发起的取消订单</span></a>
+					<a class="button" href="<%=path%>/order/adminRejectCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认驳回取消订单吗？"><span>驳回用户发起的取消订单</span></a>
 				</c:if>
 				
 			</ul>

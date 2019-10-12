@@ -28,6 +28,12 @@
 	  where id = #{id}
     </select>
     
+    <select id="findByUserBId" resultType="com.yiyn.ask.xcx.account.po.AccountPo">
+      select *
+	  from user_account 
+	  where user_b_id = #{user_b_id}
+    </select>
+    
     <!--  通知后更新账户数据 -->
     <update id="updateById" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
 		update user_account
@@ -39,6 +45,13 @@
     <update id="updateByIdAftetTransfer" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
 		update user_account
 		set balance=#{balance},withdraw=#{withdraw},updated_by=#{updated_by},updated_time=#{updated_time}
+		where id = #{id}
+	</update>
+	
+	<!--  修改账户余额 -->
+    <update id="updateByIdAfterCancel" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
+		update user_account
+		set balance=#{balance},updated_by=#{updated_by},updated_time=#{updated_time}
 		where id = #{id}
 	</update>
 	

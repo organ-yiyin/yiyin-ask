@@ -212,13 +212,18 @@ public class OrderManagementController {
 		}
 
 		 WechatResultDto<WechatRefundResponseDto> refund = wechatRefundService.refund(consultPo.getOdd_num(),
-		 NumberUtils.createBigDecimal(consultPo.getPrice()),
-		 NumberUtils.createBigDecimal(consultPo.getPrice()));
+				 NumberUtils.createBigDecimal(consultPo.getPrice()),NumberUtils.createBigDecimal(consultPo.getPrice()));
 		 if(refund.isSuccess()) {
 			// 修改订单状态
 			consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
 			consultPo.setRefund_time(new Date());
 			this.consultantSheetBgDao.refundById(consultPo);
+			
+			// 修改账户表数据
+			// 并对user_account更新余额
+			AccountPo accountPo = this.accountDao.getAccountInfo(consultPo.getUser_b_no());
+			accountPo.setBalance(accountPo.getBalance().subtract(NumberUtils.createBigDecimal(consultPo.getPrice())));
+			accountDao.updateByIdAfterCancel(accountPo);
 			
 			// 记录日志
 			ConsultLogPo t = new ConsultLogPo();
@@ -228,10 +233,8 @@ public class OrderManagementController {
 			t.setLog_user_type(LogUserTypeEnum.USER_BG.getCode());
 			consultLogDao.insert(t);
 			
-			// 插入帐号流水
-			AccountPo account = this.accountDao.getAccountInfo(consultPo.getUser_b_no());
 			AccountFlowPo flowP = new AccountFlowPo();
-			flowP.setAccount_id(account.getId());
+			flowP.setAccount_id(accountPo.getId());
 			flowP.setJournal_money(NumberUtils.createBigDecimal(consultPo.getPrice()).doubleValue());
 			flowP.setJournal_dir("2");// 1：流入，2：流出
 			flowP.setJournal_type("3");// 1：用户支付，2：提现：3：退款
@@ -291,6 +294,12 @@ public class OrderManagementController {
 			consultPo.setRefund_time(new Date());
 			this.consultantSheetBgDao.refundById(consultPo);
 			
+			// 修改账户表数据
+			// 并对user_account更新余额
+			AccountPo accountPo = this.accountDao.getAccountInfo(consultPo.getUser_b_no());
+			accountPo.setBalance(accountPo.getBalance().subtract(NumberUtils.createBigDecimal(consultPo.getPrice())));
+			accountDao.updateByIdAfterCancel(accountPo);
+			
 			// 记录日志
 			ConsultLogPo t = new ConsultLogPo();
 			t.setLog_type(ConsultStatuEnum.REFUND.getCode());
@@ -299,9 +308,8 @@ public class OrderManagementController {
 			t.setLog_user_type(LogUserTypeEnum.USER_BG.getCode());
 			consultLogDao.insert(t);
 			
-			AccountPo account = this.accountDao.getAccountInfo(consultPo.getUser_b_no());
 			AccountFlowPo flowP = new AccountFlowPo();
-			flowP.setAccount_id(account.getId());
+			flowP.setAccount_id(accountPo.getId());
 			flowP.setJournal_money(NumberUtils.createBigDecimal(consultPo.getPrice()).doubleValue());
 			flowP.setJournal_dir("2");// 1：流入，2：流出
 			flowP.setJournal_type("3");// 1：用户支付，2：提现：3：退款

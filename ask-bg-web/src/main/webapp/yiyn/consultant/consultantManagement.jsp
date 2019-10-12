@@ -77,6 +77,10 @@
 			<li><a class="edit" href="<%=path %>/consultant/forwardUpdateDetails.do?id={id}" target="navTab"><span>修改</span></a></li>
 			<li class="line">line</li>
 			<li>
+				<a class="edit" href="<%=path%>/consultant/forwardAccount.do?id={id}" target="navTab"><span>余额账户</span></a>
+			</li>
+			<li class="line">line</li>
+			<li>
 				<a class="edit" href="<%=path%>/consultant/forwardResetPass.do?id={id}" target="navTab"><span>重置密码</span></a>
 			</li>
 			<li class="line">line</li>
