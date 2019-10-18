@@ -30,4 +30,8 @@ public class CenterResponseService {
    public void updRes(CenterResponsePo p) throws Exception{
 	   centerResponseDao.updateById(p);
    }
+   
+   public void delRes(Long id) throws Exception{
+	   centerResponseDao.deleteById(id);
+   }
 }

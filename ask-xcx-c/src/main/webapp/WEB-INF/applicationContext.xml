@@ -24,6 +24,7 @@
 				<value>classpath*:database.properties</value>
 				<value>classpath*:wechat.properties</value>
 				<value>classpath*:oss.properties</value>
+				<value>classpath*:sms.properties</value>
 			</list>
 		</property>
 	</bean>

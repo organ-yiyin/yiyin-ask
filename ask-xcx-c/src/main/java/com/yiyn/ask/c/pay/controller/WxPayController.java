@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
-import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.base.utils.ValidateCode;
 import com.yiyn.ask.c.wechat.controller.XcxOAuthService;
 import com.yiyn.ask.wechat.config.WeixinConfig;
@@ -29,7 +28,7 @@ import com.yiyn.ask.wechat.dto.WechatResultDto;
 import com.yiyn.ask.wechat.dto.WechatXcxDto;
 import com.yiyn.ask.wechat.service.WechatPrepayService;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
-import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
+import com.yiyn.ask.xcx.consult.po.ConsultSheetRefPo;
 import com.yiyn.ask.xcx.consult.service.impl.ConsultService;
 import com.yiyn.ask.xcx.user.service.impl.UserService;
 
@@ -100,7 +99,14 @@ public class WxPayController {
 		if(resDto.isSuccess()){
 			//预支付生成成功插入订单表
 			orderRequset.setPrepay_id(resDto.getResult().getPrepay_id());
+			// 获取id插入咨询单关联人表用
 			consultService.insConsult(orderRequset);
+			// 插入咨询单关联表
+			ConsultSheetRefPo refp = new ConsultSheetRefPo();
+			refp.setRef_id(refid);
+			refp.setOdd_num(business_id);
+			consultService.insConsultSheetRef(refp);
+			
 			String prepay_id = resDto.getResult().getPrepay_id();
 			logger.info("=========跳转微信支付页面========:" + prepay_id);
 			String nonceStr = ValidateCode.randomCode(10);
@@ -125,7 +131,7 @@ public class WxPayController {
 	}
 	
 	/**
-	 * 微信支付
+	 * 订单待支付直接根据订单去微信支付
 	 * 
 	 * @param request
 	 * @param response

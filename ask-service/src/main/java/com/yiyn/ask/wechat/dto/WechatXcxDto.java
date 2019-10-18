@@ -1,6 +1,10 @@
 package com.yiyn.ask.wechat.dto;
 
-public class WechatXcxDto {
+public class WechatXcxDto implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String session_key;
 	private String open_id;
 	private String unionid;

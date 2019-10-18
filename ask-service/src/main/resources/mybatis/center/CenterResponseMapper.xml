@@ -21,4 +21,9 @@
 		response_desc = #{response_desc}
 		where id = #{id}
 	</update>
+	
+    <delete id="deleteById" parameterType="java.lang.Long">
+		delete from quick_response
+		where id = #{value}
+	</delete>
 </mapper>

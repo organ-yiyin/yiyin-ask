@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ask.xcx.manage.wechat.controller.XcxOAuthService;
 import com.google.gson.Gson;
 import com.yiyn.ask.base.utils.MD5Util;
 import com.yiyn.ask.xcx.user.po.UserPo;
@@ -26,6 +27,8 @@ public class LoginController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private XcxOAuthService oAuthService;
 	/**
 	 * @param request
 	 * @param response
@@ -51,6 +54,8 @@ public class LoginController {
 			if(sfmatch){
 				resultMap.put("status", "0");
 				resultMap.put("user_no", po.getUser_no());
+				resultMap.put("open_id", po.getOpen_id());
+				resultMap.put("unionid", po.getUnionid());
 				resultMap.put("user_name", po.getUser_name());
 				resultMap.put("is_hidden", po.getIs_hidden());
 			}else{
@@ -61,49 +66,29 @@ public class LoginController {
 		return new Gson().toJson(resultMap);
 	}
 	
-//	/**
-//	 * @param request
-//	 * @param response
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	@RequestMapping(value = "/reg.x", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
-//	@ResponseBody
-//	public String reg(HttpServletRequest request,
-//			HttpServletResponse response, String username, String pas)
-//			throws Exception {
-//		logger.info("reg");
-//		// 新建成功返回
-//		Map<String, Object> resultMap = new HashMap<String, Object>();
-//
-//		UserPo insp = new UserPo();
-//		insp.setUser_no("TUPZ");
-//		insp.setUser_password(encode("TUPZ","1234"));
-//		userService.insetUser(insp);
-//		return new Gson().toJson(resultMap);
-//	}
-	
-  public boolean match(String pas, String encodedPassword) {
-	String encodePas = MD5Util.MD5Encode(pas, "UTF-8");
-			
-	if(encodePas.equals(encodedPassword)){
-		return true;
-	}else{
-		return false;
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getXcxMsg.x", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String getXcxMsg(HttpServletRequest request,
+			HttpServletResponse response,String code,String user_no) throws Exception {
+		logger.info("getXcxMsg");
+		// 新建成功返回
+		oAuthService.validateOAuth(code,user_no);
+		return null;
 	}
-  }
-
-//	private final String SEPARATOR_USERNAME_AND_PASSWORD = "_@_@_";
-//
-//    public boolean match(String username,String pas, String encodedPassword) {
-//    	CharSequence s = username + SEPARATOR_USERNAME_AND_PASSWORD + pas;
-//    	BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
-//        return encode.matches(s, encodedPassword);
-//    }
-//    
-//    public String encode(String username,String pas) {
-//    	CharSequence s = username + SEPARATOR_USERNAME_AND_PASSWORD + pas;
-//    	BCryptPasswordEncoder encode = new BCryptPasswordEncoder();
-//        return encode.encode(s);
-//    }
+	
+    public boolean match(String pas, String encodedPassword) {
+		String encodePas = MD5Util.MD5Encode(pas, "UTF-8");
+				
+		if(encodePas.equals(encodedPassword)){
+			return true;
+		}else{
+			return false;
+		}
+    }
 }

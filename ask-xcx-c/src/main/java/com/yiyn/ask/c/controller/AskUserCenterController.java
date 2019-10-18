@@ -51,8 +51,8 @@ public class AskUserCenterController {
 		
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("no", dto.getDb_open_id());
-		
 		resultMap.put("reList", userService.getRefList(param));
+		
 		return new Gson().toJson(resultMap);
 	}
 	
@@ -134,7 +134,6 @@ public class AskUserCenterController {
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		//获取微信小程序信息
 		WechatXcxDto dto = XcxOAuthService.getWechatXcxDto(sessionid);
-		
 		//查找c端用户关注咨询师列表
 		resultMap.put("reList", userService.getCollectionConsultList(dto.getDb_open_id()));
 		return new Gson().toJson(resultMap);

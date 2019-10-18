@@ -26,10 +26,8 @@ import com.google.gson.Gson;
 import com.yiyn.ask.base.utils.MD5Util;
 import com.yiyn.ask.base.utils.OSSClientUtils;
 import com.yiyn.ask.base.utils.StringUtils;
-import com.yiyn.ask.wechat.dto.WechatXcxDto;
 import com.yiyn.ask.xcx.account.service.impl.AccountService;
 import com.yiyn.ask.xcx.center.po.CenterResponsePo;
-import com.yiyn.ask.xcx.center.po.CodePo;
 import com.yiyn.ask.xcx.center.service.impl.CenterResponseService;
 import com.yiyn.ask.xcx.center.service.impl.CodeService;
 import com.yiyn.ask.xcx.user.po.UserPo;
@@ -76,6 +74,7 @@ public class UserCenterController {
 		param.put("user_no", user_no);
 		param.put("user_type", "B");
 		resultMap.put("evalList",userService.findUserEval(param));
+		
 		return new Gson().toJson(resultMap);
 	}
 	
@@ -95,6 +94,32 @@ public class UserCenterController {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 
 		resultMap.put("reList",centerResponseService.findResponseList(user_no));
+		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/delResponse.x", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String delResponse(HttpServletRequest request,
+			HttpServletResponse response, String id)
+			throws Exception {
+		logger.info("delResponse");
+		// 新建成功返回
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		try{
+			centerResponseService.delRes(new Long(id));
+			resultMap.put("status", "1");
+		}catch(Exception e){
+			e.printStackTrace();
+			resultMap.put("status", "-1");
+		}
+		
 		return new Gson().toJson(resultMap);
 	}
 	
@@ -301,7 +326,7 @@ public class UserCenterController {
 				attr = uploadImg2Oss(files,user_no);
 				p.setUser_headimg(attr);
 			}	
-			userService.updInfo(p);
+			
 			// 更新标签
 			List<UserTagPo> tagList = new ArrayList<UserTagPo>();
 			
@@ -315,6 +340,39 @@ public class UserCenterController {
 				userService.updUserTag(tagList, user_no);
 			}
 			
+			String advice_type = "";
+			// tag 1: 国际认证泌乳顾问 2: 早产儿家庭养育顾问 3: 懿英认证哺乳指导
+			// 根据标签自动匹配获取咨询类型 1：哺育 ：2：早产儿  9：所有
+			/*
+			 *  国际认证泌乳顾问 ----哺乳
+			 *  懿英认证哺乳指导 ----哺乳
+			 *  国际认证泌乳顾问  ++ 懿英认证哺乳指导 ----哺乳
+			 *  早产儿家庭养育顾问 --- 早产儿
+			 *  国际认证泌乳顾问 + 早产儿家庭养育顾问 + 懿英认证哺乳指导 == 所有
+			 *  国际认证泌乳顾问 + 早产儿 == 所有
+			 *  懿英认证哺乳指导 + 早产儿 == 所有
+			 */
+			if(tags.indexOf("1") >= 0){
+				if(tags.indexOf("2") >= 0){
+					advice_type = "9";
+				}else{
+					advice_type = "1";
+				}
+			}else if(tags.indexOf("3") >= 0){
+				if(tags.indexOf("2") >= 0){
+					advice_type = "9";
+				}else{
+					advice_type = "1";
+				}
+			}else if(tags.indexOf("2") >= 0){
+				if(tags.indexOf("1") >= 0 || tags.indexOf("3") >= 0){
+					advice_type = "9";
+				}else{
+					advice_type = "2";
+				}
+			}
+			p.setAdvice_type(advice_type);
+			userService.updInfo(p);
 			resultMap.put("status", "1");
 		}catch(Exception e){
 			e.printStackTrace();
@@ -365,6 +423,7 @@ public class UserCenterController {
 		//查看二维码是否已经存在
 		UserPo p = userService.findByUserno(user_no);
 		
+		resultMap.put("info", p);
 		if(!StringUtils.isEmptyString(p.getShare_link())){
 			resultMap.put("link", p.getShare_link());
 		}else{

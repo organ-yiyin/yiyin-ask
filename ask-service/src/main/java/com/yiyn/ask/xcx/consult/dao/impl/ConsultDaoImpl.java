@@ -6,7 +6,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
+import com.yiyn.ask.base.constants.YesOrNoType;
 import com.yiyn.ask.base.dao.BaseDao;
+import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
 @Repository("consultDao")
 public class ConsultDaoImpl extends BaseDao<ConsultPo> {
@@ -49,7 +51,7 @@ public class ConsultDaoImpl extends BaseDao<ConsultPo> {
 	public void updConsult(ConsultPo p)throws Exception {
 		this.getSqlSession().update(this.getNameStatement() + ".updConsult",p);
 	}
-
+	
 	public String getNameStatement() {
 		return "yiyin.consult";
 	}

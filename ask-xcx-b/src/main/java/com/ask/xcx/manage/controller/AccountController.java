@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.WithDrawStatusEnum;
 import com.yiyn.ask.base.constants.WithDrawTypeEnum;
 import com.yiyn.ask.base.utils.DateUtils;
+import com.yiyn.ask.xcx.account.po.AccountPo;
 import com.yiyn.ask.xcx.account.po.AccountWithDrawPo;
 import com.yiyn.ask.xcx.account.service.impl.AccountService;
 
@@ -47,7 +48,17 @@ public class AccountController {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		
 		//获取账户余额以及累计收益和上月收益以及是否有可提现的金额
-		resultMap.put("info", accountService.getAccountInfo(user_no));
+		AccountPo p = accountService.getAccountInfo(user_no);
+		if(p == null){
+			AccountPo p1 = new AccountPo();
+			p1.setBalance(new BigDecimal(0));
+			p1.setIncome_total("0");
+			p1.setIncome_last_m("0");
+			resultMap.put("info", p1);
+		}else{
+			resultMap.put("info", p);
+		}
+		
 		return new Gson().toJson(resultMap);
 	}
 	
@@ -122,15 +133,15 @@ public class AccountController {
 			sfktx = true;
 		}
 		double fd=0;
+		// 提现日期不对
+		if(!sfktx){
+			resultMap.put("status", "4");
+		}else if(withdraw > balance){
 		// 提现金额大于余额
-		if(withdraw > balance){
 			resultMap.put("status", "2");
 		// 提现金额不足(为0)
 		}else if(withdraw == fd){
 			resultMap.put("status", "3");
-		// 提现日期不对
-		}else if(!sfktx){
-			resultMap.put("status", "4");
 		}else{
 			try{
 				AccountWithDrawPo p = new AccountWithDrawPo();

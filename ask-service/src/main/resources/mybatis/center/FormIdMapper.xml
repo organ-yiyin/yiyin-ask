@@ -1,0 +1,31 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.formid">
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.center.po.FormIdPo" useGeneratedKeys="true" keyProperty="id">
+		insert into yiyn_form_id(source,form_id,rel_user,get_time,expires_time,send_num,is_valid)
+		values (#{source},#{form_id},#{rel_user},now(),DATE_ADD(now(),INTERVAL 6 day),#{send_num},'1');
+	</insert>
+	
+    <select id="getFormId" resultType="com.yiyn.ask.xcx.center.po.FormIdPo" parameterType="String">
+        SELECT t.*
+        FROM yiyn_form_id t
+        where rel_user = #{value}
+        and is_valid = '1'
+        and form_id != 'the formId is a mock one'
+        and send_num > 0
+        limit 0,1
+    </select>
+    
+    <update id="updateById" parameterType="com.yiyn.ask.xcx.center.po.FormIdPo">
+		update yiyn_form_id
+		set send_num = send_num - 1
+		where id = #{id}
+	</update>
+	
+    <delete id="deleteById" parameterType="java.lang.Long">
+		delete from yiyn_form_id
+		where id = #{value}
+	</delete>
+</mapper>

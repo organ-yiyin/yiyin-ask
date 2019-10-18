@@ -68,7 +68,7 @@ public class MainController {
 	@ResponseBody
 	public String getXcxMsg(HttpServletRequest request,
 			HttpServletResponse response,String code) throws Exception {
-		logger.info("initMain");
+		logger.info("getXcxMsg");
 		// 新建成功返回
 		Map<String,String> resultMap = oAuthService.validateOAuth(code);
 		return new Gson().toJson(resultMap);
@@ -91,6 +91,7 @@ public class MainController {
 			String res = WechatDecryptDataUtil.decryptData(encryptDataB64, dto.getSession_key(), ivB64);
 			JsonObject o = new JsonParser().parse(res).getAsJsonObject();
 			
+			logger.info("获取后的解码参数为:" + o);
 			resultMap.put("userPhone", o.get("phoneNumber").getAsString());
 			
 			// 更新数据库用户手机号码

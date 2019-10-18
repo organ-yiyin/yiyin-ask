@@ -1,0 +1,32 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.consultSheetRef">
+    <select id="getRefInfo" resultType="com.yiyn.ask.xcx.consult.po.ConsultSheetRefPo" parameterType="String">
+        select *
+        from user_c_ref
+        where 1 =1
+		and id = #{value}
+    </select>
+    
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultSheetRefPo" useGeneratedKeys="true" keyProperty="id">
+		insert into consultation_sheet_ref(CONSULT_ID,REF_ID,NAME_M,AGE_M,BIRTHDAY_M,SPECIAL_M,NAME_B,SEX_B,
+		AGE_B,BIRTHDAY_B,EDC_B,BIRTH_WEIGHT_B,SPECIAL_B,BIRTH_WEEK,PREMIE,CREATED_TIME,CREATED_BY)
+		select c.id,
+		#{ref_id},
+		t.NAME_M,
+		t.AGE_M,
+		t.BIRTHDAY_M,
+		t.SPECIAL_M,
+		t.NAME_B,t.SEX_B,
+		t.AGE_B,t.BIRTHDAY_B,t.EDC_B,t.BIRTH_WEIGHT_B,
+		t.SPECIAL_B,t.BIRTH_WEEK,t.PREMIE,
+		now(),
+		'生成订单时生成'
+		from user_c_ref t,consultation_sheet c
+		where t.id = c.user_ref_id
+		and t.id = #{ref_id}
+		and c.odd_num = #{odd_num}
+	</insert>
+</mapper>

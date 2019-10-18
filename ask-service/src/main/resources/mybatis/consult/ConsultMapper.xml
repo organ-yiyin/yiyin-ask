@@ -26,7 +26,12 @@
     <select id="getConsultList" resultMap="ConsultListMap" parameterType="java.util.HashMap">
         select t.*,ref.name_m,ref.name_b,case sex_b when '1' then '男' else '女' end as sex_b,
 		case status when '3' then '退单审核' when '4' then '已退单' else '' end as status_show,
-		(select count(1) from consultation_sheet_log log where log.log_type = '5' and log.CONSULT_ID = t.id) as sfhd,
+		(SELECT case l.log_type when '2' then 0 else 1 end as sfhd
+			FROM consultation_sheet_log l
+			WHERE l.CONSULT_ID = t.id
+			order by l.CREATED_TIME desc
+			limit 0,1
+		) AS sfhd,
 		DATE_FORMAT(t.CREATED_TIME,'%Y-%m-%d %H:%i:%s') as created_time_format
         from consultation_sheet t,user_c_ref ref
         where t.user_ref_id = ref.id
@@ -49,6 +54,7 @@
 	     <association property="userPo" javaType="com.yiyn.ask.xcx.user.po.UserPo">
 	        <result property="user_headimg" column="user_headimg"/>
 	        <result property="user_name" column="user_name"/>
+	        <result property="work_year" column="work_year"/>
 	     </association>
 	     <association property="evalPo" javaType="com.yiyn.ask.xcx.user.po.UserEvalPo">
 	        <result property="stars" column="stars"/>
@@ -56,7 +62,7 @@
      </resultMap>
     
     <select id="getConsultCList" resultMap="ConsultCListMap" parameterType="java.util.HashMap">
-        select t.*,b.user_headimg,b.user_name,
+        select t.*,b.user_headimg,b.user_name,b.work_year,
 		case status when '1' then '待支付' when '2' then '退单' when '3' then '已申请退款' when '4' then '已退款' 
 		when '5' then '已回答' else '已结束' end as status_show,
 		DATE_FORMAT(t.CREATED_TIME,'%Y-%m-%d %H:%i:%s') as created_time_format,
@@ -98,7 +104,14 @@
          <association property="userPo" javaType="com.yiyn.ask.xcx.user.po.UserPo">
 	        <result property="user_headimg" column="user_headimg"/>
 	        <result property="user_name" column="user_name"/>
+	        <result property="user_phone" column="user_phone_b"/>
+	        <result property="work_year" column="work_year"/>
+	        <result property="open_id" column="open_id"/>
 	     </association>
+	     <association property="userCPo" javaType="com.yiyn.ask.xcx.user.po.UserCPo">
+	        <result property="user_phone" column="user_phone_c"/>
+	     </association>
+         
      </resultMap>
     
     <select id="getConsultInfo" resultMap="ConsultInfoMap" parameterType="String">
@@ -139,23 +152,78 @@
 		) AS problem_type,
 		b.user_headimg,
 		b.user_name,
+		b.work_year,
+		b.open_id,
+		b.user_phone as user_phone_b,
 		(select count(1) from consultation_sheet_log log where log.log_type = '5' and log.CONSULT_ID = s.id) as sfhd,
+		c.user_phone as user_phone_c,
 		DATE_FORMAT(s.CREATED_TIME,'%Y-%m-%d %H:%i:%s') as created_time_format,
 		DATE_FORMAT(s.UPDATED_TIME,'%Y-%m-%d %H:%i:%s') as updated_time_format
 		FROM consultation_sheet s,
-			user_c_ref ref,
-			user_b b
+			consultation_sheet_ref ref,
+			user_b b,user_c c
 		WHERE s.USER_B_NO = b.USER_NO
-		AND s.USER_REF_ID = ref.ID
+		and s.USER_C_NO = c.USER_NO
+		AND s.id = ref.CONSULT_ID
 		AND s.id = #{value}
 		LIMIT 0,1
     </select>
     
+    <resultMap type="com.yiyn.ask.xcx.consult.po.ConsultPo" id="ConsultInfoOddMap">
+         <id column="id" property="id"/>
+         <result column="user_c_no" property="user_c_no"/>
+         <result column="user_b_no" property="user_b_no"/>
+         <result column="status" property="status"/>
+         <result column="price" property="price"/>
+         <result column="problem_type" property="problem_type"/>
+         <result column="odd_num" property="odd_num"/>
+         <result column="problem_desc" property="problem_desc"/>
+         <result column="problem_imgs" property="problem_imgs"/>
+         <result column="problem_video" property="problem_video"/>
+         <result column="prepay_id" property="prepay_id"/>
+         <result column="created_time_format" property="created_time_format"/>
+         <association property="refPo" javaType="com.yiyn.ask.xcx.consult.po.ConsultRefPo">
+	        <result property="name_m" column="name_m"/>
+	     </association>
+         <association property="userPo" javaType="com.yiyn.ask.xcx.user.po.UserPo">
+	        <result property="user_name" column="user_name"/>
+	        <result property="user_phone" column="user_phone"/>
+	        <result property="open_id" column="open_id"/>
+	     </association>
+     </resultMap>
+    
+    
     <!-- 微信通知的时候用 -->
-    <select id="getConsultByOdd_Num" resultType="com.yiyn.ask.xcx.consult.po.ConsultPo" parameterType="String">
-        SELECT *
-		FROM consultation_sheet s
-		WHERE odd_num = #{value}
+    <select id="getConsultByOdd_Num" resultMap="ConsultInfoOddMap" parameterType="String">
+        SELECT s.id,
+        	s.user_c_no,
+        	s.user_b_no,
+        	s.price,
+        	s.prepay_id,
+			ref.name_m,
+		 s.status,
+		 s.odd_num,
+		 s.problem_desc,
+		 s.problem_imgs,
+		 s.problem_video,
+		 (
+			SELECT
+				NAME
+			FROM
+				yiyn_code CODE
+			WHERE CODE.VALUE = s.PROBLEM_TYPE
+			AND CODE.CODE_TYPE = 'QUS_TYPE'
+		) AS problem_type,
+		b.user_name,
+		b.user_phone,
+		b.open_id,
+		DATE_FORMAT(s.CREATED_TIME,'%Y-%m-%d %H:%i:%s') as created_time_format
+		FROM consultation_sheet s,consultation_sheet_ref ref,
+			user_b b,user_c c
+		WHERE s.USER_B_NO = b.USER_NO
+		and s.USER_C_NO = c.USER_NO
+		AND s.id = ref.CONSULT_ID
+		and s.odd_num = #{value}
 		LIMIT 0,1
     </select>
     
@@ -163,6 +231,9 @@
 		update consultation_sheet set status = #{status},
 		<if test="pay_odd_num != null and '' != pay_odd_num">
 			PAY_ODD_NUM = #{pay_odd_num},
+		</if>
+		<if test="pay_time != null and '' != pay_time">
+			pay_time = #{pay_time},
 		</if>
 		UPDATED_BY =#{updated_by},
 		UPDATED_TIME = now()
@@ -179,6 +250,7 @@
 		where id = #{id}
 	</update>
 	
+    <!-- select LAST_INSERT_ID() -->
     <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultPo" useGeneratedKeys="true" keyProperty="id">
 		insert into consultation_sheet(USER_C_NO,USER_B_NO,USER_REF_ID,ODD_NUM,
 		SHEET_AGE_M,SHEET_AGE_B,PRICE,PROBLEM_DESC,PROBLEM_TYPE,PROBLEM_IMGS,PROBLEM_VIDEO,STATUS,

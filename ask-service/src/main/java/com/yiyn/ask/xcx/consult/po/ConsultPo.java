@@ -1,6 +1,7 @@
 package com.yiyn.ask.xcx.consult.po;
 
 import com.yiyn.ask.base.po.BasePo;
+import com.yiyn.ask.xcx.user.po.UserCPo;
 import com.yiyn.ask.xcx.user.po.UserEvalPo;
 import com.yiyn.ask.xcx.user.po.UserPo;
 
@@ -47,6 +48,18 @@ public class ConsultPo extends BasePo {
 	
 	private UserPo userPo;
 	
+	private UserCPo userCPo;
+	
+	private String pay_time;
+	
+	public UserCPo getUserCPo() {
+		return userCPo;
+	}
+
+	public void setUserCPo(UserCPo userCPo) {
+		this.userCPo = userCPo;
+	}
+
 	// 查看订单是否被服务人员回答过
 	private int sfhd;
 	
@@ -219,5 +232,13 @@ public class ConsultPo extends BasePo {
 
 	public void setPrepay_id(String prepay_id) {
 		this.prepay_id = prepay_id;
+	}
+
+	public String getPay_time() {
+		return pay_time;
+	}
+
+	public void setPay_time(String pay_time) {
+		this.pay_time = pay_time;
 	}
 }

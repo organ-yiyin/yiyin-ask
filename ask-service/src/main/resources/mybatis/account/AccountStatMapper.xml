@@ -9,6 +9,6 @@
  		from stat_account_m m
 		where user_no = #{user_no}
 		and #{year} = SUBSTR(STAT_MONTH FROM 1 FOR 4)
-		order by m.CREATED_TIME desc
+		order by m.stat_month desc
     </select>
 </mapper>

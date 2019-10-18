@@ -29,14 +29,30 @@ public class UserPo extends BasePo {
 	private List<UserTagPo> tagList;
 	private String advice_val;// 咨询单价
 	private String advice_num;// 咨询数量
+	private String advice_type; // 咨询类型
 	private String type; // 更新数据库的类型
 	
 	private String consultEval; // 评价---实时算出
 	private String consultCount; // 咨询量
 	
 	private String share_link; // 二维码分享链接
-	
 	private String is_hidden;// 是否隐藏
+	private String advice_num_today;//统计今日接单量
+	private String open_id; // B端用户小程序微信唯一标识
+	private String unionid; // 关联id，多个移动公用一个
+	
+	public String getUnionid() {
+		return unionid;
+	}
+	public void setUnionid(String unionid) {
+		this.unionid = unionid;
+	}
+	public String getOpen_id() {
+		return open_id;
+	}
+	public void setOpen_id(String open_id) {
+		this.open_id = open_id;
+	}
 	public String getShare_link() {
 		return share_link;
 	}
@@ -145,5 +161,17 @@ public class UserPo extends BasePo {
 	}
 	public void setIs_hidden(String is_hidden) {
 		this.is_hidden = is_hidden;
+	}
+	public String getAdvice_type() {
+		return advice_type;
+	}
+	public void setAdvice_type(String advice_type) {
+		this.advice_type = advice_type;
+	}
+	public String getAdvice_num_today() {
+		return advice_num_today;
+	}
+	public void setAdvice_num_today(String advice_num_today) {
+		this.advice_num_today = advice_num_today;
 	}
 }

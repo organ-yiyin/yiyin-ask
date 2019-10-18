@@ -18,14 +18,19 @@ import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
 import com.yiyn.ask.base.constants.ProcessContentTypeEnum;
 import com.yiyn.ask.base.constants.ProcessSendTypeEnum;
+import com.yiyn.ask.base.utils.DateUtils;
+import com.yiyn.ask.base.utils.SMSUtils;
 import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.c.wechat.controller.XcxOAuthService;
 import com.yiyn.ask.wechat.dto.WechatXcxDto;
+import com.yiyn.ask.xcx.center.po.FormIdPo;
+import com.yiyn.ask.xcx.center.service.impl.FormIdService;
 import com.yiyn.ask.xcx.consult.po.ConsultLogPo;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
 import com.yiyn.ask.xcx.consult.po.ConsultProcessPo;
 import com.yiyn.ask.xcx.consult.service.impl.ConsultService;
 import com.yiyn.ask.xcx.user.po.UserEvalPo;
+import com.yiyn.ask.xcx.user.po.UserPo;
 import com.yiyn.ask.xcx.user.service.impl.UserService;
 
 @Controller
@@ -38,6 +43,15 @@ public class ConsultSheetController {
 	
 	@Autowired
 	private ConsultService consultService;
+	
+	@Autowired
+	private FormIdService formIdService;
+	
+	@Autowired
+	private SMSUtils smsUtils;
+	
+	@Autowired
+	private XcxOAuthService oAuthService;
 	
 	/**
 	 * @param request
@@ -55,7 +69,6 @@ public class ConsultSheetController {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		//获取微信小程序信息
 		WechatXcxDto dto = XcxOAuthService.getWechatXcxDto(sessionid);
-		
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("no", dto.getDb_open_id());
 		param.put("type", type);
@@ -237,11 +250,56 @@ public class ConsultSheetController {
 			updP.setUpdated_by("add_ques_num");
 			consultService.updConsultQuesNum(updP);
 			resultMap.put("status", "1");
+			
+			// 发送消息
+			this.sendMsg(id,text);
 		}catch(Exception e){
 			e.printStackTrace();
 			resultMap.put("status", "-1");
 		}
 		
 		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * 保存完后，如果没发过通知的发通知
+	 * 
+	 * @param url
+	 */
+	private void sendMsg(String id,String sm) throws Exception{
+		logger.info("进入通知，id为" + id + " 文字描述为：" + sm);
+		if(!StringUtils.isEmptyString(id)){
+			// 根据订单id查找B端用户电话和open_id
+			//UserPo p = userService.findUserByConsultId(id);
+			//根据id查找咨询单的相关信息
+			ConsultPo p = consultService.getConsultInfo(id);
+			// 先发送短信
+			smsUtils.sendNotice("【YIYN问答】您好，您收到一条追问咨询，请登陆YIYN问答小程序查看", p.getUserPo().getUser_phone());
+			
+			// 获取到的form_id用来保存发送用
+			// 后发通知
+			Map<String,String> param = new HashMap<String,String>();
+			if(!StringUtils.isEmptyString(p.getUserPo().getOpen_id())){
+				FormIdPo fP = formIdService.getFormId(p.getUserPo().getOpen_id());
+				if(fP != null){
+					// 真是的form_id从用户取得
+					param.put("open_id", p.getUserPo().getOpen_id());
+					param.put("form_id", fP.getForm_id());
+					param.put("zxr", p.getRefPo().getName_m());// 咨询人姓名（妈妈名称）
+      				param.put("zxlx", p.getProblem_type());
+      				param.put("zxsj", DateUtils.getNowTime(DateUtils.DATE_FULL_STR));
+      				param.put("zxnr", sm);
+					param.put("url", "pages/consultation/consultation");
+					// form id使用过以后置为无效 只能使用一次
+					boolean f = oAuthService.sendMsg(param);
+      				// 发送成功的情况下
+      				if(f){
+      					formIdService.updateById(fP);
+      				}else{
+      					formIdService.delForm(fP);
+      				}
+				}
+			}
+		}
 	}
 }

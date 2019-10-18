@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.ask.xcx.manage.wechat.controller.XcxOAuthService;
 import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
 import com.yiyn.ask.base.constants.ProcessContentTypeEnum;
 import com.yiyn.ask.base.utils.OSSClientUtils;
-import com.yiyn.ask.base.utils.StringUtils;
+import com.yiyn.ask.base.utils.SMSUtils;
+import com.yiyn.ask.xcx.center.po.FormIdPo;
 import com.yiyn.ask.xcx.center.service.impl.CenterResponseService;
+import com.yiyn.ask.xcx.center.service.impl.FormIdService;
 import com.yiyn.ask.xcx.consult.po.ConsultLogPo;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
 import com.yiyn.ask.xcx.consult.po.ConsultProcessPo;
@@ -40,6 +43,16 @@ public class ConsultController {
 	
 	@Autowired
 	private OSSClientUtils ossclientUtils;
+	
+	@Autowired
+	private XcxOAuthService oAuthService;
+	
+	@Autowired
+	private SMSUtils smsUtils;
+	
+	@Autowired
+	private FormIdService formIdService;
+	
 	/**
 	 * @param request
 	 * @param response
@@ -227,6 +240,39 @@ public class ConsultController {
 		return new Gson().toJson(resultMap);
 	}
 	
+	/**
+	 * 保存完后，如果没发过通知的发通知
+	 * 
+	 * @param url
+	 */
+	@RequestMapping(value = "/sendMsg.x", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String sendMsg(String open_id,String user_phone,String user_b_name) throws Exception{
+		// 先发送短信
+		smsUtils.sendNotice("【嘉问养育】您好，咨询师已经回复您消息了，请登陆嘉问养育小程序查看", user_phone);
+		
+		// 获取到的form_id用来保存发送用
+		// 后发通知
+		Map<String,String> param = new HashMap<String,String>();
+		FormIdPo p = formIdService.getFormId(open_id);
+		if(p != null){
+			// 真是的form_id从用户取得
+			param.put("open_id", open_id);
+			param.put("form_id", p.getForm_id());
+			param.put("hfr", user_b_name);
+			param.put("url", "pages/order/order");
+			boolean f = oAuthService.sendMsg(param);
+			
+			// 发送成功更新次数
+			if(f){
+				formIdService.updateById(p);
+			}else{
+				formIdService.delForm(p);
+			}
+		}
+		return null;
+	}
+				
 	/**
 	 * 上传图片
 	 * 

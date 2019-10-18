@@ -24,6 +24,9 @@ public class WeixinConfig {
 	@Value("#{configProperties['wechat.security_key']}")
 	public String security_key = "";
 	
+	@Value("#{configProperties['wechat.gzhappId']}")
+	public String gzhappId = "";
+	
 	// 商户号
 	@Value("#{configProperties['wechat.mch_id']}")
 	public String mch_id = "";
@@ -58,5 +61,13 @@ public class WeixinConfig {
 
 	public void setMch_id(String mch_id) {
 		this.mch_id = mch_id;
+	}
+
+	public String getGzhappId() {
+		return gzhappId;
+	}
+
+	public void setGzhappId(String gzhappId) {
+		this.gzhappId = gzhappId;
 	}
 }

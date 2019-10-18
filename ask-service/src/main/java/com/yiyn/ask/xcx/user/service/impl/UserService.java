@@ -52,7 +52,9 @@ public class UserService {
    public UserPo findByUserno(String userno) throws Exception{
 	   UserPo userP = userBDao.findByUserno(userno);
 	   List<UserTagPo> tagList = userTagDao.getUserTagList(userno);
-	   userP.setTagList(tagList);
+	   if(tagList != null && tagList.size() !=0){
+		   userP.setTagList(tagList);
+	   }
 	   return userP;
    }
    
@@ -69,6 +71,9 @@ public class UserService {
 		   // 根据用户编号查找标签
 		   List<UserTagPo> tagList = userTagDao.getUserTagList(user_no);
 		   p.setTagList(tagList);
+		   if(p.getSkilled() != null){
+			   p.setSkilled(p.getSkilled().replace("；", "  "));
+		   }
 	   }
 	   return reList;
    }
@@ -87,6 +92,9 @@ public class UserService {
 		   // 根据用户编号查找标签
 		   List<UserTagPo> tagList = userTagDao.getUserTagList(user_no);
 		   p.setTagList(tagList);
+		   if(p.getSkilled() != null){
+			   p.setSkilled(p.getSkilled().replace("；", "  "));
+		   }
 	   }
 	   return reList;
    }
@@ -104,6 +112,9 @@ public class UserService {
 		   // 根据用户编号查找标签
 		   List<UserTagPo> tagList = userTagDao.getUserTagList(user_no);
 		   p.setTagList(tagList);
+		   if(p.getSkilled() != null){
+			   p.setSkilled(p.getSkilled().replace("；", "  "));
+		   }
 	   }
 	   return reList;
    }
@@ -236,6 +247,11 @@ public class UserService {
    public void insRef(ConsultRefPo p) throws Exception{
 	   csultRefDao.insert(getRefMsg(p));
    }
+   
+   // 根据咨询单id查询
+//   public UserPo findUserByConsultId(String id) throws Exception{
+//	   return userBDao.findById(new Long(id));
+//   }
    
    /**
     * 根据妈妈出生日期算出年龄，根据宝宝出生日期，预产期判断宝宝是否早产儿，并得出出生孕期

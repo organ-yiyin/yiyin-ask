@@ -17,17 +17,23 @@ import com.yiyn.ask.base.constants.ConsultStatuEnum;
 import com.yiyn.ask.base.constants.ProcessContentTypeEnum;
 import com.yiyn.ask.base.constants.ProcessSendTypeEnum;
 import com.yiyn.ask.base.utils.DateUtils;
+import com.yiyn.ask.base.utils.SMSUtils;
 import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
 import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
 import com.yiyn.ask.xcx.account.po.AccountFlowPo;
 import com.yiyn.ask.xcx.account.po.AccountPo;
+import com.yiyn.ask.xcx.center.po.FormIdPo;
+import com.yiyn.ask.xcx.center.service.impl.FormIdService;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultLogDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultProcessDaoImpl;
+import com.yiyn.ask.xcx.consult.dao.impl.ConsultSheetRefDaoImpl;
 import com.yiyn.ask.xcx.consult.po.ConsultLogPo;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
 import com.yiyn.ask.xcx.consult.po.ConsultProcessPo;
+import com.yiyn.ask.xcx.consult.po.ConsultSheetRefPo;
+import com.yiyn.ask.xcx.user.dao.impl.UserDaoImpl;
 import com.yiyn.ask.xcx.user.dao.impl.UserEvalDaoImpl;
 import com.yiyn.ask.xcx.user.dao.impl.UserTagDaoImpl;
 import com.yiyn.ask.xcx.user.po.UserEvalPo;
@@ -55,6 +61,9 @@ public class ConsultService {
    
    @Autowired
    private UserEvalDaoImpl userEvalDao;
+   
+   @Autowired
+   private ConsultSheetRefDaoImpl consultSheetRefDao;
    
    public Map<String,Object> getConsultList(Map<String,Object> m) throws Exception{
 	   Map<String,Object> result = new HashMap<String,Object>();
@@ -268,13 +277,13 @@ public class ConsultService {
    }
    
    /**
-   * 咨询单初始化生成--待支付有效期为24小时
+   * 咨询单初始化生成--待支付有效期为24小时--失效
    * @param p
    * @throws Exception
    */
-  public void insConsult(ConsultPo p) throws Exception{
+   public void insConsult(ConsultPo p) throws Exception{
 	   consultDao.insert(p);
-  }
+   }
   
   /**
    * 微信通知订单成功后更新信息
@@ -291,6 +300,7 @@ public class ConsultService {
 		  // 更新咨询单状态
 		  p.setStatus(status);
 		  p.setUpdated_by("微信通知更新");
+		  p.setPay_time(DateUtils.getNowTime());
 		  p.setPay_odd_num(transaction_id);
 		  this.updConsult(p);
 		  // 插入咨询单进程（包含文字，图片，视频等）
@@ -364,5 +374,14 @@ public class ConsultService {
   
   public void insEval(UserEvalPo p) throws Exception {
 	  userEvalDao.insert(p);
+  }
+  
+  /**
+  * 咨询单初始化生成--根据咨询单生成同步生成关联人信息
+  * @param p
+  * @throws Exception
+  */
+  public void insConsultSheetRef(ConsultSheetRefPo p) throws Exception{
+	   consultSheetRefDao.insert(p);
   }
 }

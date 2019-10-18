@@ -83,4 +83,15 @@ public class OSSClientUtils
   private String generateFilePath(String bucketName, String fileName) {
     return "https://" + bucketName + ".oss-cn-hangzhou.aliyuncs.com/" + fileName;
   }
+  
+  public static void main(String[] args){
+	  OSSClient ossClient = new OSSClient("http//oss-cn-hangzhou.aliyuncs.com", "LTAIwtXK6M12ihFc", "zesu1Y7Eb1ZL9W7Z8XCXuW9nBf0cMy");
+      boolean exist = ossClient.doesObjectExist("iesms-upload-test","http://iesms-upload-test.oss-cn-hangzhou.aliyuncs.com/用户证件1568278884151/pic.jpg");
+      if (!exist) {
+          System.out.println("文件不存在,filePath={}");
+      }
+      
+      System.out.println("删除文件,filePath={}");
+      ossClient.deleteObject("iesms-upload-test", "http://iesms-upload-test.oss-cn-hangzhou.aliyuncs.com/用户证件1568278884151/pic.jpg");
+  }
 }
