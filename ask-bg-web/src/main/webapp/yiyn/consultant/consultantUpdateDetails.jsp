@@ -78,12 +78,19 @@
 			<dl class="">
 				<dt>咨询类型：</dt>
 				<dd>
-					<select name="advice_type" class="combox required">
+					<c:forEach items="${info.consultingTypes}" var="p">
+						<c:if test="${p.code eq info.advice_type}">
+							<input type="hidden" name="advice_type" value="${p.code}"/>
+							${p.name}
+						</c:if>	
+					</c:forEach>
+					
+					<%-- <select name="advice_type" class="combox required">
 						<option value="">请选择</option>
 						<c:forEach items="${info.consultingTypes}" var="p">
 							<option <c:if test="${p.code eq info.advice_type}">selected</c:if> value="${p.code}">${p.name}</option>	
 						</c:forEach>
-					</select>
+					</select> --%>
 				</dd>
 			</dl>
 			
@@ -116,7 +123,7 @@
 			<dl class="">
 				<dt>是否隐藏：</dt>
 				<dd>
-					<select name="is_hidden" class="combox">
+					<select name="is_hidden" class="combox required">
 						<option value="">请选择</option>
 						<c:forEach items="${info.yesOrNoTypes}" var="p">
 							<option <c:if test="${p.code eq info.is_hidden}">selected</c:if> value="${p.code}">${p.text}</option>	

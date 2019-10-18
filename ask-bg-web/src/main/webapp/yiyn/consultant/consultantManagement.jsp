@@ -8,7 +8,7 @@
 %>
 
 <script>
-	var downloadExcel = function(){
+	var downloadConsultantExcel = function(){
 		alertMsg.confirm("确认导出咨询师数据吗？", {
 			okCall: function(){
 				var url = "<%=path %>/consultant/downloadConsults.do";
@@ -77,16 +77,20 @@
 			<li><a class="edit" href="<%=path %>/consultant/forwardUpdateDetails.do?id={id}" target="navTab"><span>修改</span></a></li>
 			<li class="line">line</li>
 			<li>
+				<a class="edit" href="<%=path%>/consultant/forwardAccount.do?id={id}" target="navTab"><span>余额账户</span></a>
+			</li>
+			<li class="line">line</li>
+			<li>
 				<a class="edit" href="<%=path%>/consultant/forwardResetPass.do?id={id}" target="navTab"><span>重置密码</span></a>
 			</li>
 			<li class="line">line</li>
 			<li><a class="edit" href="<%=path %>/consultant/attachment/management.do?id={id}" target="navTab" rel="attachmentManagement"><span>附件管理</span></a></li>
 			<li class="line">line</li>
-			<li><a class="icon" href="javascript:void(0)" onclick="downloadExcel()"><span>导出</span></a></li>
+			<li><a class="icon" href="javascript:void(0)" onclick="downloadConsultantExcel()"><span>导出</span></a></li>
 			</ul>
 	</div>
 
-	<table class="table" style="width:720px" layoutH="140">
+	<table class="table" style="width:800px" layoutH="140">
 		<thead>
 			<tr>
 				<th width="150px">用户名</th>
@@ -95,6 +99,7 @@
 				<th width="100px">咨询类型</th>
 				<th width="100px">接单设置</th>
 				<th width="100px">从业年限</th>
+				<th width="80px">是否隐藏</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -114,6 +119,11 @@
 					</c:forEach>
 				</td>
 				<td>${item.work_year}</td>
+				<td>
+					<c:forEach items="${info.yesOrNoTypes}" var="item_t" varStatus="s">
+						<c:if test="${item_t.code==item.is_hidden}">${item_t.text}</c:if>
+					</c:forEach>
+				</td>
 			</tr>
 			</c:forEach>
 		</tbody>

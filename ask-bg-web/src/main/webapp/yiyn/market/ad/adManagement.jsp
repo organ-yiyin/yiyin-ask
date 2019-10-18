@@ -83,11 +83,12 @@
 		</ul>
 	</div>
 
-	<table class="table" style="width:600px" layoutH="140">
+	<table class="table" style="width:700px" layoutH="140">
 		<thead>
 			<tr>
 				<th width="300px">广告标题</th>
 				<th width="200px">广告位置</th>
+				<th width="100px">排序序号</th>
 				<th width="100px">是否禁用</th>
 			</tr>
 		</thead>
@@ -100,6 +101,7 @@
 							<c:if test="${s_item.code==item.ad_position}">${s_item.name}</c:if>
 						</c:forEach>
 					</td>
+					<td>${item.order_num}</td>
 					<td>
 						<c:forEach items="${info.yesOrNoTypes}" var="s_item" varStatus="s">
 							<c:if test="${s_item.code==item.delete_flag}">${s_item.text}</c:if>

@@ -142,6 +142,14 @@ public class WithdrawManagementController {
 		return this.forwardDetails(request, response, id);
 	}
 	
+	/**
+	 * 审核通过
+	 * @param request
+	 * @param response
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/adminConfirmWithdraw.do", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8" })
 	@ResponseBody
 	@Transactional
@@ -174,6 +182,14 @@ public class WithdrawManagementController {
 		return new Gson().toJson(responseForm);
 	}
 	
+	/**
+	 * 账户打款
+	 * @param request
+	 * @param response
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value = "/adminTransfer.do", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8" })
 	@ResponseBody
 	@Transactional

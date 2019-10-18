@@ -21,6 +21,9 @@ public class ConsultationSheetConvert {
 		if(StringUtils.isNotEmpty(source.getProblem_imgs())){
 			target.setProblem_img_list(source.getProblem_imgs().split(","));
 		}
+		if(StringUtils.isNotEmpty(source.getProblem_video())) {
+			target.setProblem_video_list(source.getProblem_video().split(","));
+		}
 		
 		return target;
 	}

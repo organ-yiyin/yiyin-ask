@@ -14,6 +14,8 @@ public class AdForm  extends BaseForm{
 	private String ad_url;
 	// 图片地址
 	private String pic_url;
+	// 排序,数字越小排前面
+	private Integer order_num;
 	// 描述
 	private String description;
 	// 点击次数
@@ -62,6 +64,12 @@ public class AdForm  extends BaseForm{
 	}
 	public void setAdPositions(AdPositionEnum[] adPositions) {
 		this.adPositions = adPositions;
+	}
+	public Integer getOrder_num() {
+		return order_num;
+	}
+	public void setOrder_num(Integer order_num) {
+		this.order_num = order_num;
 	}
 
 }

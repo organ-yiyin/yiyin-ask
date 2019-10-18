@@ -10,13 +10,6 @@
 %>
 
 <script>
-	var downloadExcel = function(){
-		alertMsg.confirm("确认取消订单吗？", {
-			okCall: function(){
-				
-			}
-		});
-	};
 	
 </script>
 

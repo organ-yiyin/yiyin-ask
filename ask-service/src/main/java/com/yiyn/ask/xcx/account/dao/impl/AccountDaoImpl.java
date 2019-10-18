@@ -11,6 +11,12 @@ public class AccountDaoImpl extends BaseDao<AccountPo> {
 				this.getNameStatement() + ".getAccountInfo", userno);
 	}
 	
+	public AccountPo findByUserBId(Long user_b_id) throws Exception {
+		return this.getSqlSession().selectOne(
+				this.getNameStatement() + ".findByUserBId", user_b_id);
+	}
+	
+	
 	public void updWithDraw(AccountPo p)throws Exception {
 		this.getSqlSession().update(this.getNameStatement() + ".updWithDraw", p);
 	}
@@ -19,7 +25,12 @@ public class AccountDaoImpl extends BaseDao<AccountPo> {
 		this.initUpdateInfo(p);
 		this.getSqlSession().update(this.getNameStatement() + ".updateByIdAftetTransfer", p);
 	}
-
+	
+	public void updateByIdAfterCancel(AccountPo p)throws Exception {
+		this.initUpdateInfo(p);
+		this.getSqlSession().update(this.getNameStatement() + ".updateByIdAfterCancel", p);
+	}
+	
 	public String getNameStatement() {
 		return "yiyin.account";
 	}

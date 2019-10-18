@@ -21,7 +21,7 @@
 		<if test="paramMap.delete_flag != null and '' != paramMap.delete_flag">
 			and delete_flag = #{paramMap.delete_flag}
 		</if>
-		order by updated_time desc
+		order by ad_position asc,order_num asc,updated_time desc
 		limit #{startIndex}, #{numPerPage}
 	</select>
 
@@ -43,17 +43,17 @@
 	<insert id="insert" parameterType="com.yiyn.ask.market.po.AdPo"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into
-		yiyn_ad(AD_POSITION,AD_TITLE,AD_URL,PIC_URL,DESCRIPTION,
+		yiyn_ad(AD_POSITION,AD_TITLE,AD_URL,PIC_URL,order_num,DESCRIPTION,
 		delete_flag,created_by,created_time,updated_by,updated_time)
 		values
-		(#{ad_position},#{ad_title},#{ad_url},#{pic_url},#{description},
+		(#{ad_position},#{ad_title},#{ad_url},#{pic_url},#{order_num},#{description},
 		#{delete_flag},#{created_by},#{created_time},#{updated_by},#{updated_time});
 	</insert>
 
 	<update id="updateById" parameterType="com.yiyn.ask.market.po.AdPo">
 		update yiyn_ad
 		set
-		AD_POSITION=#{ad_position},AD_TITLE=#{ad_title},AD_URL=#{ad_url},PIC_URL=#{pic_url},DESCRIPTION=#{description},
+		AD_POSITION=#{ad_position},AD_TITLE=#{ad_title},AD_URL=#{ad_url},PIC_URL=#{pic_url},order_num=#{order_num},DESCRIPTION=#{description},
 		DELETE_FLAG=#{delete_flag},updated_by=#{updated_by},updated_time=#{updated_time}
 		where id =#{id};
 	</update>

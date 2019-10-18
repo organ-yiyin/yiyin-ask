@@ -13,7 +13,9 @@
 	</insert>
 	
 	<select id="searchByConditions_bg" parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="java.util.HashMap">
-	    select uw.*,ub.user_no as ub_user_no from user_withdraw uw, user_account ua, user_b ub
+	    select uw.*,
+	    ub.user_no as ub_user_no,ub.user_name as ub_user_name,ub.user_id_num as ub_user_id_num,ub.bank_name as ub_bank_name,ub.bank_account as ub_bank_account  
+	    from user_withdraw uw, user_account ua, user_b ub
 	    where 1=1 and uw.account_id = ua.id and ua.user_b_id = ub.id
 	    <if test="paramMap.status != null and '' != paramMap.status">  
               AND uw.status = #{paramMap.status}

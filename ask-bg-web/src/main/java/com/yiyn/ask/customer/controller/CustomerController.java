@@ -1,10 +1,14 @@
 package com.yiyn.ask.customer.controller;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -16,7 +20,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yiyn.ask.base.utils.PaginationUtils;
+import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.customer.form.CustomerManagementForm;
+import com.yiyn.ask.customer.service.CustomerManager;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultRefDaoImpl;
 import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
 
@@ -33,6 +39,9 @@ public class CustomerController {
 	@Autowired
 	private ConsultRefDaoImpl consultRefDao;
 	
+	@Autowired
+	private CustomerManager customerManager;
+	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagement(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -46,21 +55,23 @@ public class CustomerController {
 	}
 	
 	@RequestMapping(value = "/search.do", method = RequestMethod.POST)
-	public ModelAndView searchUserList(HttpServletRequest request,
+	public ModelAndView search(HttpServletRequest request,
 			HttpServletResponse response, 
+			@RequestParam("usre_c_phone") String usre_c_phone,
 			@RequestParam("name_m") String name_m,
 			@RequestParam("name_b") String name_b,
 			@RequestParam("pageNum") String pageNum,
 			@RequestParam("numPerPage") String numPerPage) throws Exception {
-		logger.info("searchUserList");
+		logger.info("search");
 
 		PaginationUtils paramPage = new PaginationUtils(
 				Integer.parseInt(numPerPage), Integer.parseInt(pageNum));
+		paramPage.getParamMap().put("usre_c_phone", usre_c_phone);
 		paramPage.getParamMap().put("name_m", name_m);
 		paramPage.getParamMap().put("name_b", name_b);
 		
-		int totalCount = this.consultRefDao.searchCountByConditions(paramPage);
-		List<ConsultRefPo> consultRefPos = this.consultRefDao.searchByConditions(paramPage);
+		int totalCount = this.consultRefDao.searchCountByConditions_bg(paramPage);
+		List<Map> consultRefPos = this.consultRefDao.searchByConditions_bg(paramPage);
 		
 		CustomerManagementForm returnPage = new CustomerManagementForm();
 		BeanUtils.copyProperties(paramPage, returnPage);
@@ -84,5 +95,37 @@ public class CustomerController {
 		mv.addObject("info", consultRef);
 
 		return mv;
+	}
+	
+	@RequestMapping(value = "/downloadCustomers.do", method = RequestMethod.GET)
+	public void downloadCustomers(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam("usre_c_phone") String usre_c_phone,
+			@RequestParam("name_m") String name_m,
+			@RequestParam("name_b") String name_b) throws Exception {
+		
+		String fileName = "customer_" + SPDateUtils.formatDateDefault(new Date());
+		
+		response.setContentType( "application/vnd.ms-excel" );
+		response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+		ServletOutputStream os = response.getOutputStream();
+		
+		try {
+			PaginationUtils paramPage = new PaginationUtils(9999,1);
+			paramPage.getParamMap().put("usre_c_phone", usre_c_phone);
+			paramPage.getParamMap().put("name_m", name_m);
+			paramPage.getParamMap().put("name_b", name_b);
+
+			Workbook workbook = this.customerManager.downloadCustomers(paramPage);
+			workbook.write( os );
+			
+			os.flush();
+		}
+		catch( Exception ex ) {
+			ex.printStackTrace();
+		}
+		finally {
+			os.close();
+		}
 	}
 }

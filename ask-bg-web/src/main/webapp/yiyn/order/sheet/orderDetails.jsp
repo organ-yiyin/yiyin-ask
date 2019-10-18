@@ -13,18 +13,11 @@
 <link href="<%= path %>/widget/mWechat/m-wechat.css" rel="stylesheet" type="text/css" media="screen"/>
 
 <script>
-	var downloadExcel = function(){
-		alertMsg.confirm("确认取消订单吗？", {
-			okCall: function(){
-				
-			}
-		});
-	};
 	
 </script>
 
 <div class="pageContent">
-	
+
 		<div class="pageFormContent" layoutH="56">
 		<input type="hidden" name="consult_sheet_id" value="${consultantSheet.id}">
 		<div class="tabs" currentIndex="0" eventType="click">
@@ -97,7 +90,7 @@
 						<dl>
 							<dt>性别：</dt>
 							<dd>
-								<c:forEach items="${info.genders}" var="item_u" varStatus="s">
+								<c:forEach items="${consultantSheet.genders}" var="item_u" varStatus="s">
 									<c:if test="${item_u.code==consultRef.sex_b}">${item_u.name}</c:if>
 								</c:forEach>
 							</dd>
@@ -175,7 +168,7 @@
 							${consultantSheet.odd_num}
 						</dd>
 					</dl>
-					<dl>
+					<dl class="nowrap">
 						<dt>微信订单号：</dt>
 						<dd>
 							${consultantSheet.pay_odd_num}
@@ -184,19 +177,13 @@
 					<dl>
 						<dt>下单时间：</dt>
 						<dd>
-							
-						</dd>
-					</dl>
-					<dl>
-						<dt>结束时间：</dt>
-						<dd>
-							
+							<fmt:formatDate value="${consultantSheet.created_time}" pattern="yyyy-MM-dd HH:mm:ss" />
 						</dd>
 					</dl>
 					<dl>
 						<dt>订单状态：</dt>
 						<dd>
-							<c:forEach items="${info.consultStatusList}" var="item_u" varStatus="s">
+							<c:forEach items="${consultantSheet.consultStatusList}" var="item_u" varStatus="s">
 								<c:if test="${item_u.code==consultantSheet.status}">${item_u.name}</c:if>
 							</c:forEach>
 						</dd>
@@ -217,15 +204,19 @@
 						<%= price.toPlainString() %>
 						</dd>
 					</dl>
+					<dl>
+						<dt>第三方支付类型：</dt>
+						<dd>微信支付</dd>
+					</dl>
 					<dl class="nowrap">
 						<dt>操作轨迹：</dt>
 						<dd style="width:800px">
-							<table class="table" targetType="dialog" width="800px">
+							<table class="table" targetType="dialog" width="800px" nowrapTD="false">
 								<thead>
 									<tr>
 										<th width="50px">序号</th>
 										<th width="100px">操作</th>
-										<th width="250px">描述/理由</th>
+										<th style="width:250px">描述/理由</th>
 										<th width="150px">操作人</th>
 										<th width="100px">操作人来源</th>
 										<th width="150px">操作时间</th>
@@ -236,14 +227,14 @@
 									<tr>
 										<td>${s.index + 1}</td>
 										<td>
-											<c:forEach items="${info.consultStatusList}" var="item_u" varStatus="s">
+											<c:forEach items="${consultantSheet.consultStatusList}" var="item_u" varStatus="s">
 												<c:if test="${item_u.code==item.log_type}">${item_u.name}</c:if>
 											</c:forEach>
 										</td>
 										<td>${item.log_desc}</td>
 										<td>${item.created_by}</td>
 										<td>
-											<c:forEach items="${info.logUserTypes}" var="item_u" varStatus="s">
+											<c:forEach items="${consultantSheet.logUserTypes}" var="item_u" varStatus="s">
 												<c:if test="${item_u.code==item.log_user_type}">${item_u.name}</c:if>
 											</c:forEach>
 										</td>
@@ -260,32 +251,55 @@
 			<!-- 咨询内容 -->
 			<div class="tabsContent" style="height:100%;">
 				<div>
-					<dl>
-						<dt>问题描述：</dt>
+					<dl class="nowrap">
+						<dt>主问：</dt>
 						<dd>
 							${consultantSheet.problem_desc}
 						</dd>
 					</dl>
 					<dl>
-						<dt>问题类型：</dt>
+						<dt>主问类型：</dt>
 						<dd>
-							<c:forEach items="${info.qus_types}" var="item_u" varStatus="s">
+							<c:forEach items="${consultantSheet.qus_types}" var="item_u" varStatus="s">
 								<c:if test="${item_u.value==consultantSheet.problem_type}">${item_u.name}</c:if>
 							</c:forEach>
 						</dd>
 					</dl>
 					<dl class="nowrap">
-						<dt>图片：</dt>
+						<dt>主问图片：</dt>
 						<dd style="width:500px">
 							<table class="table" targetType="dialog" style="width:500px">
 								<thead>
 									<tr>
 										<th width="50px">序号</th>
-										<th width="450px">链接</th>
+										<th width="450px">内容(表格中的链接可以点击)</th>
 									</tr>
 								</thead>
 								<tbody>
-									<c:forEach items="${info.problem_img_list}" var="item_s" varStatus="s">
+									<c:forEach items="${consultantSheet.problem_img_list}" var="item_s" varStatus="s">
+									<tr>
+										<td>${s.index + 1}</td>
+										<td>
+											<a href="${item_s}" target="_blank">${item_s}</a>
+										</td>
+									</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+						</dd>
+					</dl>
+					<dl class="nowrap">
+						<dt>主问视频：</dt>
+						<dd style="width:500px">
+							<table class="table" targetType="dialog" style="width:500px">
+								<thead>
+									<tr>
+										<th width="50px">序号</th>
+										<th width="450px">内容(表格中的链接可以点击)</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${consultantSheet.problem_video_list}" var="item_s" varStatus="s">
 									<tr>
 										<td>${s.index + 1}</td>
 										<td>
@@ -300,55 +314,46 @@
 					<br>
 					<div class="divider"></div>
 					<br>
-					<br>
-					<div style="">
-						<div class="mobile-page">
-						<c:forEach items="${consultProcessList}" var="item" varStatus="s">
-							
-							<c:if test="${item.send_type == 'customer'}">
-								<div class="admin-group">
-									<img class="admin-img" src="<%= path %>/images/timg.jpg"/>
-									<div class="admin-msg">
-						                <i class="triangle-admin"></i>
-						                
-						                <span class="admin-reply">
-						                	<c:if test="${item.content_type eq 'text'}">
-						                		${item.content}
-						                	</c:if>
-						                	<c:if test="${item.content_type eq 'image'}">
-						                		<img class="" style="width:80px;height:80px" src="${item.content}"/>
-						                	</c:if>
-						                	<c:if test="${item.content_type eq 'video'}">
-						                		${item.content}
-						                	</c:if>
-						                </span>
-									</div>
-								</div>
-							</c:if>
-							
-							<c:if test="${item.send_type == 'server'}">
-								<div class="user-group">
-									<div class="user-msg">
-						                <span class="user-reply">
-						                	<c:if test="${item.content_type eq 'text'}">
-						                		${item.content}
-						                	</c:if>
-						                	<c:if test="${item.content_type eq 'image'}">
-						                		<img class="" style="width:80px;height:80px" src="${item.content}"/>
-						                	</c:if>
-						                	<c:if test="${item.content_type eq 'video'}">
-						                		${item.content}
-						                	</c:if>
-						                </span>
-						                <i class="triangle-user"></i>
-									</div>
-									<img class="user-img" src="<%= path %>/images/logoz.png"/>
-								</div>
-								
-							</c:if>
-							
-						</c:forEach>
-						</div>
+					<dl class="nowrap">
+						<dt>以下为全部聊天记录：</dt>
+						<dd><a class="button" href="<%= path %>/order/forwardWechatDetails.do?id=${consultantSheet.id}" target="dialog" rel="orderWechat" mask="true" title="聊天记录(仿微信)" width="500" height="600"><span>将以下表格中的聊天记录转为仿微信方式查看</span></a><br /><br /></dd>
+					</dl>
+
+					<div style="width:900px">
+						<table class="table" targetType="dialog" style="width:900px" nowrapTD="false">
+							<thead>
+								<tr>
+									<th width="50px">序号</th>
+									<th width="500px">内容</th>
+									<th width="100px">内容类型</th>
+									<th width="100px">内容发送者</th>
+									<th width="150px">时间</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach items="${consultProcessList}" var="item" varStatus="s">
+								<tr>
+									<td>${s.index + 1}</td>
+									<td>
+										${item.content}
+									</td>
+									<td>
+										<c:forEach items="${consultantSheet.contentTypes}" var="item_u" varStatus="s">
+											<c:if test="${item_u.code==item.content_type}">${item_u.name}</c:if>
+										</c:forEach>
+									</td>
+									<td>
+										<c:forEach items="${consultantSheet.sendTypes}" var="item_u" varStatus="s">
+											<c:if test="${item_u.code==item.send_type}">${item_u.name}</c:if>
+										</c:forEach>
+									</td>
+									<td>
+										<fmt:formatDate value="${item.created_time}" pattern="yyyy-MM-dd HH:mm:ss" />
+									</td>
+								</tr>
+								</c:forEach>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
@@ -379,7 +384,7 @@
 							<tr target="attachment_id" rel="${item.id}">
 								<td>${item.attachment_name}</td>
 								<td>
-									<c:forEach items="${info.attachmentTypes}" var="item_u" varStatus="s">
+									<c:forEach items="${consultantSheet.attachmentTypes}" var="item_u" varStatus="s">
 										<c:if test="${item_u.code==item.attachment_type}">${item_u.name}</c:if>
 									</c:forEach>
 								</td>
@@ -400,11 +405,11 @@
 		<div class="formBar">
 			<ul>
 				<c:if test="${consultantSheet.status eq 2}">
-					<a class="button" href="<%=path%>/order/adminCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认取消订单并且退款吗？"><span>取消订单</span></a>
+					<a class="button" href="<%=path%>/order/adminCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认取消订单并且退款吗？"><span>管理员主动取消订单</span></a>
 				</c:if>
 				<c:if test="${consultantSheet.status eq 3}">
-					<a class="button" href="<%=path%>/order/adminConfirmCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认同意取消订单并且退款吗？"><span>同意取消订单</span></a>
-					<a class="button" href="<%=path%>/order/adminRejectCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认驳回取消订单吗？"><span>驳回取消订单</span></a>
+					<a class="button" href="<%=path%>/order/adminConfirmCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认同意取消订单并且退款吗？"><span>同意用户发起的取消订单</span></a>
+					<a class="button" href="<%=path%>/order/adminRejectCancel.do?id=${consultantSheet.id}" target="ajaxTodo" title="确认驳回取消订单吗？"><span>驳回用户发起的取消订单</span></a>
 				</c:if>
 				
 			</ul>

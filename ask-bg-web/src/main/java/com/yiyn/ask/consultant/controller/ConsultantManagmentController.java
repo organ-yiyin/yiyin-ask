@@ -35,6 +35,7 @@ import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.form.UserBForm;
 import com.yiyn.ask.sys.po.UserBPo;
 import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
+import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
 import com.yiyn.ask.xcx.account.po.AccountPo;
 import com.yiyn.ask.xcx.user.dao.impl.UserTagDaoImpl;
 import com.yiyn.ask.xcx.user.po.UserTagPo;
@@ -56,7 +57,10 @@ public class ConsultantManagmentController {
 	private AccountDaoImpl accountDao;
 	
 	@Autowired
-	  private UserTagDaoImpl userTagDao;
+	private AccountFlowDaoImpl accountFlowDao;
+	
+	@Autowired
+	private UserTagDaoImpl userTagDao;
 	
 	@Autowired
 	private ConsultantManager consultantManager;
@@ -167,6 +171,22 @@ public class ConsultantManagmentController {
 		
 		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
 		return new Gson().toJson(responseForm);
+	}
+	
+	@RequestMapping(value = "forwardAccount.do", method = RequestMethod.GET)
+	public ModelAndView forwardAccount(HttpServletRequest request,
+			HttpServletResponse response,@RequestParam("id") Long id) throws Exception {
+		logger.info("forwardAccount");
+		
+		UserBPo userBPo = this.userBDao.findById(id);
+		UserBForm userForm = UserBConvert.convertToForm(userBPo);
+		AccountPo accountPo = this.accountDao.findByUserBId(userBPo.getId());
+		
+		ModelAndView mv = new ModelAndView( FOLDER_PATH + "/accountDetails.jsp");
+		mv.addObject("info", userForm);
+		mv.addObject("accountPo", accountPo);
+		
+		return mv;
 	}
 
 	@RequestMapping(value = "/forwardResetPass.do", method = RequestMethod.GET)

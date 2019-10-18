@@ -1,13 +1,16 @@
 package com.yiyn.ask.order.controller;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -30,14 +33,20 @@ import com.yiyn.ask.base.form.AttachmentForm;
 import com.yiyn.ask.base.po.AttachmentPo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
+import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.order.convert.ConsultationSheetConvert;
 import com.yiyn.ask.order.form.ConsultationSheetForm;
 import com.yiyn.ask.order.form.OrderManagementForm;
+import com.yiyn.ask.order.service.OrderManager;
 import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.po.UserBPo;
 import com.yiyn.ask.wechat.dto.WechatRefundResponseDto;
 import com.yiyn.ask.wechat.dto.WechatResultDto;
 import com.yiyn.ask.wechat.service.WechatRefundServiceImpl;
+import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
+import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
+import com.yiyn.ask.xcx.account.po.AccountFlowPo;
+import com.yiyn.ask.xcx.account.po.AccountPo;
 import com.yiyn.ask.xcx.center.dao.impl.CodeDaoImpl;
 import com.yiyn.ask.xcx.center.po.CodePo;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultLogDaoImpl;
@@ -87,6 +96,15 @@ public class OrderManagementController {
 	
 	@Autowired
 	private CodeDaoImpl codeDao;
+	
+	@Autowired
+	private OrderManager orderManager;
+	
+	@Autowired
+	private AccountDaoImpl accountDao;
+	
+	@Autowired
+	private AccountFlowDaoImpl accountFlowDao;
 
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request, HttpServletResponse response)
@@ -148,7 +166,6 @@ public class OrderManagementController {
 		List<ConsultProcessPo> consultProcessList = consultProceessDao.getConsultProcessList(id.toString());
 
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderDetails.jsp");
-		mv.addObject("info", consultantSheet);
 		mv.addObject("consultantSheet",consultantSheet);
 		mv.addObject("consultProcessList", consultProcessList);
 		mv.addObject("userB", userB);
@@ -195,20 +212,39 @@ public class OrderManagementController {
 		}
 
 		 WechatResultDto<WechatRefundResponseDto> refund = wechatRefundService.refund(consultPo.getOdd_num(),
-		 NumberUtils.createBigDecimal(consultPo.getPrice()),
-		 NumberUtils.createBigDecimal(consultPo.getPrice()));
+				 NumberUtils.createBigDecimal(consultPo.getPrice()),NumberUtils.createBigDecimal(consultPo.getPrice()));
 		 if(refund.isSuccess()) {
 			// 修改订单状态
 			consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
-			this.consultantSheetBgDao.updateStatusById(consultPo);
+			consultPo.setRefund_time(new Date());
+			this.consultantSheetBgDao.refundById(consultPo);
+			
+			// 修改账户表数据
+			// 并对user_account更新余额
+			AccountPo accountPo = this.accountDao.getAccountInfo(consultPo.getUser_b_no());
+			accountPo.setBalance(accountPo.getBalance().subtract(NumberUtils.createBigDecimal(consultPo.getPrice())));
+			accountDao.updateByIdAfterCancel(accountPo);
 			
 			// 记录日志
 			ConsultLogPo t = new ConsultLogPo();
 			t.setLog_type(ConsultStatuEnum.REFUND.getCode());
-			t.setLog_desc("管理员取消订单");
+			t.setLog_desc("管理员主动发起取消订单");
 			t.setConsult_id(id.toString());
 			t.setLog_user_type(LogUserTypeEnum.USER_BG.getCode());
 			consultLogDao.insert(t);
+			
+			AccountFlowPo flowP = new AccountFlowPo();
+			flowP.setAccount_id(accountPo.getId());
+			flowP.setJournal_money(NumberUtils.createBigDecimal(consultPo.getPrice()).doubleValue());
+			flowP.setJournal_dir("2");// 1：流入，2：流出
+			flowP.setJournal_type("3");// 1：用户支付，2：提现：3：退款
+			flowP.setOrder_id(consultPo.getOdd_num());
+			flowP.setPay_type("WXPAY");
+			flowP.setPay_time(SPDateUtils.formatDateTimeDefault(new Date()));
+			flowP.setJournal_remark("管理员主动发起取消订单");
+			flowP.setPay_status("1");//1:成功；2：待处理
+			flowP.setPay_channel_no("WXXCX");
+			accountFlowDao.insert(flowP);
 				
 			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
 				String.format("订单%s已取消，总共退款金额为%s",consultPo.getOdd_num(),consultPo.getPrice()));
@@ -255,7 +291,14 @@ public class OrderManagementController {
 		if(refund.isSuccess()) {
 			// 修改订单状态
 			consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
-			this.consultantSheetBgDao.updateStatusById(consultPo);
+			consultPo.setRefund_time(new Date());
+			this.consultantSheetBgDao.refundById(consultPo);
+			
+			// 修改账户表数据
+			// 并对user_account更新余额
+			AccountPo accountPo = this.accountDao.getAccountInfo(consultPo.getUser_b_no());
+			accountPo.setBalance(accountPo.getBalance().subtract(NumberUtils.createBigDecimal(consultPo.getPrice())));
+			accountDao.updateByIdAfterCancel(accountPo);
 			
 			// 记录日志
 			ConsultLogPo t = new ConsultLogPo();
@@ -263,8 +306,20 @@ public class OrderManagementController {
 			t.setLog_desc("管理员同意取消订单");
 			t.setConsult_id(id.toString());
 			t.setLog_user_type(LogUserTypeEnum.USER_BG.getCode());
-			
 			consultLogDao.insert(t);
+			
+			AccountFlowPo flowP = new AccountFlowPo();
+			flowP.setAccount_id(accountPo.getId());
+			flowP.setJournal_money(NumberUtils.createBigDecimal(consultPo.getPrice()).doubleValue());
+			flowP.setJournal_dir("2");// 1：流入，2：流出
+			flowP.setJournal_type("3");// 1：用户支付，2：提现：3：退款
+			flowP.setOrder_id(consultPo.getOdd_num());
+			flowP.setPay_type("WXPAY");
+			flowP.setPay_time(SPDateUtils.formatDateTimeDefault(new Date()));
+			flowP.setJournal_remark("管理员同意取消订单");
+			flowP.setPay_status("1");//1:成功；2：待处理
+			flowP.setPay_channel_no("WXXCX");
+			accountFlowDao.insert(flowP);
 				
 			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
 					String.format("订单%s已同意取消，总共退款金额为%s", consultPo.getOdd_num(), consultPo.getPrice()));
@@ -320,8 +375,58 @@ public class OrderManagementController {
 		DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm("驳回取消订单");
 		responseForm.setNavTabId("orderDetails");
 		return new Gson().toJson(responseForm);
-
 	}
+	
+	@RequestMapping(value = "/forwardWechatDetails.do", method = RequestMethod.GET)
+	public ModelAndView forwardWechatDetails(HttpServletRequest request, HttpServletResponse response,
+			@RequestParam("id") Long id) throws Exception {
+		logger.info("forwardWechatDetails");
+		
+		ConsultPo consultPo = this.consultantSheetBgDao.findById(id);
+		ConsultationSheetForm consultantSheet = ConsultationSheetConvert.convertToForm(consultPo);
+		List<ConsultProcessPo> consultProcessList = consultProceessDao.getConsultProcessList(id.toString());
+
+		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderWechat.jsp");
+		mv.addObject("consultantSheet", consultantSheet);
+		mv.addObject("consultProcessList", consultProcessList);
+		return mv;
+	}
+	
+	
+	@RequestMapping(value = "/downloadOrders.do", method = RequestMethod.GET)
+	public void downloadOrders(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam("user_c_phone") String user_c_phone, @RequestParam("odd_num") String odd_num,
+			@RequestParam("status") String status, @RequestParam("start_booking_time") String start_booking_time,
+			@RequestParam("end_booking_time") String end_booking_time) throws Exception {
+		
+		String fileName = "orders_" + SPDateUtils.formatDateDefault(new Date());
+		
+		response.setContentType( "application/vnd.ms-excel" );
+		response.addHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+		ServletOutputStream os = response.getOutputStream();
+		
+		try {
+			PaginationUtils paramPage = new PaginationUtils(9999,1);
+			paramPage.getParamMap().put("user_c_phone", user_c_phone);
+			paramPage.getParamMap().put("odd_num", odd_num);
+			paramPage.getParamMap().put("status", status);
+			paramPage.getParamMap().put("start_booking_time", start_booking_time);
+			paramPage.getParamMap().put("end_booking_time", end_booking_time);
+			
+			Workbook workbook = this.orderManager.downloadOrdersExcel(paramPage);
+			workbook.write( os );
+			
+			os.flush();
+		}
+		catch( Exception ex ) {
+			ex.printStackTrace();
+		}
+		finally {
+			os.close();
+		}
+	}
+
 
 	@RequestMapping(value = "/attachment/forwardNewDetails.do", method = RequestMethod.GET)
 	public ModelAndView forwardAttachmentNewDetails(HttpServletRequest request, HttpServletResponse response,
