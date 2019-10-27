@@ -92,16 +92,19 @@ public class ConsultService {
 				   p.setTagList(tagList);
 				   cPo.setUserPo(p);
 				   
-				   // 已支付、申请退款、已回答的放到未完成里
-				   if("1".equals(status) || "2".equals(status) || "3".equals(status) || "5".equals(status)){
+				   // 待支付、已支付、申请退款、已回答的放到未完成里
+				   if(ConsultStatuEnum.PAY_WAIT.getCode().equals(status) || ConsultStatuEnum.PAY.getCode().equals(status) 
+						   || ConsultStatuEnum.REFUND_WAIT.getCode().equals(status) || ConsultStatuEnum.ANS.getCode().equals(status)){
 					   wList.add(cPo);
-				   // 已退款、已结束的放到已完成里
-				   }else if("4".equals(status) || "6".equals(status)){
+				   // 已退款、已结束、超时退款的放到已完成里
+				   }else if(ConsultStatuEnum.REFUND.getCode().equals(status) || ConsultStatuEnum.END.getCode().equals(status) 
+						   || ConsultStatuEnum.TIME_OUT.getCode().equals(status)){
 					   yList.add(cPo);
 				   }
 			   }else{
 				   // 已结束的订单72小时内都有退单按钮
-				   if("6".equals(status) || "3".equals(status) || "4".equals(status)){
+				   if(ConsultStatuEnum.END.getCode().equals(status) || ConsultStatuEnum.REFUND_WAIT.getCode().equals(status) 
+						   || ConsultStatuEnum.REFUND.getCode().equals(status)){
 					   Date updated_time = cPo.getUpdated_time();
 					   // 日期加三天
 					   Date upd_newTime = DateUtils.calculateDate(updated_time, 5, 3);
@@ -114,10 +117,12 @@ public class ConsultService {
 				   }
 				   
 				   // 已支付、申请退款、已回答的放到未完成里
-				   if("2".equals(status) || "3".equals(status) || "5".equals(status)){
+				   if(ConsultStatuEnum.PAY.getCode().equals(status) || 
+						   ConsultStatuEnum.REFUND_WAIT.getCode().equals(status) || ConsultStatuEnum.ANS.getCode().equals(status)){
 					   wList.add(cPo);
-				   // 已退款、已结束的放到已完成里
-				   }else if("4".equals(status) || "6".equals(status)){
+				   // 已退款、已结束、超时退款的放到已完成里
+				   }else if(ConsultStatuEnum.REFUND.getCode().equals(status) || ConsultStatuEnum.END.getCode().equals(status) 
+						   || ConsultStatuEnum.TIME_OUT.getCode().equals(status)){
 					   yList.add(cPo);
 				   }
 			   }
@@ -383,5 +388,15 @@ public class ConsultService {
   */
   public void insConsultSheetRef(ConsultSheetRefPo p) throws Exception{
 	   consultSheetRefDao.insert(p);
+  }
+  
+  /**
+   * 获取咨询基本信息
+   * @param m
+   * @return
+   * @throws Exception
+   */
+  public List<ConsultPo> getRefundConsult() throws Exception{
+	   return consultDao.getRefundConsult();
   }
 }

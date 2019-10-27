@@ -25,7 +25,7 @@
     
     <select id="getConsultList" resultMap="ConsultListMap" parameterType="java.util.HashMap">
         select t.*,ref.name_m,ref.name_b,case sex_b when '1' then '男' else '女' end as sex_b,
-		case status when '3' then '退单审核' when '4' then '已退单' else '' end as status_show,
+		case status when '3' then '退单审核' when '4' then '已退单' when '7' then '超时退单' else '' end as status_show,
 		(SELECT case l.log_type when '2' then 0 else 1 end as sfhd
 			FROM consultation_sheet_log l
 			WHERE l.CONSULT_ID = t.id
@@ -192,7 +192,6 @@
 	     </association>
      </resultMap>
     
-    
     <!-- 微信通知的时候用 -->
     <select id="getConsultByOdd_Num" resultMap="ConsultInfoOddMap" parameterType="String">
         SELECT s.id,
@@ -235,6 +234,9 @@
 		<if test="pay_time != null and '' != pay_time">
 			pay_time = #{pay_time},
 		</if>
+		<if test="refund_time != null and '' != refund_time">
+			refund_time = #{refund_time},
+		</if>
 		UPDATED_BY =#{updated_by},
 		UPDATED_TIME = now()
 		where id = #{id}
@@ -259,4 +261,14 @@
 		#{sheet_age_m},#{sheet_age_b},#{price},#{problem_desc},#{problem_type},#{problem_imgs},#{problem_video},
 		#{status},#{created_by},now(),#{prepay_id})
 	</insert>
+	
+    <!-- 查找需要自动退款的订单-->
+    <select id="getRefundConsult" resultType="com.yiyn.ask.xcx.consult.po.ConsultPo">
+        select * FROM consultation_sheet s
+		WHERE s.`STATUS` = '2'
+			and s.id not in (
+			select t.id from consultation_sheet_log t where t.log_type = '5'
+		)
+		and s.CREATED_TIME &lt; date_add(NOW(),INTERVAL -1 day)
+    </select>
 </mapper>

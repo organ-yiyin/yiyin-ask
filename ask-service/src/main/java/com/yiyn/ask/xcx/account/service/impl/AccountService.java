@@ -91,4 +91,12 @@ public class AccountService {
 	   updP.setId(new Long(p.getAccount_id()));
 	   accountDao.updWithDraw(updP);
    }
+   
+   public void updateByIdAfterCancel(AccountPo p) throws Exception{
+	   accountDao.updateByIdAfterCancel(p);
+   }
+   
+   public void insAccountFlow(AccountFlowPo flowP) throws Exception{
+	   accountflowDao.insert(flowP);
+   }
 }

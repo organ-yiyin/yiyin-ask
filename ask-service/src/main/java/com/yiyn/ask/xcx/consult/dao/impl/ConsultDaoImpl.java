@@ -52,6 +52,17 @@ public class ConsultDaoImpl extends BaseDao<ConsultPo> {
 		this.getSqlSession().update(this.getNameStatement() + ".updConsult",p);
 	}
 	
+	/**
+	 * 超时自动退款名单
+	 * @param m
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ConsultPo> getRefundConsult() throws Exception {
+		return this.getSqlSession().selectList(
+				this.getNameStatement() + ".getRefundConsult");
+	}
+	
 	public String getNameStatement() {
 		return "yiyin.consult";
 	}
