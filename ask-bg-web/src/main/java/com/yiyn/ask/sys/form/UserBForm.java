@@ -56,6 +56,8 @@ public class UserBForm extends BaseForm{
 	
 	private String original_password;
 	
+	private Integer add_orders;
+	
 	private String is_hidden;
 	
 	private YesOrNoType[] yesOrNoTypes = YesOrNoType.values();
@@ -280,6 +282,14 @@ public class UserBForm extends BaseForm{
 
 	public void setBank_account(String bank_account) {
 		this.bank_account = bank_account;
+	}
+
+	public Integer getAdd_orders() {
+		return add_orders;
+	}
+
+	public void setAdd_orders(Integer add_orders) {
+		this.add_orders = add_orders;
 	}
 	
 }

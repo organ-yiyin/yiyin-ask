@@ -107,6 +107,13 @@
 			</dl>
 			
 			<dl class="">
+				<dt>附加订单数（刷单用）：</dt>
+				<dd>
+					<input type="text" name="add_orders" class="digits" value="${info.add_orders}"/>
+				</dd>
+			</dl>
+			
+			<dl class="">
 				<dt>是否推荐：</dt>
 				<dd>
 					<select name="recommend" class="combox">
