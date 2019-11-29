@@ -61,7 +61,7 @@ public class RefundTask {
 					 logger.info("退款已成功，订单id为：" + p.getId());
 					 ConsultPo updP = new ConsultPo();
 					 updP.setId(p.getId());
-					 updP.setStatus(ConsultStatuEnum.TIME_OUT.getCode());
+					 updP.setStatus(ConsultStatuEnum.EXPIRED_REFUND.getCode());
 					 updP.setUpdated_by("超时退款C端后台处理更新");
 					 updP.setRefund_time(new Date());
 					 consultService.updConsult(updP);
@@ -74,7 +74,7 @@ public class RefundTask {
 					
 					// 记录日志
 					ConsultLogPo t = new ConsultLogPo();
-					t.setLog_type(ConsultStatuEnum.TIME_OUT.getCode());
+					t.setLog_type(ConsultStatuEnum.EXPIRED_REFUND.getCode());
 					t.setLog_desc("24小时超时自动退款");
 					t.setConsult_id(String.valueOf(p.getId()));
 					t.setLog_user_type(LogUserTypeEnum.USER_BG.getCode());
