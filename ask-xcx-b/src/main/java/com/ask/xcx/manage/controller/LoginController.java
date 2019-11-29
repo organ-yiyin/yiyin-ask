@@ -58,6 +58,7 @@ public class LoginController {
 				resultMap.put("unionid", po.getUnionid());
 				resultMap.put("user_name", po.getUser_name());
 				resultMap.put("is_hidden", po.getIs_hidden());
+				resultMap.put("info", po);
 			}else{
 				resultMap.put("status", "-2");
 			}

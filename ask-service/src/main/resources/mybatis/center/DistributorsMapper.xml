@@ -1,0 +1,33 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 渠道商  -->
+<mapper namespace="yiyin.dis">
+    <select id="findDisList" resultType="com.yiyn.ask.xcx.center.po.DistributorsPo">
+        SELECT t.*
+        FROM yiyn_distributors t
+        order by CREATED_TIME desc
+    </select>
+    
+    <select id="findDisInfo" resultType="com.yiyn.ask.xcx.center.po.DistributorsPo" parameterType="String">
+        SELECT t.*
+        FROM yiyn_distributors t
+        where t.id = #{id}
+    </select>
+    
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.center.po.DistributorsPo">
+        insert into yiyn_distributors(dis_code,dis_name,link_url,wechat_url,created_by,created_time)
+        values(#{dis_code},#{dis_name},#{link_url},#{wechat_url},#{created_by},now())
+    </insert>
+    
+    <update id="updateById" parameterType="com.yiyn.ask.xcx.center.po.DistributorsPo">
+        update yiyn_distributors"src/main/resources/mybatis/center/DistributorsMapper.xml"
+        set UPDATED_TIME = now(),
+        dis_code = #{dis_code},
+        dis_name = #{dis_name},
+        link_url = #{link_url},
+        wechat_url = #{wechat_url}
+		where id = #{id}
+    </update>
+</mapper>

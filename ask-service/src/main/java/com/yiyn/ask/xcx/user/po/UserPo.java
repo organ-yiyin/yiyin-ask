@@ -41,6 +41,18 @@ public class UserPo extends BasePo {
 	private String open_id; // B端用户小程序微信唯一标识
 	private String unionid; // 关联id，多个移动公用一个
 	
+	// 2019-11-09 新增管理员角色咨询师，小程序端查看渠道商二维码生成情况
+	private String isadmin;
+	
+	// 2019-11-13 新增附加订单数
+	private String add_orders;
+	
+	public String getIsadmin() {
+		return isadmin;
+	}
+	public void setIsadmin(String isadmin) {
+		this.isadmin = isadmin;
+	}
 	public String getUnionid() {
 		return unionid;
 	}
@@ -173,5 +185,11 @@ public class UserPo extends BasePo {
 	}
 	public void setAdvice_num_today(String advice_num_today) {
 		this.advice_num_today = advice_num_today;
+	}
+	public String getAdd_orders() {
+		return add_orders;
+	}
+	public void setAdd_orders(String add_orders) {
+		this.add_orders = add_orders;
 	}
 }

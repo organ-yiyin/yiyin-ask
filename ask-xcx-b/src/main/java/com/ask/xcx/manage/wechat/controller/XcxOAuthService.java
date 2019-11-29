@@ -177,9 +177,33 @@ public class XcxOAuthService {
 	public InputStream getEwm(String user_no) throws Exception {
 		Map<String, String> params = new HashMap<>();
 		params.put("page", "pages/counselor/detail/couns_detail");//要跳转的页面" +
-		params.put("scene", user_no);//二维码宽度
+		params.put("scene", user_no);//二维码参数
 		params.put("width", "430");//二维码宽度
 		logger.info("getEwm");
+		JsonObject tokenObj = this.getToken();
+		String token = tokenObj.get("access_token").getAsString();
+		StringBuilder url = new StringBuilder();
+		url.append("https://api.weixin.qq.com/wxa/getwxacodeunlimit" + "?");
+		url.append("access_token=" + token);
+		StringEntity entity = new StringEntity(new Gson().toJson(params));
+		entity.setContentType("image/png");
+		logger.info(url.toString());
+		HttpResponse content = HttpClientPostUtils.getHttpPostContentByEntityForEwm(url.toString(), entity,"utf-8");
+		return content.getEntity().getContent();
+	}
+	
+	/**
+	 * 获得各渠道商的二维码
+	 * 
+	 * @param code
+	 * @throws Exception
+	 */
+	public InputStream getQdsEwm(String dis_code) throws Exception {
+		Map<String, String> params = new HashMap<>();
+		params.put("page", "pages/index/index");//要跳转的页面" +
+		params.put("scene", dis_code);//二维码宽度
+		params.put("width", "430");//二维码宽度
+		logger.info("新生成渠道商" + dis_code + "的小程序码");
 		JsonObject tokenObj = this.getToken();
 		String token = tokenObj.get("access_token").getAsString();
 		StringBuilder url = new StringBuilder();

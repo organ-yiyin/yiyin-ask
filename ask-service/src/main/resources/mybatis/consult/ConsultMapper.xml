@@ -267,7 +267,7 @@
         select * FROM consultation_sheet s
 		WHERE s.`STATUS` = '2'
 			and s.id not in (
-			select t.id from consultation_sheet_log t where t.log_type = '5'
+			select t.CONSULT_ID from consultation_sheet_log t where t.log_type = '5'
 		)
 		and s.CREATED_TIME &lt; date_add(NOW(),INTERVAL -1 day)
     </select>

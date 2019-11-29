@@ -28,8 +28,10 @@ import com.yiyn.ask.base.utils.OSSClientUtils;
 import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.xcx.account.service.impl.AccountService;
 import com.yiyn.ask.xcx.center.po.CenterResponsePo;
+import com.yiyn.ask.xcx.center.po.DistributorsPo;
 import com.yiyn.ask.xcx.center.service.impl.CenterResponseService;
 import com.yiyn.ask.xcx.center.service.impl.CodeService;
+import com.yiyn.ask.xcx.center.service.impl.DistributorsService;
 import com.yiyn.ask.xcx.user.po.UserPo;
 import com.yiyn.ask.xcx.user.po.UserTagPo;
 import com.yiyn.ask.xcx.user.service.impl.UserService;
@@ -52,7 +54,13 @@ public class UserCenterController {
 	
 	@Autowired
 	private CodeService codeService;
-
+	
+	@Autowired
+	private DistributorsService distributorsService;
+	
+	@Autowired
+	private XcxOAuthService oAuthService;
+	
 	/**
 	 * @param request
 	 * @param response
@@ -403,8 +411,6 @@ public class UserCenterController {
 		} 
 	}
 	
-	@Autowired
-	private XcxOAuthService oAuthService;
 	/**
 	 * @param request
 	 * @param response
@@ -457,6 +463,86 @@ public class UserCenterController {
 		// 新建成功返回
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		resultMap.put("reList", codeService.findCodeList("ABOUT"));
+		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * 初始化渠道商页面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/initDis.x", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String initDis(HttpServletRequest request,
+			HttpServletResponse response)
+			throws Exception {
+		logger.info("initDis");
+		// 新建成功返回
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		resultMap.put("reList", distributorsService.findDisList());
+		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * 渠道商信息获取
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/getDisInfo.x", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String getDisInfo(HttpServletRequest request,
+			HttpServletResponse response,String id)
+			throws Exception {
+		logger.info("getDisInfo");
+		// 新建成功返回
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		resultMap.put("info", distributorsService.findDisInfo(id));
+		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/saveDis.x", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String saveDis(HttpServletRequest request,
+			HttpServletResponse response, String id,String dis_code,String dis_name)
+			throws Exception {
+		logger.info("saveDis");
+		// 新建成功返回
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		DistributorsPo p = new DistributorsPo();
+		p.setDis_code(dis_code);
+		p.setDis_name(dis_name);
+		// 生成公众号链接以及小程序码
+		p.setWechat_url("pages/index/index?dis_no=" + dis_code);
+		
+		// 生成小程序码并上传
+		InputStream inputStream = oAuthService.getQdsEwm(dis_code);
+        String fileUrl = ossclientUtils.uploadFile("渠道商小程序码/" + dis_code,inputStream, 
+					"xcx.png");
+		p.setLink_url(fileUrl);
+		try{
+			if(StringUtils.isEmptyString(id)){
+				distributorsService.insert(p);
+			}else{
+				p.setId(new Long(id));
+				distributorsService.updateById(p);
+			}
+			resultMap.put("status", "1");
+		}catch(Exception e){
+			e.printStackTrace();
+			resultMap.put("status", "-1");
+		}
+		
 		return new Gson().toJson(resultMap);
 	}
 }

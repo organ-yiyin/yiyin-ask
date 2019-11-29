@@ -5,7 +5,7 @@
 <mapper namespace="yiyin.userb">
     <select id="findByUserno" resultType="com.yiyn.ask.xcx.user.po.UserPo" parameterType="String">
         SELECT user.*,
-        ((select count(*) from consultation_sheet s where s.user_b_no = user.user_no AND s.`STATUS` != '1') + (select value from yiyn_code where code_type = 'ADVICE_NUM')) as consultCount,
+        ((select count(*) from consultation_sheet s where s.user_b_no = user.user_no AND s.`STATUS` != '1') + (select value from yiyn_code where code_type = 'ADVICE_NUM') + user.add_orders) as consultCount,
         case when t.consultEval is null then 5 else t.consultEval end as  consultEval
         FROM user_b user left join (SELECT
 			round(sum(e.stars)/count(1),1) consultEval,user_b_no
@@ -16,15 +16,9 @@
     
     <!-- 查找大咖推荐  不接单的不展示  隐藏的也不显示-->
     <select id="findRecommendList" resultType="com.yiyn.ask.xcx.user.po.UserPo">
-        select * from (SELECT user.*, (
-				SELECT
-					count(1)
-				FROM
-					consultation_sheet s
-				WHERE
-					USER .user_no = s.USER_B_NO
-				AND s.`STATUS` != '1'
-			) AS consultCount,case when t.consultEval is null then 5 else t.consultEval end as consultEval
+        select * from (SELECT user.*, 
+        ((select count(1) from consultation_sheet s where s.user_b_no = user.user_no AND s.`STATUS` != '1') + (select value from yiyn_code where code_type = 'ADVICE_NUM') + user.add_orders) as consultCount,
+        case when t.consultEval is null then 5 else t.consultEval end as consultEval
         FROM user_b user left join (SELECT
 			round(sum(e.stars)/count(1),1) consultEval,user_b_no
 		FROM
@@ -53,15 +47,9 @@
     <!-- 根据名称或者其他信息查找 服务人员列表  -->
     <select id="getConsultList" resultType="com.yiyn.ask.xcx.user.po.UserPo" parameterType="java.util.HashMap">
        select * from (SELECT
-			USER.*, (
-				SELECT
-					count(1)
-				FROM
-					consultation_sheet s
-				WHERE
-					USER .user_no = s.USER_B_NO
-				AND s.`STATUS` != '1'
-			) AS consultCount,case when t.consultEval is null then 5 else t.consultEval end as  consultEval
+			USER.*, 
+			((select count(1) from consultation_sheet s where s.user_b_no = user.user_no AND s.`STATUS` != '1') + (select value from yiyn_code where code_type = 'ADVICE_NUM') + user.add_orders) as consultCount,
+			case when t.consultEval is null then 5 else t.consultEval end as  consultEval
 		FROM
 			user_b user left join (SELECT
 					round(sum(e.stars)/count(1),1) consultEval,user_b_no
@@ -109,7 +97,7 @@
         SELECT user.user_headimg,user.user_name,user.order_set,
         user.is_hidden,user.advice_val,user.advice_num,
         case when t.consultEval is null then 5 else t.consultEval end as consultEval,
-        ((select count(*) from consultation_sheet s where s.user_b_no = user.user_no AND s.`STATUS` != '1') + (select value from yiyn_code where code_type = 'ADVICE_NUM')) as consultCount,
+        ((select count(*) from consultation_sheet s where s.user_b_no = user.user_no AND s.`STATUS` != '1') + (select value from yiyn_code where code_type = 'ADVICE_NUM') + user.add_orders) as consultCount,
  		(select count(1) from consultation_sheet sheet
 		where sheet.status != '1'
 		and sheet.CREATED_TIME &gt;= DATE_FORMAT(now(),'%Y-%m-%d 00:00:00')

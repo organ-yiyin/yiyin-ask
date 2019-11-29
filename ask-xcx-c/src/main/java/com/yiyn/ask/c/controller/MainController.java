@@ -20,6 +20,7 @@ import com.google.gson.JsonParser;
 import com.yiyn.ask.base.utils.WechatDecryptDataUtil;
 import com.yiyn.ask.c.wechat.controller.XcxOAuthService;
 import com.yiyn.ask.wechat.dto.WechatXcxDto;
+import com.yiyn.ask.xcx.main.po.DistributorsVisitPo;
 import com.yiyn.ask.xcx.main.service.impl.MainService;
 import com.yiyn.ask.xcx.user.service.impl.UserService;
 
@@ -56,6 +57,35 @@ public class MainController {
 		resultMap.put("userList", userService.findRecommendList());
 		
 		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * 打开首页时根据扫描的对象查看是否是渠道商引流，如果是则插入统计数据
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/insDis.x", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String insDis(HttpServletRequest request,
+			HttpServletResponse response,String sessionid,String dis_code,String source) throws Exception {
+		logger.info("insDis");
+		
+		WechatXcxDto dto = XcxOAuthService.getWechatXcxDto(sessionid);
+		
+		DistributorsVisitPo insp = new DistributorsVisitPo();
+		insp.setDis_code(dis_code);
+		insp.setSource(source);
+		if(dto != null){
+			insp.setOpenid(dto.getOpen_id());
+			insp.setUnionid(dto.getUnionid());
+			mainService.insDis(insp);
+			
+			logger.info(dis_code + "渠道商统计成功+1");
+		}
+		
+		return null;
 	}
 	
 	/**

@@ -1,0 +1,11 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 渠道商插入记录 访问index的时候  -->
+<mapper namespace="yiyin.disVisit">
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.main.po.DistributorsVisitPo">
+        insert into stat_distributors(dis_code,source,openid,unionid,created_by,created_time)
+        values(#{dis_code},#{source},#{openid},#{unionid},#{created_by},now())
+    </insert>
+</mapper>

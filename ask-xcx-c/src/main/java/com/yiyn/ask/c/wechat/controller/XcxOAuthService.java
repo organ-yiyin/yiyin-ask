@@ -78,12 +78,12 @@ public class XcxOAuthService {
 		String sessionid="";
 		String phone="";
 		String headimg = "";
+		String unionid  = ""; //统一微信开放平台的unindid
 		// 如果token过期了，重新获取微信access_token
         if(tokenObj.get("openid")!=null&&!tokenObj.get("openid").equals("")){  
         	logger.info("是否在session中设置token！");
         	String openid = tokenObj.get("openid").getAsString();
         	String session_key  = tokenObj.get("session_key").getAsString();
-        	String unionid  = ""; //统一微信开放平台的unindid
         	if(tokenObj.get("unionid") != null){
         		unionid  = tokenObj.get("unionid").getAsString();
         	}
@@ -118,7 +118,7 @@ public class XcxOAuthService {
         	sessionid = openid + session_key;
         	application.setAttribute(sessionid, new WechatXcxDto(session_key,openid,unionid,db_openid,wxtype));  
         }
-        
+        re.put("unionid", unionid);
         re.put("sessionid", sessionid);
         re.put("phone", phone);
         re.put("user_headimg", headimg);
