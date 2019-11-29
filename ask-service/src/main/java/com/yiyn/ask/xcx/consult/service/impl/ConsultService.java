@@ -98,7 +98,7 @@ public class ConsultService {
 					   wList.add(cPo);
 				   // 已退款、已结束、超时退款的放到已完成里
 				   }else if(ConsultStatuEnum.REFUND.getCode().equals(status) || ConsultStatuEnum.END.getCode().equals(status) 
-						   || ConsultStatuEnum.TIME_OUT.getCode().equals(status)){
+						   || ConsultStatuEnum.EXPIRED_REFUND.getCode().equals(status)){
 					   yList.add(cPo);
 				   }
 			   }else{
@@ -122,7 +122,7 @@ public class ConsultService {
 					   wList.add(cPo);
 				   // 已退款、已结束、超时退款的放到已完成里
 				   }else if(ConsultStatuEnum.REFUND.getCode().equals(status) || ConsultStatuEnum.END.getCode().equals(status) 
-						   || ConsultStatuEnum.TIME_OUT.getCode().equals(status)){
+						   || ConsultStatuEnum.EXPIRED_REFUND.getCode().equals(status)){
 					   yList.add(cPo);
 				   }
 			   }
