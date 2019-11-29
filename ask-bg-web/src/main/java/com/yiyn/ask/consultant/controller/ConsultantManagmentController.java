@@ -1,6 +1,7 @@
 package com.yiyn.ask.consultant.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
+import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.consultant.form.ConsultantManagementForm;
 import com.yiyn.ask.consultant.service.ConsultantManager;
@@ -39,6 +41,7 @@ import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
 import com.yiyn.ask.xcx.account.po.AccountPo;
 import com.yiyn.ask.xcx.user.dao.impl.UserTagDaoImpl;
 import com.yiyn.ask.xcx.user.po.UserTagPo;
+import com.yiyn.ask.xcx.user.service.impl.UserService;
 
 @Controller
 @RequestMapping("/consultant")
@@ -64,6 +67,9 @@ public class ConsultantManagmentController {
 	
 	@Autowired
 	private ConsultantManager consultantManager;
+	
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagement(HttpServletRequest request,
@@ -144,6 +150,52 @@ public class ConsultantManagmentController {
 		
 		UserBPo convertToPo = UserBConvert.convertToPo(userForm);
 		convertToPo.setUser_password(DigestUtils.md5Hex(userForm.getOriginal_password()));
+		// 更新标签
+		List<UserTagPo> tagList = new ArrayList<UserTagPo>();
+		
+		String tags = userForm.getTags();
+		if(!StringUtils.isEmptyString(tags)){
+			for(String tag:tags.split(",")){
+				UserTagPo t = new UserTagPo();
+				t.setValue(tag);
+				t.setUser_no(userForm.getUser_no());
+				tagList.add(t);
+			}
+			userService.updUserTag(tagList, userForm.getUser_no());
+		}
+		
+		int advice_type = 9;
+		// tag 1: 国际认证泌乳顾问 2: 早产儿家庭养育顾问 3: 懿英认证哺乳指导
+		// 根据标签自动匹配获取咨询类型 1：哺育 ：2：早产儿  9：所有
+		/*
+		 *  国际认证泌乳顾问 ----哺乳
+		 *  懿英认证哺乳指导 ----哺乳
+		 *  国际认证泌乳顾问  ++ 懿英认证哺乳指导 ----哺乳
+		 *  早产儿家庭养育顾问 --- 早产儿
+		 *  国际认证泌乳顾问 + 早产儿家庭养育顾问 + 懿英认证哺乳指导 == 所有
+		 *  国际认证泌乳顾问 + 早产儿 == 所有
+		 *  懿英认证哺乳指导 + 早产儿 == 所有
+		 */
+		if(tags.indexOf("1") >= 0){
+			if(tags.indexOf("2") >= 0){
+				advice_type = 9;
+			}else{
+				advice_type = 1;
+			}
+		}else if(tags.indexOf("3") >= 0){
+			if(tags.indexOf("2") >= 0){
+				advice_type = 9;
+			}else{
+				advice_type = 1;
+			}
+		}else if(tags.indexOf("2") >= 0){
+			if(tags.indexOf("1") >= 0 || tags.indexOf("3") >= 0){
+				advice_type = 9;
+			}else{
+				advice_type = 2;
+			}
+		}
+		convertToPo.setAdvice_type(advice_type);
 		Long insertId = this.userBDao.save(convertToPo);
 		
 		AccountPo accountPo = new AccountPo();

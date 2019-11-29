@@ -67,6 +67,16 @@ public class UserBForm extends BaseForm{
 	private OrderSetEnum[] orderSets = OrderSetEnum.values();
 	
 	private ConsultingTypeEnum[] consultingTypes = ConsultingTypeEnum.values();
+	
+	private String tags;
+	
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
 
 	public String getUser_no() {
 		return user_no;
