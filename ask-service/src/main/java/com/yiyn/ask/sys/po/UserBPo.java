@@ -50,6 +50,8 @@ public class UserBPo extends BasePo {
 	private Integer recent_open_hours;
 	// 是否隐藏(Y:是,N:否)
 	private String is_hidden;
+	// 附加订单数（刷单用）
+	private Integer add_orders;
 
 	private Integer revision;
 
@@ -227,6 +229,14 @@ public class UserBPo extends BasePo {
 
 	public void setBank_account(String bank_account) {
 		this.bank_account = bank_account;
+	}
+
+	public Integer getAdd_orders() {
+		return add_orders;
+	}
+
+	public void setAdd_orders(Integer add_orders) {
+		this.add_orders = add_orders;
 	}
 
 }
