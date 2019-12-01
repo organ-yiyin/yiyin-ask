@@ -1,12 +1,14 @@
 package com.yiyn.ask.sys.form;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.yiyn.ask.base.constants.ConsultingTypeEnum;
 import com.yiyn.ask.base.constants.OrderSetEnum;
 import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.constants.YesOrNoType;
 import com.yiyn.ask.base.form.BaseForm;
+import com.yiyn.ask.xcx.center.po.CodePo;
 
 public class UserBForm extends BaseForm{
 
@@ -67,6 +69,8 @@ public class UserBForm extends BaseForm{
 	private OrderSetEnum[] orderSets = OrderSetEnum.values();
 	
 	private ConsultingTypeEnum[] consultingTypes = ConsultingTypeEnum.values();
+	
+	private List<CodePo> metaTags;
 	
 	private String tags;
 	
@@ -300,6 +304,52 @@ public class UserBForm extends BaseForm{
 
 	public void setAdd_orders(Integer add_orders) {
 		this.add_orders = add_orders;
+	}
+
+	public List<CodePo> getMetaTags() {
+		return metaTags;
+	}
+
+	public void setMetaTags(List<CodePo> metaTags) {
+		this.metaTags = metaTags;
+	}
+	
+	
+	public int buildAdviceType() {
+		
+		int advice_type = 9;
+		// tag 1: 国际认证泌乳顾问 2: 早产儿家庭养育顾问 3: 懿英认证哺乳指导
+		// 根据标签自动匹配获取咨询类型 1：哺育 ：2：早产儿  9：所有
+		/*
+		 *  国际认证泌乳顾问 ----哺乳
+		 *  懿英认证哺乳指导 ----哺乳
+		 *  国际认证泌乳顾问  ++ 懿英认证哺乳指导 ----哺乳
+		 *  早产儿家庭养育顾问 --- 早产儿
+		 *  国际认证泌乳顾问 + 早产儿家庭养育顾问 + 懿英认证哺乳指导 == 所有
+		 *  国际认证泌乳顾问 + 早产儿 == 所有
+		 *  懿英认证哺乳指导 + 早产儿 == 所有
+		 */
+		if(tags.indexOf("1") >= 0){
+			if(tags.indexOf("2") >= 0){
+				advice_type = 9;
+			}else{
+				advice_type = 1;
+			}
+		}else if(tags.indexOf("3") >= 0){
+			if(tags.indexOf("2") >= 0){
+				advice_type = 9;
+			}else{
+				advice_type = 1;
+			}
+		}else if(tags.indexOf("2") >= 0){
+			if(tags.indexOf("1") >= 0 || tags.indexOf("3") >= 0){
+				advice_type = 9;
+			}else{
+				advice_type = 2;
+			}
+		}
+		
+		return advice_type;
 	}
 	
 }

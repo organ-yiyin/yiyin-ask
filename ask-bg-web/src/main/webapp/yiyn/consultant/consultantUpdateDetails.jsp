@@ -111,7 +111,7 @@
 			<dl class="">
 				<dt>附加订单数（刷单用）：</dt>
 				<dd>
-					<input type="text" name="add_orders" class="digits" value="${info.add_orders}"/>
+					<input type="text" name="add_orders" class="digits required" value="${info.add_orders}" />
 				</dd>
 			</dl>
 			
@@ -153,7 +153,7 @@
 				</dd>
 			</dl>
 			
-			<dl class="nowrap">
+			<%-- <dl class="nowrap">
 				<dt>标签列表：</dt>
 				<dd>
 					<table class="table" targetType="dialog" width="370px">
@@ -164,10 +164,39 @@
 							</tr>
 						</thead>
 						<tbody>
+							<tr>
 							<c:forEach items="${tagList}" var="tag">
+								<td>${tag.value}</td>
+								<td>${tag.name}</td>
+							</c:forEach>
+							</tr>
+						</tbody>
+					</table>
+				</dd>
+			</dl> --%>
+			
+			<dl class="nowrap">
+				<dt>标签列表新：</dt>
+				<dd>
+					<table class="table" targetType="dialog" width="370px">
+						<thead>
+							<tr>
+								<th width="70px">选项</th>
+								<th width="70px">标签值</th>
+								<th width="300px">标签名称</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${info.metaTags}" var="metaTag">
 								<tr>
-									<td>${tag.value}</td>
-									<td>${tag.name}</td>
+								<c:set var="isTagSelected" value="false"/>
+								<c:forEach items="${tagList}" var="tag">
+									<c:if test="${metaTag.value eq tag.value}"><c:set var="isTagSelected" value="true"/></c:if>
+								</c:forEach>
+								
+								<td><input type="checkbox" value="${metaTag.value}" name="tags" <c:if test="${isTagSelected == true}">checked</c:if>></td>
+								<td>${metaTag.value}</td>
+								<td>${metaTag.name}</td>
 								</tr>
 							</c:forEach>
 						</tbody>

@@ -37,8 +37,9 @@ import com.yiyn.ask.sys.dao.impl.UserBDaoImpl;
 import com.yiyn.ask.sys.form.UserBForm;
 import com.yiyn.ask.sys.po.UserBPo;
 import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
-import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
 import com.yiyn.ask.xcx.account.po.AccountPo;
+import com.yiyn.ask.xcx.center.dao.impl.CodeDaoImpl;
+import com.yiyn.ask.xcx.center.po.CodePo;
 import com.yiyn.ask.xcx.user.dao.impl.UserTagDaoImpl;
 import com.yiyn.ask.xcx.user.po.UserTagPo;
 import com.yiyn.ask.xcx.user.service.impl.UserService;
@@ -60,10 +61,10 @@ public class ConsultantManagmentController {
 	private AccountDaoImpl accountDao;
 	
 	@Autowired
-	private AccountFlowDaoImpl accountFlowDao;
+	private UserTagDaoImpl userTagDao;
 	
 	@Autowired
-	private UserTagDaoImpl userTagDao;
+	private CodeDaoImpl codeDao;
 	
 	@Autowired
 	private ConsultantManager consultantManager;
@@ -119,6 +120,9 @@ public class ConsultantManagmentController {
 		logger.info("forwardNewDetails");
 		
 		UserBForm userForm = new UserBForm();
+		List<CodePo> tags = codeDao.findCodeList("TAG");
+		userForm.setMetaTags(tags);
+		
 		ModelAndView mv = new ModelAndView( FOLDER_PATH + "/consultantDetails.jsp");
 		mv.addObject("info", userForm);
 		
@@ -132,6 +136,9 @@ public class ConsultantManagmentController {
 		
 		UserBPo userBPo = this.userBDao.findById(id);
 		UserBForm userForm = UserBConvert.convertToForm(userBPo);
+		List<CodePo> tags = codeDao.findCodeList("TAG");
+		userForm.setMetaTags(tags);
+		
 		List<UserTagPo> tagList = userTagDao.getUserTagList(userBPo.getUser_no());
 		
 		ModelAndView mv = new ModelAndView( FOLDER_PATH + "/consultantUpdateDetails.jsp");
@@ -150,51 +157,11 @@ public class ConsultantManagmentController {
 		
 		UserBPo convertToPo = UserBConvert.convertToPo(userForm);
 		convertToPo.setUser_password(DigestUtils.md5Hex(userForm.getOriginal_password()));
-		// 更新标签
-		List<UserTagPo> tagList = new ArrayList<UserTagPo>();
 		
-		String tags = userForm.getTags();
-		if(!StringUtils.isEmptyString(tags)){
-			for(String tag:tags.split(",")){
-				UserTagPo t = new UserTagPo();
-				t.setValue(tag);
-				t.setUser_no(userForm.getUser_no());
-				tagList.add(t);
-			}
-			userService.updUserTag(tagList, userForm.getUser_no());
-		}
+		// 修改标签
+		this.updateTags(userForm);
 		
-		int advice_type = 9;
-		// tag 1: 国际认证泌乳顾问 2: 早产儿家庭养育顾问 3: 懿英认证哺乳指导
-		// 根据标签自动匹配获取咨询类型 1：哺育 ：2：早产儿  9：所有
-		/*
-		 *  国际认证泌乳顾问 ----哺乳
-		 *  懿英认证哺乳指导 ----哺乳
-		 *  国际认证泌乳顾问  ++ 懿英认证哺乳指导 ----哺乳
-		 *  早产儿家庭养育顾问 --- 早产儿
-		 *  国际认证泌乳顾问 + 早产儿家庭养育顾问 + 懿英认证哺乳指导 == 所有
-		 *  国际认证泌乳顾问 + 早产儿 == 所有
-		 *  懿英认证哺乳指导 + 早产儿 == 所有
-		 */
-		if(tags.indexOf("1") >= 0){
-			if(tags.indexOf("2") >= 0){
-				advice_type = 9;
-			}else{
-				advice_type = 1;
-			}
-		}else if(tags.indexOf("3") >= 0){
-			if(tags.indexOf("2") >= 0){
-				advice_type = 9;
-			}else{
-				advice_type = 1;
-			}
-		}else if(tags.indexOf("2") >= 0){
-			if(tags.indexOf("1") >= 0 || tags.indexOf("3") >= 0){
-				advice_type = 9;
-			}else{
-				advice_type = 2;
-			}
-		}
+		int advice_type = userForm.buildAdviceType();
 		convertToPo.setAdvice_type(advice_type);
 		Long insertId = this.userBDao.save(convertToPo);
 		
@@ -219,8 +186,13 @@ public class ConsultantManagmentController {
 		logger.info("update");
 		
 		UserBPo convertToPo = UserBConvert.convertToPo(userForm);
-		this.userBDao.updateByIdInBg(convertToPo);
 		
+		// 修改标签
+		this.updateTags(userForm);
+		int advice_type = userForm.buildAdviceType();
+		convertToPo.setAdvice_type(advice_type);
+		
+		this.userBDao.updateByIdInBg(convertToPo);
 		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
 		return new Gson().toJson(responseForm);
 	}
@@ -302,5 +274,24 @@ public class ConsultantManagmentController {
 		finally {
 			os.close();
 		}
+	}
+	
+	
+	private void updateTags(UserBForm userForm) throws Exception {
+		
+		// 更新标签
+		List<UserTagPo> tagList = new ArrayList<UserTagPo>();
+		
+		String tags = userForm.getTags();
+		if(!StringUtils.isEmptyString(tags)){
+			for(String tag:tags.split(",")){
+				UserTagPo t = new UserTagPo();
+				t.setValue(tag);
+				t.setUser_no(userForm.getUser_no());
+				tagList.add(t);
+			}
+			userService.updUserTag(tagList, userForm.getUser_no());
+		}
+		
 	}
 }
