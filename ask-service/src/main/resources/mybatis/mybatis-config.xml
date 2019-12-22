@@ -36,10 +36,12 @@
 		<mapper resource="mybatis/consult/ConsultRefMapper.xml"/>
 		<mapper resource="mybatis/consult/ConsultSheetRefMapper.xml"/>
 		<mapper resource="mybatis/consult/ConsultProcessMapper.xml"/>
+		<mapper resource="mybatis/consult/UserCCouponMapper.xml"/>
 		<mapper resource="mybatis/main/BannerMapper.xml"/>
 		<mapper resource="mybatis/main/DistributorsVisitMapper.xml"/>
 		<mapper resource="mybatis/base/AttachmentMapper.xml" />
 		<mapper resource="mybatis/market/AdMapper.xml"/>
 		<mapper resource="mybatis/market/CouponMapper.xml"/>
+		
 	</mappers>
 </configuration>

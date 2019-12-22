@@ -9,6 +9,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ import com.yiyn.ask.base.po.AttachmentPo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
+import com.yiyn.ask.market.form.CouponForm;
 import com.yiyn.ask.order.convert.ConsultationSheetConvert;
 import com.yiyn.ask.order.form.ConsultationSheetForm;
 import com.yiyn.ask.order.form.OrderManagementForm;
@@ -53,10 +55,12 @@ import com.yiyn.ask.xcx.consult.dao.impl.ConsultLogDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultProcessDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultRefDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultantSheetBgDaoImpl;
+import com.yiyn.ask.xcx.consult.dao.impl.UserCCouponDaoImpl;
 import com.yiyn.ask.xcx.consult.po.ConsultLogPo;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
 import com.yiyn.ask.xcx.consult.po.ConsultProcessPo;
 import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
+import com.yiyn.ask.xcx.consult.po.UserCCouponPo;
 import com.yiyn.ask.xcx.user.dao.impl.UserCDaoImpl;
 import com.yiyn.ask.xcx.user.po.UserCPo;
 
@@ -105,6 +109,9 @@ public class OrderManagementController {
 	
 	@Autowired
 	private AccountFlowDaoImpl accountFlowDao;
+	
+	@Autowired
+	private UserCCouponDaoImpl userCCouponDaoImpl;
 
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request, HttpServletResponse response)
@@ -155,6 +162,11 @@ public class OrderManagementController {
 		
 		ConsultPo consultPo = this.consultantSheetBgDao.findById(id);
 		ConsultationSheetForm consultantSheet = ConsultationSheetConvert.convertToForm(consultPo);
+		UserCCouponPo userCCouponPo = null;
+		if(StringUtils.isNotEmpty(consultPo.getCoupon_relid())) {
+			userCCouponPo = userCCouponDaoImpl.findById(Long.valueOf(consultPo.getCoupon_relid()));
+		}
+		
 		List<CodePo> qus_types = codeDao.findCodeList("QUS_TYPE");
 		consultantSheet.setQus_types(qus_types);
 		
@@ -167,12 +179,14 @@ public class OrderManagementController {
 
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderDetails.jsp");
 		mv.addObject("consultantSheet",consultantSheet);
+		mv.addObject("userCCoupon",userCCouponPo);
 		mv.addObject("consultProcessList", consultProcessList);
 		mv.addObject("userB", userB);
 		mv.addObject("userC", userC);
 		mv.addObject("consultRef", consultRef);
 		mv.addObject("attachments", attachments);
 		mv.addObject("logs", logs);
+		mv.addObject("couponForm", new CouponForm());
 
 		return mv;
 	}

@@ -56,6 +56,8 @@ public class ConsultPo extends BasePo {
 	
 	private String pay_time;
 	
+	private String coupon_relid;
+	
 	public UserCPo getUserCPo() {
 		return userCPo;
 	}
@@ -253,4 +255,13 @@ public class ConsultPo extends BasePo {
 	public void setRefund_time(Date refund_time) {
 		this.refund_time = refund_time;
 	}
+
+	public String getCoupon_relid() {
+		return coupon_relid;
+	}
+
+	public void setCoupon_relid(String coupon_relid) {
+		this.coupon_relid = coupon_relid;
+	}
+	
 }

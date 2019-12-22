@@ -27,6 +27,7 @@
 						<li><a href="javascript:;"><span>下单客户资料</span></a></li>
 						<li><a href="javascript:;"><span>咨询师资料</span></a></li>
 						<li><a href="javascript:;"><span>订单详情</span></a></li>
+						<li><a href="javascript:;"><span>支付详情</span></a></li>
 						<li><a href="javascript:;"><span>咨询内容</span></a></li>
 						<li><a href="javascript:;"><span>附件管理</span></a></li>
 					</ul>
@@ -154,6 +155,7 @@
 				</div>
 			</div>
 			
+			<!-- 订单详情 -->
 			<div class="tabsContent" style="height:100%;">
 				<div>
 					<dl>
@@ -246,6 +248,77 @@
 						</dd>
 					</dl>
 				</div>
+			</div>
+			
+			<!-- 支付详情 -->
+			<div class="tabsContent" style="height:100%;">
+				<div>
+					<fieldset>
+						<legend>第三方支付</legend>
+						<dl>
+							<dt>支付方式：</dt>
+							<dd>
+								微信支付
+							</dd>
+						</dl>
+						<dl>
+							<dt>微信订单号：</dt>
+							<dd>
+								${consultantSheet.pay_odd_num}
+							</dd>
+						</dl>
+						<dl>
+							<dt>支付金额：</dt>
+							<dd>
+								${consultantSheet.pay_odd_num}
+							</dd>
+						</dl>
+					</fieldset>
+					<fieldset>
+						<legend>优惠活动</legend>
+						<dl>
+							<dt>优惠活动类型：</dt>
+							<dd>
+								<c:forEach items="${couponForm.couponTypeList}" var="item_u" varStatus="s">
+									<c:if test="${item_u.code==userCCoupon.coupon_type}">${item_u.name}</c:if>
+								</c:forEach>
+							</dd>
+						</dl>
+						<dl>
+							<dt>优惠活动范围：</dt>
+							<dd>
+								<c:forEach items="${couponForm.couponRangeList}" var="item_u" varStatus="s">
+									<c:if test="${item_u.code==userCCoupon.coupon_range}">${item_u.name}</c:if>
+								</c:forEach>
+							</dd>
+						</dl>
+						<dl>
+							<dt>总金额(元)：</dt>
+							<dd>
+								${userCCoupon.total_amount}
+							</dd>
+						</dl>
+						<dl>
+							<dt>优惠金额(元)：</dt>
+							<dd>
+								${userCCoupon.amount}
+							</dd>
+						</dl>
+						<dl>
+							<dt>优惠活动开始时间：</dt>
+							<dd>
+								<fmt:formatDate value="${userCCoupon.start_date}" pattern="yyyy-MM-dd HH:mm:ss" />
+							</dd>
+						</dl>
+						<dl>
+							<dt>优惠活动结束时间：</dt>
+							<dd>
+								<fmt:formatDate value="${userCCoupon.end_date}" pattern="yyyy-MM-dd HH:mm:ss" />
+							</dd>
+						</dl>
+					</fieldset>
+				</div>
+				
 			</div>
 			
 			<!-- 咨询内容 -->
