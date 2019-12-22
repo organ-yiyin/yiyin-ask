@@ -40,5 +40,6 @@
 		<mapper resource="mybatis/main/DistributorsVisitMapper.xml"/>
 		<mapper resource="mybatis/base/AttachmentMapper.xml" />
 		<mapper resource="mybatis/market/AdMapper.xml"/>
+		<mapper resource="mybatis/market/CouponMapper.xml"/>
 	</mappers>
 </configuration>

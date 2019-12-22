@@ -86,7 +86,11 @@
 										<jsp:param name="authorityCode" value="ad.management" />
 									</jsp:include>
 								</li>
-								
+								<li>
+									<jsp:include page="/yiyn/sys/userAuthorityTreeNode.jsp" flush="true">
+										<jsp:param name="authorityCode" value="coupon.management" />
+									</jsp:include>
+								</li>
 							</ul>
 						</li>
 						<li>

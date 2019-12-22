@@ -20,32 +20,32 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
-import com.yiyn.ask.market.convert.AdConvert;
-import com.yiyn.ask.market.dao.impl.AdDaoImpl;
-import com.yiyn.ask.market.form.AdForm;
-import com.yiyn.ask.market.form.AdManagementForm;
-import com.yiyn.ask.market.po.AdPo;
+import com.yiyn.ask.market.convert.CouponConvert;
+import com.yiyn.ask.market.dao.impl.CouponDaoImpl;
+import com.yiyn.ask.market.form.CouponForm;
+import com.yiyn.ask.market.form.CouponManagementForm;
+import com.yiyn.ask.market.po.CouponPo;
 
 @Controller
-@RequestMapping("/market/ad")
-public class AdController {
+@RequestMapping("/market/coupon")
+public class CouponController {
 	
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
+private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	public static final String FOLDER_PATH = "/yiyn/market/ad";
+	public static final String FOLDER_PATH = "/yiyn/market/coupon";
 	
-	public static final String URL_PATH_PREFIX = "/market/ad";
+	public static final String URL_PATH_PREFIX = "/market/coupon";
 	
 	@Autowired
-	private AdDaoImpl adDao;
+	private CouponDaoImpl couponDao;
 	
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView management(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		logger.info("management");
 		
-		AdManagementForm returnPage = new AdManagementForm();
-		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/adManagement.jsp");
+		CouponManagementForm returnPage = new CouponManagementForm();
+		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/couponManagement.jsp");
 		mv.addObject("info", returnPage);
 		
 		return mv;
@@ -54,28 +54,30 @@ public class AdController {
 	@RequestMapping(value = "/search.do", method = RequestMethod.POST)
 	public ModelAndView search(HttpServletRequest request,
 			HttpServletResponse response, 
-			@RequestParam("ad_position") String ad_position,
-			@RequestParam("ad_title") String ad_title,
-			@RequestParam("delete_flag") String delete_flag,
+			@RequestParam("name") String name,
+			@RequestParam("coupon_type") String coupon_type,
+			@RequestParam("coupon_range") String coupon_range,
+			@RequestParam("coupon_status") String coupon_status,
 			@RequestParam("pageNum") String pageNum,
 			@RequestParam("numPerPage") String numPerPage) throws Exception {
 		logger.info("searchUserList");
 
 		PaginationUtils paramPage = new PaginationUtils(
 				Integer.parseInt(numPerPage), Integer.parseInt(pageNum));
-		paramPage.getParamMap().put("ad_position", ad_position);
-		paramPage.getParamMap().put("ad_title", ad_title);
-		paramPage.getParamMap().put("delete_flag", delete_flag);
+		paramPage.getParamMap().put("name", name);
+		paramPage.getParamMap().put("coupon_type", coupon_type);
+		paramPage.getParamMap().put("coupon_range", coupon_range);
+		paramPage.getParamMap().put("coupon_status", coupon_status);
 		
-		int totalCount = this.adDao.searchCountByConditions(paramPage);
-		List<AdPo> pos =  this.adDao.searchByConditions(paramPage);
+		int totalCount = this.couponDao.searchCountByConditions(paramPage);
+		List<CouponPo> pos =  this.couponDao.searchByConditions(paramPage);
 		
-		AdManagementForm returnPage = new AdManagementForm();
+		CouponManagementForm returnPage = new CouponManagementForm();
 		BeanUtils.copyProperties(paramPage, returnPage);
 		returnPage.setTotalCount(totalCount);
-		returnPage.setData(AdConvert.listConvertToForm(pos));
+		returnPage.setData(CouponConvert.listConvertToForm(pos));
 		
-		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/adManagement.jsp");
+		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/couponManagement.jsp");
 		mv.addObject("info", returnPage);
 
 		return mv;
@@ -87,9 +89,9 @@ public class AdController {
 		
 		logger.info("forwardNewDetails");
 		
-		AdForm adForm = new AdForm();
+		CouponForm adForm = new CouponForm();
 		
-		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/adDetails.jsp");
+		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/couponDetails.jsp");
 		mv.addObject("info", adForm);
 		
 		return mv;
@@ -100,10 +102,10 @@ public class AdController {
 			HttpServletResponse response, @RequestParam("id") Long id) throws Exception {
 		
 		logger.info("forwardUpdateDetails");
-		AdPo adPo = this.adDao.findById(id);
-		AdForm adForm = AdConvert.convertToForm(adPo);
+		CouponPo adPo = this.couponDao.findById(id);
+		CouponForm adForm = CouponConvert.convertToForm(adPo);
 		
-		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/adDetails.jsp");
+		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/couponDetails.jsp");
 		mv.addObject("info", adForm);
 		
 		return mv;
@@ -113,28 +115,14 @@ public class AdController {
 	@ResponseBody
 	@Transactional
 	public String save(HttpServletRequest request,
-			HttpServletResponse response, AdForm adForm) throws Exception {
+			HttpServletResponse response, CouponForm adForm) throws Exception {
 		logger.info("saveAd");
 		
-		AdPo convertToPo = AdConvert.convertToPo(adForm);
-		Long insertId = this.adDao.save(convertToPo);
+		CouponPo convertToPo = CouponConvert.convertToPo(adForm);
+		Long insertId = this.couponDao.save(convertToPo);
 
 		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
 		return new Gson().toJson(responseForm);
 	}
-	
-	@RequestMapping(value = "/update.do", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
-	@ResponseBody
-	@Transactional
-	public String update(HttpServletRequest request,
-			HttpServletResponse response, AdForm adForm) throws Exception {
-		logger.info("updateAd");
-		
-		AdPo convertToPo = AdConvert.convertToPo(adForm);
-		Long insertId = this.adDao.save(convertToPo);
-		
-		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
-		return new Gson().toJson(responseForm);
-	}
-	
+
 }
