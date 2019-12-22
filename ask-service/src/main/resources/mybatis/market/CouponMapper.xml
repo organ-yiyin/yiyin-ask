@@ -12,7 +12,7 @@
 	<select id="searchByConditions" parameterType="com.yiyn.ask.base.utils.PaginationUtils"
 		resultType="com.yiyn.ask.market.po.CouponPo">
 		select * from coupon where 1=1
-		<if test="paramMap.ad_name != null and '' != paramMap.ad_name">
+		<if test="paramMap.name != null and '' != paramMap.name">
 			AND name like CONCAT('%',#{paramMap.name},'%')
 		</if>
 		<if test="paramMap.coupon_type != null and '' != paramMap.coupon_type">
@@ -22,7 +22,7 @@
 			and coupon_range = #{paramMap.coupon_range}
 		</if>
 		<if test="paramMap.coupon_status != null and '' != paramMap.coupon_status">
-			and coupon_status = #{paramMap.coupon_status}
+			and status = #{paramMap.coupon_status}
 		</if>
 		
 		order by updated_time desc
@@ -33,7 +33,7 @@
 		resultType="int">
 
 		select count(*) as totalCount from coupon where 1=1
-		<if test="paramMap.ad_name != null and '' != paramMap.ad_name">
+		<if test="paramMap.name != null and '' != paramMap.name">
 			AND name like CONCAT('%',#{paramMap.name},'%')
 		</if>
 		<if test="paramMap.coupon_type != null and '' != paramMap.coupon_type">
@@ -43,8 +43,9 @@
 			and coupon_range = #{paramMap.coupon_range}
 		</if>
 		<if test="paramMap.coupon_status != null and '' != paramMap.coupon_status">
-			and coupon_status = #{paramMap.coupon_status}
+			and status = #{paramMap.coupon_status}
 		</if>
+		
 	</select>
 
 	<insert id="insert" parameterType="com.yiyn.ask.market.po.CouponPo"
