@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.gson.Gson;
+import com.yiyn.ask.base.constants.CouponStatusEnum;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.market.convert.CouponConvert;
@@ -119,10 +120,45 @@ private Logger logger = LoggerFactory.getLogger(this.getClass());
 		logger.info("saveAd");
 		
 		CouponPo convertToPo = CouponConvert.convertToPo(adForm);
-		Long insertId = this.couponDao.save(convertToPo);
-
-		DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
-		return new Gson().toJson(responseForm);
+		
+		// 点击了撤回按钮
+		if("rollback".equals(adForm.getActionFlag())) {
+			// 优惠券发布后不可修改，仅能撤回
+			CouponPo dbCoupon = this.couponDao.findById(adForm.getId());
+			if(!CouponStatusEnum.EFFECTIVE.getCode().equals(dbCoupon.getStatus())) {
+				DwzResponseForm responseForm = DwzResponseForm.createFailResponseForm("未发布的优惠活动不能撤回");
+				return new Gson().toJson(responseForm);
+			}
+			else {
+				// 修改状态为撤回
+				dbCoupon.setStatus(CouponStatusEnum.ROLLBACK.getCode());
+				Long insertId = this.couponDao.save(dbCoupon);
+				
+				DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
+				return new Gson().toJson(responseForm);
+			}
+		}
+		else {
+			if(adForm.getId() != null) {
+				// 优惠券发布后不可修改，仅能撤回
+				CouponPo dbCoupon = this.couponDao.findById(adForm.getId());
+				if(CouponStatusEnum.EFFECTIVE.getCode().equals(dbCoupon.getStatus())) {
+					DwzResponseForm responseForm = DwzResponseForm.createFailResponseForm("已发布的优惠活动不能修改");
+					return new Gson().toJson(responseForm);
+				}
+				else {
+					Long insertId = this.couponDao.save(convertToPo);
+					DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
+					return new Gson().toJson(responseForm);
+				}
+			}
+			else {
+				Long insertId = this.couponDao.save(convertToPo);
+				DwzResponseForm responseForm = DwzResponseForm.createCloseCurrentResponseForm();
+				return new Gson().toJson(responseForm);
+			}
+		}
+				
 	}
-
+	
 }

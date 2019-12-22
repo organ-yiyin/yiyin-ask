@@ -13,14 +13,20 @@
 
 <script>
 	
+	var rollback = function(){
+		$("#actionFlag").val("rollback");
+		$("#couponForm").submit();
+	}
+	
 </script>
 
 <div class="pageContent">
 
-	<form method="post" action="<%=path%>/market/coupon/save.do" class="pageForm required-validate"
+	<form name="couponForm" id="couponForm" method="post" action="<%=path%>/market/coupon/save.do" class="pageForm required-validate"
 		onsubmit="return validateCallback(this, navTabAjaxDone);">
 
 		<input type="hidden" name="id" id="id" value="${info.id}">
+		<input type="hidden" name="actionFlag" id="actionFlag">
 		
 		<div class="pageFormContent" layoutH="56">
 			<dl class="nowrap">
@@ -94,6 +100,18 @@
 					<input class="date" maxlength="200" name="end_date" type="text" value="${info.end_date}" />
 				</dd>
 			</dl>
+			<dl class="nowrap">
+				<dt>是否禁用：</dt>
+				<dd>
+					<select class="combox required" name="delete_flag">
+						<option value="">请选择</option>
+						<c:forEach items="${info.yesOrNoTypes}" var="item" varStatus="s">
+							<option value="${item.code}"
+								<c:if test="${item.code==info.delete_flag}">selected</c:if>>${item.text}</option>
+						</c:forEach>
+					</select>
+				</dd>
+			</dl>
 
 			<div class="divider"></div>
 			<dl>
@@ -124,11 +142,23 @@
 		<div class="formBar">
 			<ul>
 				<!--<li><a class="buttonActive" href="javascript:;"><span>保存</span></a></li>-->
+				<c:if test="${info.status != '1'}">
 				<li><div class="buttonActive">
 						<div class="buttonContent">
 							<button type="submit">保存</button>
 						</div>
-					</div></li>
+					</div>
+				</li>
+				</c:if>
+				<c:if test="${info.status eq '1'}">
+				<li><div class="buttonActive">
+						<div class="buttonContent">
+							<button type="button" onclick="rollback()">撤回</button>
+						</div>
+					</div>
+				</li>
+				</c:if>
+				
 				<li>
 					<div class="button">
 						<div class="buttonContent">

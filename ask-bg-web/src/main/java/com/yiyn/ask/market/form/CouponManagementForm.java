@@ -1,13 +1,13 @@
 package com.yiyn.ask.market.form;
 
 import com.yiyn.ask.base.constants.CouponRangeEnum;
-import com.yiyn.ask.base.constants.CouponStatuEnum;
+import com.yiyn.ask.base.constants.CouponStatusEnum;
 import com.yiyn.ask.base.constants.CouponTypeEnum;
 import com.yiyn.ask.base.utils.PaginationUtils;
 
 public class CouponManagementForm extends PaginationUtils{
 	
-	private CouponStatuEnum[] couponStatusList = CouponStatuEnum.values();
+	private CouponStatusEnum[] couponStatusList = CouponStatusEnum.values();
 	
 	private CouponTypeEnum[] couponTypeList = CouponTypeEnum.values();
 	
@@ -17,11 +17,11 @@ public class CouponManagementForm extends PaginationUtils{
 		super();
 	}
 
-	public CouponStatuEnum[] getCouponStatusList() {
+	public CouponStatusEnum[] getCouponStatusList() {
 		return couponStatusList;
 	}
 
-	public void setCouponStatusList(CouponStatuEnum[] couponStatusList) {
+	public void setCouponStatusList(CouponStatusEnum[] couponStatusList) {
 		this.couponStatusList = couponStatusList;
 	}
 

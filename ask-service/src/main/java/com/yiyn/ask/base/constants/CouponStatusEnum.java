@@ -2,13 +2,13 @@ package com.yiyn.ask.base.constants;
 
 import org.apache.commons.lang3.StringUtils;
 
-public enum CouponStatuEnum {
+public enum CouponStatusEnum {
 	UN_EFFECTIVE("0", "未发布"), EFFECTIVE("1", "已发布"), ROLLBACK("2", "撤回"), EXPIREDS("3", "到期下线");
 
 	String code;
 	String name;
 
-	private CouponStatuEnum(String code, String name) {
+	private CouponStatusEnum(String code, String name) {
 		this.code = code;
 		this.name = name;
 	}
@@ -29,11 +29,11 @@ public enum CouponStatuEnum {
 		this.name = name;
 	}
 
-	public static CouponStatuEnum buildConsulantStatusByCode(String code) {
+	public static CouponStatusEnum buildConsulantStatusByCode(String code) {
 		if (StringUtils.isEmpty(code)) {
 			return null;
 		}
-		for (CouponStatuEnum status : CouponStatuEnum.values()) {
+		for (CouponStatusEnum status : CouponStatusEnum.values()) {
 			if (status.getCode().equals(code)) {
 				return status;
 			}

@@ -1,7 +1,7 @@
 package com.yiyn.ask.market.form;
 
 import com.yiyn.ask.base.constants.CouponRangeEnum;
-import com.yiyn.ask.base.constants.CouponStatuEnum;
+import com.yiyn.ask.base.constants.CouponStatusEnum;
 import com.yiyn.ask.base.constants.CouponTypeEnum;
 import com.yiyn.ask.base.form.BaseForm;
 
@@ -36,7 +36,9 @@ public class CouponForm  extends BaseForm{
 	
 	private String user_list;
 	
-	private CouponStatuEnum[] couponStatusList = CouponStatuEnum.values();
+	private String actionFlag;
+	
+	private CouponStatusEnum[] couponStatusList = CouponStatusEnum.values();
 	
 	private CouponTypeEnum[] couponTypeList = CouponTypeEnum.values();
 	
@@ -139,11 +141,11 @@ public class CouponForm  extends BaseForm{
 		this.user_list = user_list;
 	}
 
-	public CouponStatuEnum[] getCouponStatusList() {
+	public CouponStatusEnum[] getCouponStatusList() {
 		return couponStatusList;
 	}
 
-	public void setCouponStatusList(CouponStatuEnum[] couponStatusList) {
+	public void setCouponStatusList(CouponStatusEnum[] couponStatusList) {
 		this.couponStatusList = couponStatusList;
 	}
 
@@ -161,6 +163,14 @@ public class CouponForm  extends BaseForm{
 
 	public void setCouponRangeList(CouponRangeEnum[] couponRangeList) {
 		this.couponRangeList = couponRangeList;
+	}
+
+	public String getActionFlag() {
+		return actionFlag;
+	}
+
+	public void setActionFlag(String actionFlag) {
+		this.actionFlag = actionFlag;
 	}
 	
 }
