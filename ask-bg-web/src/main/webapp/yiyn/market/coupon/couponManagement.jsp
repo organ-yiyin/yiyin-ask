@@ -101,6 +101,7 @@
 				<th width="100px">活动类型</th>
 				<th width="100px">活动范围</th>
 				<th width="100px">活动状态</th>
+				<th width="100px">是否禁用</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -121,6 +122,11 @@
 					<td>
 						<c:forEach items="${info.couponStatusList}" var="s_item" varStatus="s">
 							<c:if test="${s_item.code==item.status}">${s_item.name}</c:if>
+						</c:forEach>
+					</td>
+					<td>
+						<c:forEach items="${info.yesOrNoTypes}" var="s_item" varStatus="s">
+							<c:if test="${s_item.code==item.delete_flag}">${s_item.text}</c:if>
 						</c:forEach>
 					</td>
 				</tr>
