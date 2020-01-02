@@ -2,7 +2,7 @@ package com.yiyn.ask.base.constants;
 
 public enum UserTypeEnum {
 	
-	MANAGER(1,"管理员"),SERVER(2,"服务人员");
+	MANAGER(1,"内部"),SERVER(2,"外部");
 	
 	Integer code;
 	String name;
@@ -28,6 +28,16 @@ public enum UserTypeEnum {
 		this.name = name;
 	}
 
-	
+	public static UserTypeEnum findEnumByCode(Integer code) {
+		if(code == null) {
+			return null;
+		}
+		for(UserTypeEnum status : UserTypeEnum.values()) {
+			if(status.getCode().equals(code)) {
+				return status;
+			}
+		}
+		return null;
+	}
 	
 }

@@ -90,12 +90,13 @@
 			</ul>
 	</div>
 
-	<table class="table" style="width:800px" layoutH="140">
+	<table class="table" style="width:900px" layoutH="140">
 		<thead>
 			<tr>
 				<th width="150px">用户名</th>
 				<th width="150px">用户姓名</th>
 				<th width="120px">用户手机</th>
+				<th width="100px">咨询师性质</th>
 				<th width="100px">咨询类型</th>
 				<th width="100px">接单设置</th>
 				<th width="100px">从业年限</th>
@@ -108,6 +109,11 @@
 				<td>${item.user_no}</td>
 				<td>${item.user_name}</td>
 				<td>${item.user_phone}</td>
+				<td>
+					<c:forEach items="${info.userTypes}" var="item_t" varStatus="s">
+						<c:if test="${item_t.code==item.user_type}">${item_t.name}</c:if>
+					</c:forEach>
+				</td>
 				<td>
 					<c:forEach items="${info.consultingTypes}" var="item_t" varStatus="s">
 						<c:if test="${item_t.code==item.advice_type}">${item_t.name}</c:if>

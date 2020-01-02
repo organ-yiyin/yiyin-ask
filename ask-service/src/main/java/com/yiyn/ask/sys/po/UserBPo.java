@@ -22,7 +22,7 @@ public class UserBPo extends BasePo {
 	private String bank_name;
 	// 银行账号
 	private String bank_account;
-	// 用户类型(1：管理员 2：服务人员)
+	// 咨询师性质(1：内部 2：外部)
 	private Integer user_type;
 	// 用户头像
 	private String user_headimg;

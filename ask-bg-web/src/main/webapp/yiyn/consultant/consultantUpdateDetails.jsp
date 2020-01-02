@@ -50,6 +50,17 @@
 					<input type="text" name="bank_account" value="${info.bank_account}"/>
 				</dd>
 			</dl>
+			<dl class="">
+				<dt>咨询师性质：</dt>
+				<dd>
+					<select name="user_type" class="combox required">
+						<option value="">请选择</option>
+						<c:forEach items="${info.userTypes}" var="p">
+							<option <c:if test="${p.code eq info.user_type}">selected</c:if> value="${p.code}">${p.name}</option>	
+						</c:forEach>
+					</select>
+				</dd>
+			</dl>
 			<dl class="nowrap">
 				<dt>头像：</dt>
 				<dd>
