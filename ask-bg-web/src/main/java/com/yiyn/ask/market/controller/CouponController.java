@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -21,6 +22,7 @@ import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.CouponStatusEnum;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
+import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.market.convert.CouponConvert;
 import com.yiyn.ask.market.dao.impl.CouponDaoImpl;
 import com.yiyn.ask.market.form.CouponForm;
@@ -120,6 +122,23 @@ private Logger logger = LoggerFactory.getLogger(this.getClass());
 		logger.info("saveAd");
 		
 		CouponPo convertToPo = CouponConvert.convertToPo(adForm);
+		
+		// 校验
+		if(adForm.getTotal_amount()<adForm.getAmount()) {
+			DwzResponseForm responseForm = DwzResponseForm.createFailResponseForm("满减金额(满)不能小于满减金额(减)");
+			return new Gson().toJson(responseForm);
+		}
+		if(StringUtils.isNotEmpty(adForm.getStart_date()) && StringUtils.isNotEmpty(adForm.getEnd_date())
+			&& SPDateUtils.parseDateDefault(adForm.getStart_date()).after(SPDateUtils.parseDateDefault(adForm.getEnd_date()))) {
+			DwzResponseForm responseForm = DwzResponseForm.createFailResponseForm("活动开始时间不能晚于活动结束时间");
+			return new Gson().toJson(responseForm);
+		}
+		
+		if(StringUtils.isNotEmpty(adForm.getPost_start()) && StringUtils.isNotEmpty(adForm.getPost_end())
+			&& SPDateUtils.parseDateDefault(adForm.getPost_start()).after(SPDateUtils.parseDateDefault(adForm.getPost_end()))) {
+			DwzResponseForm responseForm = DwzResponseForm.createFailResponseForm("红包发放开始时间不能晚于红包发放结束时间");
+			return new Gson().toJson(responseForm);
+		}
 		
 		// 点击了撤回按钮
 		if("rollback".equals(adForm.getActionFlag())) {

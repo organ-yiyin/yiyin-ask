@@ -100,6 +100,20 @@
 					<input class="date" maxlength="200" name="end_date" type="text" value="${info.end_date}" />
 				</dd>
 			</dl>
+			
+			<dl class="">
+				<dt>红包发放开始时间：</dt>
+				<dd>
+					<input class="date" maxlength="200" name="post_start" type="text" value="${info.post_start}" />
+				</dd>
+			</dl>
+			<dl class="">
+				<dt>红包发放结束时间：</dt>
+				<dd>
+					<input class="date" maxlength="200" name="post_end" type="text" value="${info.post_end}" />
+				</dd>
+			</dl>
+			
 			<dl class="nowrap">
 				<dt>是否禁用：</dt>
 				<dd>

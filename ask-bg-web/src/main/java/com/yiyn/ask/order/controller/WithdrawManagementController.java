@@ -259,7 +259,7 @@ public class WithdrawManagementController {
 	@RequestMapping(value = "/attachment/save.do", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8" })
 	@ResponseBody
 	@Transactional
-	public String save(HttpServletRequest request, HttpServletResponse response, AttachmentForm attachmentForm)
+	public String attachmentSave(HttpServletRequest request, HttpServletResponse response, AttachmentForm attachmentForm)
 			throws Exception {
 		logger.info("save");
 

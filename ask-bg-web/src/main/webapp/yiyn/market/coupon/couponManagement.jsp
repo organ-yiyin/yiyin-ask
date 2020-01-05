@@ -93,12 +93,13 @@
 		</ul>
 	</div>
 
-	<table class="table" style="width:800px" layoutH="140">
+	<table class="table" style="width:900px" layoutH="140">
 		<thead>
 			<tr>
 				<th width="200px">活动名称</th>
 				<th width="200px">活动编号</th>
 				<th width="100px">活动类型</th>
+				<th width="100px">活动金额</th>
 				<th width="100px">活动范围</th>
 				<th width="100px">活动状态</th>
 				<th width="100px">是否禁用</th>
@@ -114,6 +115,7 @@
 							<c:if test="${s_item.code==item.coupon_type}">${s_item.name}</c:if>
 						</c:forEach>
 					</td>
+					<td>满${item.total_amount}减${item.amount}</td>
 					<td>
 						<c:forEach items="${info.couponRangeList}" var="s_item" varStatus="s">
 							<c:if test="${s_item.code==item.coupon_range}">${s_item.name}</c:if>
