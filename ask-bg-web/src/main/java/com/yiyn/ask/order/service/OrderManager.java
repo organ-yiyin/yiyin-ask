@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
 import com.yiyn.ask.base.constants.GenderEnum;
+import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.base.utils.excel.ExcelUtil;
@@ -114,7 +115,9 @@ public class OrderManager {
 			Cell cPriceCell = ExcelUtil.getCell(row, cellIndex++);
 			cPriceCell.setCellStyle(numberCellStyle);
 			BigDecimal price = BigDecimal.valueOf((Double)dataMap.get("PRICE"));
-			BigDecimal cPrice = price.multiply(NumberUtils.createBigDecimal("0.7"));
+			UserTypeEnum userTypeEnum = UserTypeEnum.findEnumByCode((Integer)dataMap.get("b_user_type"));
+			//BigDecimal cPrice = price.multiply(NumberUtils.createBigDecimal("0.7"));
+			BigDecimal cPrice = price.multiply(userTypeEnum.getPercent());
 			cPriceCell.setCellValue(cPrice.doubleValue());
 			
 			ExcelUtil.setCellStringValue(row, cellIndex++, "微信支付");
