@@ -7,7 +7,7 @@
 		parameterType="com.yiyn.ask.base.utils.PaginationUtils" resultType="java.util.HashMap">
 		select cs.*,
 		c.user_no as c_user_no,c.user_phone as c_user_phone,c.user_name as c_user_name,c.reg_time as c_reg_time,
-		b.user_name as b_user_name,b.user_phone as b_user_phone,
+		b.user_name as b_user_name,b.user_phone as b_user_phone,b.user_type as b_user_type,
 		ucr.name_m as ucr_name_m,ucr.age_m as ucr_age_m,ucr.birthday_m as ucr_birthday_m,ucr.special_m as ucr_special_m,
 		ucr.name_b as ucr_name_b,ucr.age_b as ucr_age_b,ucr.birthday_b as ucr_birthday_b,ucr.special_b as ucr_special_b,ucr.sex_b as ucr_sex_b,ucr.birth_weight_b as ucr_birth_weight_b,ucr.edc_b as ucr_edc_b
 		from 
