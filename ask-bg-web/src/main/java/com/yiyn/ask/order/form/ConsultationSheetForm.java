@@ -29,6 +29,8 @@ public class ConsultationSheetForm extends BaseForm {
 	private String odd_num;
 	
 	private String price;
+	// 咨询师收入金额
+	private String deservedPrice;
 	
 	private String problem_desc;
 	
@@ -263,6 +265,14 @@ public class ConsultationSheetForm extends BaseForm {
 
 	public void setSendTypes(SendTypeEnum[] sendTypes) {
 		this.sendTypes = sendTypes;
+	}
+
+	public String getDeservedPrice() {
+		return deservedPrice;
+	}
+
+	public void setDeservedPrice(String deservedPrice) {
+		this.deservedPrice = deservedPrice;
 	}
 	
 }

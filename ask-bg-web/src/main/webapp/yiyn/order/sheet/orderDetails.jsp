@@ -197,13 +197,7 @@
 					<dl>
 						<dt>咨询师收入：</dt>
 						<dd>
-						<%
-							BigDecimal price = NumberUtils.createBigDecimal(((ConsultationSheetForm)request.getAttribute("consultantSheet")).getPrice());
-							if(price != null){
-								price = price.multiply(NumberUtils.createBigDecimal("0.7"));
-							}
-						%>
-						<%= price.toPlainString() %>
+							${consultantSheet.deservedPrice}
 						</dd>
 					</dl>
 					<dl>

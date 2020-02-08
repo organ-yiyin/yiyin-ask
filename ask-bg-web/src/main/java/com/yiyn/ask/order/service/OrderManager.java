@@ -108,13 +108,25 @@ public class OrderManager {
 			Date refund_time = (Date)dataMap.get("REFUND_TIME");
 			ExcelUtil.setCellStringValue(row, cellIndex++, SPDateUtils.formatDateTimeDefault(refund_time));
 			
+			// 订单金额
+			BigDecimal price = BigDecimal.valueOf((Double)dataMap.get("PRICE"));
 			Cell priceCell = ExcelUtil.getCell(row, cellIndex++);
 			priceCell.setCellStyle(numberCellStyle);
-			priceCell.setCellValue(((Double)dataMap.get("PRICE")).doubleValue());
+			priceCell.setCellValue(price.doubleValue());
+			
+			// 优惠金额
+			Integer couponAmount = dataMap.get("ucc_amount") == null ? 0 : (Integer)dataMap.get("ucc_amount");
+			Cell couponAmountCell = ExcelUtil.getCell(row, cellIndex++);
+			couponAmountCell.setCellStyle(numberCellStyle);
+			couponAmountCell.setCellValue(couponAmount);
+			
+			// 实际支付
+			Cell actualAmountCell = ExcelUtil.getCell(row, cellIndex++);
+			actualAmountCell.setCellStyle(numberCellStyle);
+			actualAmountCell.setCellValue(price.subtract(NumberUtils.createBigDecimal(couponAmount.toString())).doubleValue());
 			
 			Cell cPriceCell = ExcelUtil.getCell(row, cellIndex++);
 			cPriceCell.setCellStyle(numberCellStyle);
-			BigDecimal price = BigDecimal.valueOf((Double)dataMap.get("PRICE"));
 			UserTypeEnum userTypeEnum = UserTypeEnum.findEnumByCode((Integer)dataMap.get("b_user_type"));
 			//BigDecimal cPrice = price.multiply(NumberUtils.createBigDecimal("0.7"));
 			BigDecimal cPrice = price.multiply(userTypeEnum.getPercent());

@@ -1,5 +1,6 @@
 package com.yiyn.ask.order.controller;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
 import com.yiyn.ask.base.constants.LogUserTypeEnum;
 import com.yiyn.ask.base.constants.ObjectTypeEnum;
+import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.convert.AttachmentConvert;
 import com.yiyn.ask.base.dao.impl.AttachmentDaoImpl;
 import com.yiyn.ask.base.form.AttachmentForm;
@@ -162,6 +164,7 @@ public class OrderManagementController {
 		
 		ConsultPo consultPo = this.consultantSheetBgDao.findById(id);
 		ConsultationSheetForm consultantSheet = ConsultationSheetConvert.convertToForm(consultPo);
+		
 		UserCCouponPo userCCouponPo = null;
 		if(StringUtils.isNotEmpty(consultPo.getCoupon_relid())) {
 			userCCouponPo = userCCouponDaoImpl.findById(Long.valueOf(consultPo.getCoupon_relid()));
@@ -171,6 +174,11 @@ public class OrderManagementController {
 		consultantSheet.setQus_types(qus_types);
 		
 		UserBPo userB = userBDao.findByUserNo(consultPo.getUser_b_no());
+		// 计算咨询师收入
+		UserTypeEnum userTypeEnum = UserTypeEnum.findEnumByCode(userB.getUser_type());
+		BigDecimal deservedPrice = NumberUtils.createBigDecimal(consultantSheet.getPrice()).multiply(userTypeEnum.getPercent());
+		consultantSheet.setDeservedPrice(deservedPrice.toPlainString());
+		
 		UserCPo userC = userCDao.findByUserno(consultPo.getUser_c_no());
 		ConsultRefPo consultRef = consultRefDao.findById(Long.valueOf(consultPo.getUser_ref_id()));		
 		List<AttachmentPo> attachments = attachmentDao.findAllByObject(ObjectTypeEnum.ORDER_ATTACHMENT.getCode(), id);
