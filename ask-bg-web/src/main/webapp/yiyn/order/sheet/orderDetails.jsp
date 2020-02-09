@@ -195,6 +195,14 @@
 						<dd>${consultantSheet.price}</dd>
 					</dl>
 					<dl>
+						<dt>优惠金额：</dt>
+						<dd>${consultantSheet.discount}</dd>
+					</dl>
+					<dl>
+						<dt>实际支付金额：</dt>
+						<dd>${consultantSheet.user_pay_money}</dd>
+					</dl>
+					<dl>
 						<dt>咨询师收入：</dt>
 						<dd>
 							${consultantSheet.deservedPrice}
@@ -262,9 +270,9 @@
 							</dd>
 						</dl>
 						<dl>
-							<dt>支付金额：</dt>
+							<dt>实际支付金额：</dt>
 							<dd>
-								${consultantSheet.pay_odd_num}
+								${consultantSheet.user_pay_money}
 							</dd>
 						</dl>
 					</fieldset>

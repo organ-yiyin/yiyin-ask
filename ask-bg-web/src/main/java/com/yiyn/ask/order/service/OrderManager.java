@@ -115,15 +115,16 @@ public class OrderManager {
 			priceCell.setCellValue(price.doubleValue());
 			
 			// 优惠金额
-			Integer couponAmount = dataMap.get("ucc_amount") == null ? 0 : (Integer)dataMap.get("ucc_amount");
+			//Integer couponAmount = dataMap.get("ucc_amount") == null ? 0 : (Integer)dataMap.get("ucc_amount");
 			Cell couponAmountCell = ExcelUtil.getCell(row, cellIndex++);
 			couponAmountCell.setCellStyle(numberCellStyle);
-			couponAmountCell.setCellValue(couponAmount);
+			couponAmountCell.setCellValue((Integer)dataMap.get("DISCOUNT"));
 			
 			// 实际支付
+			BigDecimal user_pay_money = BigDecimal.valueOf((Double)dataMap.get("USER_PAY_MONEY"));
 			Cell actualAmountCell = ExcelUtil.getCell(row, cellIndex++);
 			actualAmountCell.setCellStyle(numberCellStyle);
-			actualAmountCell.setCellValue(price.subtract(NumberUtils.createBigDecimal(couponAmount.toString())).doubleValue());
+			actualAmountCell.setCellValue(user_pay_money.doubleValue());
 			
 			Cell cPriceCell = ExcelUtil.getCell(row, cellIndex++);
 			cPriceCell.setCellStyle(numberCellStyle);

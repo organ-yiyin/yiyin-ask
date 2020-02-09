@@ -27,8 +27,18 @@ public class ConsultationSheetForm extends BaseForm {
 	private String sheet_age_b;// 下订单时宝宝的年龄
 	
 	private String odd_num;
-	
+	/**
+	 * 订单金额
+	 */
 	private String price;
+	/**
+	 * 实际支付金额
+	 */
+	private String user_pay_money;
+	/**
+	 * 优惠金额
+	 */
+	private Integer discount;
 	// 咨询师收入金额
 	private String deservedPrice;
 	
@@ -273,6 +283,22 @@ public class ConsultationSheetForm extends BaseForm {
 
 	public void setDeservedPrice(String deservedPrice) {
 		this.deservedPrice = deservedPrice;
+	}
+
+	public String getUser_pay_money() {
+		return user_pay_money;
+	}
+
+	public void setUser_pay_money(String user_pay_money) {
+		this.user_pay_money = user_pay_money;
+	}
+
+	public Integer getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Integer discount) {
+		this.discount = discount;
 	}
 	
 }
