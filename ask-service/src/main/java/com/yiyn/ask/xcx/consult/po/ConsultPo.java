@@ -27,6 +27,10 @@ public class ConsultPo extends BasePo {
 	
 	private String price;
 	
+	private String user_pay_money;
+	
+	private Integer discount;
+	
 	private String problem_desc;
 	
 	private String problem_type;
@@ -262,6 +266,22 @@ public class ConsultPo extends BasePo {
 
 	public void setCoupon_relid(String coupon_relid) {
 		this.coupon_relid = coupon_relid;
+	}
+
+	public String getUser_pay_money() {
+		return user_pay_money;
+	}
+
+	public void setUser_pay_money(String user_pay_money) {
+		this.user_pay_money = user_pay_money;
+	}
+
+	public Integer getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(Integer discount) {
+		this.discount = discount;
 	}
 	
 }
