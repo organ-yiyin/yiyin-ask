@@ -234,7 +234,7 @@ public class OrderManagementController {
 		}
 
 		 WechatResultDto<WechatRefundResponseDto> refund = wechatRefundService.refund(consultPo.getOdd_num(),
-				 NumberUtils.createBigDecimal(consultPo.getPrice()),NumberUtils.createBigDecimal(consultPo.getPrice()));
+				 NumberUtils.createBigDecimal(consultPo.getUser_pay_money()),NumberUtils.createBigDecimal(consultPo.getUser_pay_money()));
 		 if(refund.isSuccess()) {
 			// 修改订单状态
 			consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
@@ -308,8 +308,8 @@ public class OrderManagementController {
 		}
 		
 		WechatResultDto<WechatRefundResponseDto> refund = wechatRefundService.refund(consultPo.getOdd_num(),
-		NumberUtils.createBigDecimal(consultPo.getPrice()),
-		NumberUtils.createBigDecimal(consultPo.getPrice()));
+		NumberUtils.createBigDecimal(consultPo.getUser_pay_money()),
+		NumberUtils.createBigDecimal(consultPo.getUser_pay_money()));
 		if(refund.isSuccess()) {
 			// 修改订单状态
 			consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
