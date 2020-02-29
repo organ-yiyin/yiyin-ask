@@ -92,7 +92,7 @@
 		</ul>
 	</div>
 
-	<table class="table" style="width:1150px" layoutH="165">
+	<table class="table" style="width:1390px" layoutH="165">
 		<thead>
 			<tr>
 				<th width="60px">订单序号</th>
@@ -105,6 +105,8 @@
 				<th width="100px">实际支付金额</th>
 				<th width="100px">订单状态</th>
 				<th width="120px">咨询师姓名</th>
+				<th width="120px">渠道商来源</th>
+				<th width="120px">渠道商名称</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -125,6 +127,12 @@
 					</c:forEach>
 				</td>
 				<td>${item['b_user_name']}</td>
+				<td>
+					<c:forEach items="${info.distributorSourceList}" var="item_u" varStatus="s">
+						<c:if test="${item_u.code==item['sdis_source']}">${item_u.name}</c:if>
+					</c:forEach>
+				</td>
+				<td>${item['sdis_dis_name']}</td>
 			</tr>
 			</c:forEach>
 		</tbody>

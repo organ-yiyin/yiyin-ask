@@ -177,6 +177,28 @@
 						</dd>
 					</dl>
 					<dl>
+						<dt>渠道商来源：</dt>
+						<dd>
+							<c:forEach items="${consultantSheet.distributorSourceList}" var="item_u" varStatus="s">
+								<c:if test="${item_u.code==distributorVisitPo.source}">${item_u.name}</c:if>
+							</c:forEach>
+						</dd>
+					</dl>
+					<dl>
+						<dt>渠道商名称：</dt>
+						<dd>
+							${ditributor.dis_name}
+						</dd>
+					</dl>
+					<dl>
+						<dt>订单状态：</dt>
+						<dd>
+							<c:forEach items="${consultantSheet.consultStatusList}" var="item_u" varStatus="s">
+								<c:if test="${item_u.code==consultantSheet.status}">${item_u.name}</c:if>
+							</c:forEach>
+						</dd>
+					</dl>
+					<dl>
 						<dt>下单时间：</dt>
 						<dd>
 							<fmt:formatDate value="${consultantSheet.created_time}" pattern="yyyy-MM-dd HH:mm:ss" />
