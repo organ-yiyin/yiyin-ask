@@ -76,14 +76,7 @@ public class OrderManager {
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_birthday_b"));
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_edc_b"));
 			String ucr_birth_weight_b = (String)dataMap.get("ucr_birth_weight_b");
-			if(StringUtils.isEmpty(ucr_birth_weight_b)) {
-				ExcelUtil.setCellStringValue(row, cellIndex++, "");
-			}
-			else {
-				Cell weightCell = ExcelUtil.getCell(row, cellIndex++);
-				weightCell.setCellStyle(numberCellStyle);
-				weightCell.setCellValue(Double.valueOf(ucr_birth_weight_b).doubleValue());
-			}
+			ExcelUtil.setCellStringValue(row, cellIndex++, ucr_birth_weight_b);
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_special_b"));
 			
 			Date c_reg_time = (Date)dataMap.get("c_reg_time");

@@ -269,7 +269,7 @@ public class OrderManagementController {
 			accountFlowDao.insert(flowP);
 				
 			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
-				String.format("订单%s已取消，总共退款金额为%s",consultPo.getOdd_num(),consultPo.getPrice()));
+				String.format("订单%s已取消，总共退款金额为%s",consultPo.getOdd_num(),consultPo.getUser_pay_money()));
 			responseForm.setNavTabId("orderDetails");
 		 	return new Gson().toJson(responseForm);
 		 }
@@ -344,7 +344,7 @@ public class OrderManagementController {
 			accountFlowDao.insert(flowP);
 				
 			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
-					String.format("订单%s已同意取消，总共退款金额为%s", consultPo.getOdd_num(), consultPo.getPrice()));
+					String.format("订单%s已同意取消，总共退款金额为%s", consultPo.getOdd_num(), consultPo.getUser_pay_money()));
 			responseForm.setNavTabId("orderDetails");
 			return new Gson().toJson(responseForm);
 		}
