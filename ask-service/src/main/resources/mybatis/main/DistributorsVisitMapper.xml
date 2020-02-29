@@ -4,8 +4,15 @@
 
 <!-- 渠道商插入记录 访问index的时候  -->
 <mapper namespace="yiyin.disVisit">
+	
+	<select id="findByOpenId"
+		resultType="com.yiyn.ask.xcx.main.po.DistributorsVisitPo">
+		select * from stat_distributors where openid = #{openid}
+	</select>
+
     <insert id="insert" parameterType="com.yiyn.ask.xcx.main.po.DistributorsVisitPo">
         insert into stat_distributors(dis_code,source,openid,unionid,created_by,created_time)
         values(#{dis_code},#{source},#{openid},#{unionid},#{created_by},now())
     </insert>
+    
 </mapper>

@@ -2,7 +2,6 @@ package com.yiyn.ask.xcx.center.dao.impl;
 
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +17,11 @@ public class DistributorsDaoImpl extends BaseDao<DistributorsPo> {
 	public DistributorsPo findDisInfo(String id) throws Exception {
 		return this.getSqlSession().selectOne(
 				this.getNameStatement() + ".findDisInfo", id);
+	}
+	
+	public DistributorsPo findDisByDisCode(String dis_code) throws Exception {
+		return this.getSqlSession().selectOne(
+				this.getNameStatement() + ".findDisByDisCode", dis_code);
 	}
 
 	public String getNameStatement() {
