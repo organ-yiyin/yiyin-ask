@@ -52,7 +52,9 @@ import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
 import com.yiyn.ask.xcx.account.po.AccountFlowPo;
 import com.yiyn.ask.xcx.account.po.AccountPo;
 import com.yiyn.ask.xcx.center.dao.impl.CodeDaoImpl;
+import com.yiyn.ask.xcx.center.dao.impl.DistributorsDaoImpl;
 import com.yiyn.ask.xcx.center.po.CodePo;
+import com.yiyn.ask.xcx.center.po.DistributorsPo;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultLogDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultProcessDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultRefDaoImpl;
@@ -63,6 +65,8 @@ import com.yiyn.ask.xcx.consult.po.ConsultPo;
 import com.yiyn.ask.xcx.consult.po.ConsultProcessPo;
 import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
 import com.yiyn.ask.xcx.consult.po.UserCCouponPo;
+import com.yiyn.ask.xcx.main.dao.impl.DistributorsVisitDaoImpl;
+import com.yiyn.ask.xcx.main.po.DistributorsVisitPo;
 import com.yiyn.ask.xcx.user.dao.impl.UserCDaoImpl;
 import com.yiyn.ask.xcx.user.po.UserCPo;
 
@@ -114,6 +118,12 @@ public class OrderManagementController {
 	
 	@Autowired
 	private UserCCouponDaoImpl userCCouponDaoImpl;
+	
+	@Autowired
+	private DistributorsVisitDaoImpl distributorsVisitDaoImpl;
+	
+	@Autowired
+	private DistributorsDaoImpl distributorsDaoImpl;
 
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request, HttpServletResponse response)
@@ -184,6 +194,13 @@ public class OrderManagementController {
 		List<AttachmentPo> attachments = attachmentDao.findAllByObject(ObjectTypeEnum.ORDER_ATTACHMENT.getCode(), id);
 		List<ConsultLogPo> logs = this.consultLogDao.findByConsultId(id);
 		List<ConsultProcessPo> consultProcessList = consultProceessDao.getConsultProcessList(id.toString());
+		
+		// 供应商
+		DistributorsVisitPo distributorVisitPo = this.distributorsVisitDaoImpl.findByOpenId(consultantSheet.getUser_c_no());
+		DistributorsPo ditributor = null;
+		if(distributorVisitPo != null) {
+			ditributor = this.distributorsDaoImpl.findDisByDisCode(distributorVisitPo.getDis_code());
+		}
 
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderDetails.jsp");
 		mv.addObject("consultantSheet",consultantSheet);
@@ -195,6 +212,8 @@ public class OrderManagementController {
 		mv.addObject("attachments", attachments);
 		mv.addObject("logs", logs);
 		mv.addObject("couponForm", new CouponForm());
+		mv.addObject("distributorVisitPo", distributorVisitPo);
+		mv.addObject("ditributor", ditributor);
 
 		return mv;
 	}

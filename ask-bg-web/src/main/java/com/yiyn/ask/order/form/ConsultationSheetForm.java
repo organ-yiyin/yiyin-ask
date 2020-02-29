@@ -6,6 +6,7 @@ import java.util.List;
 import com.yiyn.ask.base.constants.AttachmentTypeEnum;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
 import com.yiyn.ask.base.constants.ContentTypeEnum;
+import com.yiyn.ask.base.constants.DistributorSourceEnum;
 import com.yiyn.ask.base.constants.GenderEnum;
 import com.yiyn.ask.base.constants.LogUserTypeEnum;
 import com.yiyn.ask.base.constants.SendTypeEnum;
@@ -76,6 +77,8 @@ public class ConsultationSheetForm extends BaseForm {
 	private ContentTypeEnum[] contentTypes = ContentTypeEnum.values();
 	
 	private SendTypeEnum[] sendTypes = SendTypeEnum.values();
+	
+	private DistributorSourceEnum[] distributorSourceList = DistributorSourceEnum.values();
 
 	public ConsultStatuEnum[] getConsultStatusList() {
 		return consultStatusList;
@@ -299,6 +302,14 @@ public class ConsultationSheetForm extends BaseForm {
 
 	public void setDiscount(Integer discount) {
 		this.discount = discount;
+	}
+
+	public DistributorSourceEnum[] getDistributorSourceList() {
+		return distributorSourceList;
+	}
+
+	public void setDistributorSourceList(DistributorSourceEnum[] distributorSourceList) {
+		this.distributorSourceList = distributorSourceList;
 	}
 	
 }

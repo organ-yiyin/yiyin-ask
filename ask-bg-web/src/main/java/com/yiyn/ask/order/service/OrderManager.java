@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
+import com.yiyn.ask.base.constants.DistributorSourceEnum;
 import com.yiyn.ask.base.constants.GenderEnum;
 import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.utils.PaginationUtils;
@@ -127,6 +128,10 @@ public class OrderManager {
 			cPriceCell.setCellValue(cPrice.doubleValue());
 			
 			ExcelUtil.setCellStringValue(row, cellIndex++, "微信支付");
+			String sdis_source = (String)dataMap.get("sdis_source");
+			DistributorSourceEnum disSource = DistributorSourceEnum.findByCode(sdis_source);
+			ExcelUtil.setCellStringValue(row, cellIndex++, disSource == null ? "" : disSource.getName());
+			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("sdis_dis_name"));
 			
 			CodePo codePo = qus_types.stream().filter(e-> e.getValue().equals((String)dataMap.get("PROBLEM_TYPE"))).findFirst().get();
 			ExcelUtil.setCellStringValue(row, cellIndex++, codePo == null ? "" : codePo.getName());
