@@ -26,11 +26,7 @@ public class ConsultPo extends BasePo {
 	private String odd_num;
 	
 	private String price;
-	
-	private String user_pay_money;
-	
-	private Integer discount;
-	
+		
 	private String problem_desc;
 	
 	private String problem_type;
