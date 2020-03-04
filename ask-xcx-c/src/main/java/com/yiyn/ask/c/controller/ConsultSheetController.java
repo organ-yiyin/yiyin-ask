@@ -278,28 +278,29 @@ public class ConsultSheetController {
 			
 			// 获取到的form_id用来保存发送用
 			// 后发通知
-			Map<String,String> param = new HashMap<String,String>();
-			if(!StringUtils.isEmptyString(p.getUserPo().getOpen_id())){
-				FormIdPo fP = formIdService.getFormId(p.getUserPo().getOpen_id());
-				if(fP != null){
-					// 真是的form_id从用户取得
-					param.put("open_id", p.getUserPo().getOpen_id());
-					param.put("form_id", fP.getForm_id());
-					param.put("zxr", p.getRefPo().getName_m());// 咨询人姓名（妈妈名称）
-      				param.put("zxlx", p.getProblem_type());
-      				param.put("zxsj", DateUtils.getNowTime(DateUtils.DATE_FULL_STR));
-      				param.put("zxnr", sm);
-					param.put("url", "pages/consultation/consultation");
-					// form id使用过以后置为无效 只能使用一次
-					boolean f = oAuthService.sendMsg(param);
-      				// 发送成功的情况下
-      				if(f){
-      					formIdService.updateById(fP);
-      				}else{
-      					formIdService.delForm(fP);
-      				}
-				}
-			}
+//			Map<String,String> param = new HashMap<String,String>();
+//			if(!StringUtils.isEmptyString(p.getUserPo().getOpen_id())){
+//				FormIdPo fP = formIdService.getFormId(p.getUserPo().getOpen_id());
+//				if(fP != null){
+//					// 真是的form_id从用户取得
+//					param.put("open_id", p.getUserPo().getOpen_id());
+//					//param.put("form_id", fP.getForm_id());
+//					param.put("zxr", p.getRefPo().getName_m());// 咨询人姓名（妈妈名称）
+//      				param.put("zxlx", p.getProblem_type());
+//      				param.put("zxsj", DateUtils.getNowTime(DateUtils.DATE_FULL_STR));
+//      				param.put("zxnr", sm);
+//      				param.put("odd_num", p.getOdd_num());
+//					param.put("url", "pages/consultation/consultation");
+//					// form id使用过以后置为无效 只能使用一次
+//					boolean f = oAuthService.sendMsg(param);
+//      				// 发送成功的情况下
+//      				if(f){
+//      					formIdService.updateById(fP);
+//      				}else{
+//      					formIdService.delForm(fP);
+//      				}
+//				}
+//			}
 		}
 	}
 }

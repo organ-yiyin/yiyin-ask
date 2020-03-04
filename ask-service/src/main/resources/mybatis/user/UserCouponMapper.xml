@@ -1,0 +1,67 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.usercoupon">
+    <!-- 查看用户可获取的优惠券信息  -->
+    <select id="getCouponExsitList" resultType="com.yiyn.ask.xcx.user.po.UserCouponPo" parameterType="java.util.HashMap">
+        select t.id as coupon_id,
+        t.total_amount,
+        t.amount,
+        DATE_FORMAT(t.start_date,'%Y.%m.%d') as start_date,
+        DATE_FORMAT(t.end_date,'%Y.%m.%d') as end_date,
+        t.coupon_type,
+        t.coupon_range
+        from coupon t
+        where t.post_end >= DATE_FORMAT(now(),'%Y-%m-%d')
+        and t.status = '1'
+        and t.id not in(
+        select coupon_id from user_c_coupon tt where tt.user_c_no = #{user_c_no} and tt.status = '0'
+        )
+		order by t.amount asc
+    </select>
+    
+    <!-- 查看用户已有的优惠券信息  -->
+    <select id="getCouponCList" resultType="com.yiyn.ask.xcx.user.po.UserCouponPo" parameterType="java.util.HashMap">
+        select t.id,t.total_amount,
+        t.amount,
+        DATE_FORMAT(t.start_date,'%Y.%m.%d') as start_date,
+        DATE_FORMAT(t.end_date,'%Y.%m.%d') as end_date,
+        t.status
+        from user_c_coupon t
+        where USER_C_NO = #{user_c_no}
+        <!-- 用户已有的未使用的优惠券  -->
+		<if test="no_user != null">
+			and t.status = '0'
+		</if>
+		order by t.status asc,t.CREATED_TIME desc
+    </select>
+	
+    <!-- 优惠券使用后更改优惠券状态  -->
+    <update id="updUserCoupon" parameterType="com.yiyn.ask.xcx.user.po.UserCouponPo">
+		update user_c_coupon set UPDATED_TIME = #{updated_time},
+		status = #{status},
+		UPDATED_BY =#{updated_by}
+		where id = #{id}
+	</update>
+	
+    <!-- 首页点击领取后分配优惠券活动  -->
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.user.po.UserCouponPo" useGeneratedKeys="true" keyProperty="id">
+		insert into user_c_coupon(USER_C_NO,COUPON_ID,COUPON_TYPE,COUPON_RANGE,
+		TOTAL_AMOUNT,AMOUNT,START_DATE,END_DATE,STATUS,USER_LIST,CREATED_BY,CREATED_TIME)
+		select #{user_c_no},
+		#{coupon_id},
+		coupon_type,
+		coupon_range,
+		total_amount,
+		amount,
+		start_date,
+		end_date,
+		#{status},
+		user_list,
+		#{created_by},
+		#{created_time}
+		from coupon t
+		where t.id = #{coupon_id}
+	</insert>
+</mapper>

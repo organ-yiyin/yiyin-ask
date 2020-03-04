@@ -2,6 +2,7 @@ package com.yiyn.ask.c.controller;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,8 +24,10 @@ import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.c.wechat.controller.XcxOAuthService;
 import com.yiyn.ask.wechat.dto.WechatXcxDto;
 import com.yiyn.ask.xcx.center.service.impl.CodeService;
+import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
 import com.yiyn.ask.xcx.consult.service.impl.ConsultService;
 import com.yiyn.ask.xcx.user.po.UserColPo;
+import com.yiyn.ask.xcx.user.po.UserCouponPo;
 import com.yiyn.ask.xcx.user.po.UserPo;
 import com.yiyn.ask.xcx.user.service.impl.UserService;
 
@@ -196,7 +199,17 @@ public class ConsultProcessController {
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		
 		resultMap.put("userInfo", userService.findUserInfo(user_no));
-		resultMap.put("refInfo", userService.getRefDetail(refid));
+		
+		ConsultRefPo ref = userService.getRefDetail(refid);
+		resultMap.put("refInfo", ref);
+		
+		// 增加获取优惠券信息
+		Map<String,Object> m = new HashMap<String,Object>();
+		m.put("user_c_no", ref.getUser_no());
+		m.put("no_user", "1");
+		List<UserCouponPo> reList = userService.getCouponCList(m);
+		resultMap.put("couponList", reList);
+		resultMap.put("couponL", reList.size());
 		return new Gson().toJson(resultMap);
 	}
 	

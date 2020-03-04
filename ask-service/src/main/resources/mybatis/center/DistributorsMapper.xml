@@ -22,7 +22,7 @@
     </insert>
     
     <update id="updateById" parameterType="com.yiyn.ask.xcx.center.po.DistributorsPo">
-        update yiyn_distributors"src/main/resources/mybatis/center/DistributorsMapper.xml"
+        update yiyn_distributors
         set UPDATED_TIME = now(),
         dis_code = #{dis_code},
         dis_name = #{dis_name},
@@ -30,4 +30,10 @@
         wechat_url = #{wechat_url}
 		where id = #{id}
     </update>
+    
+    <insert id="deleteById" parameterType="long">
+        delete from yiyn_distributors
+        where id = #{id}
+    </insert>
+    
 </mapper>

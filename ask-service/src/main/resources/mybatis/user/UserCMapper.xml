@@ -21,4 +21,11 @@
 		,user_phone = #{user_phone}
 		where user_no= #{user_no}
     </update>
+    
+    <update id="updDisByUser_no" parameterType="java.util.HashMap">
+        update user_c
+        set UPDATED_TIME = now() 
+		,dis_no = #{dis_no}
+		where user_no= #{user_no}
+    </update>
 </mapper>

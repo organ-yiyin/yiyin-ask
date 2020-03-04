@@ -17,23 +17,21 @@ import com.yiyn.ask.base.constants.ConsultStatuEnum;
 import com.yiyn.ask.base.constants.ProcessContentTypeEnum;
 import com.yiyn.ask.base.constants.ProcessSendTypeEnum;
 import com.yiyn.ask.base.utils.DateUtils;
-import com.yiyn.ask.base.utils.SMSUtils;
 import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.xcx.account.dao.impl.AccountDaoImpl;
 import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
 import com.yiyn.ask.xcx.account.po.AccountFlowPo;
 import com.yiyn.ask.xcx.account.po.AccountPo;
-import com.yiyn.ask.xcx.center.po.FormIdPo;
-import com.yiyn.ask.xcx.center.service.impl.FormIdService;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultLogDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultProcessDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultSheetRefDaoImpl;
+import com.yiyn.ask.xcx.consult.dao.impl.ConsultSheetSmsDaoImpl;
 import com.yiyn.ask.xcx.consult.po.ConsultLogPo;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
 import com.yiyn.ask.xcx.consult.po.ConsultProcessPo;
 import com.yiyn.ask.xcx.consult.po.ConsultSheetRefPo;
-import com.yiyn.ask.xcx.user.dao.impl.UserDaoImpl;
+import com.yiyn.ask.xcx.consult.po.ConsultSheetSmsPo;
 import com.yiyn.ask.xcx.user.dao.impl.UserEvalDaoImpl;
 import com.yiyn.ask.xcx.user.dao.impl.UserTagDaoImpl;
 import com.yiyn.ask.xcx.user.po.UserEvalPo;
@@ -64,6 +62,9 @@ public class ConsultService {
    
    @Autowired
    private ConsultSheetRefDaoImpl consultSheetRefDao;
+   
+   @Autowired
+   private ConsultSheetSmsDaoImpl consultSheetSmsDao;
    
    public Map<String,Object> getConsultList(Map<String,Object> m) throws Exception{
 	   Map<String,Object> result = new HashMap<String,Object>();
@@ -231,8 +232,17 @@ public class ConsultService {
 	   return re;
    }
    
-   public void insConsultProcess(ConsultProcessPo p) throws Exception{
-	   consultProcessDao.insert(p);
+   public Long insConsultProcess(ConsultProcessPo p) throws Exception{
+	   return consultProcessDao.insPro(p);
+   }
+   
+   /**
+    * 撤回某个消息
+    * @param p
+    * @throws Exception
+    */
+   public void updConsultProcess(ConsultProcessPo p) throws Exception{
+	   consultProcessDao.updateById(p);
    }
    
    public void updConsultStatus(ConsultPo updP) throws Exception{
@@ -350,6 +360,27 @@ public class ConsultService {
 		  logp.setLog_desc("微信通知插入咨询单操作日志！");
 		  this.insConsultLog(logp);
 		  
+		  // 如果有优惠券信息，更新总账户金额，并且更新流水表
+		  if(p.getDiscount() > 0 && !StringUtils.isEmptyString(p.getCoupon_relid())){
+			  AccountPo account_admin = accountDao.getAccountInfoByUserNo("super_admin");
+			  AccountFlowPo totalP = new AccountFlowPo();
+			  totalP.setAccount_id(account_admin.getId());
+			  totalP.setJournal_money(new Double(p.getDiscount()));
+			  totalP.setJournal_dir("2");// 1：流入，2：流出
+			  totalP.setJournal_type("4");// 1：用户支付，2：提现：3：退款  4:优惠券扣除
+			  totalP.setOrder_id(p.getOdd_num());
+			  totalP.setPay_type("WXPAY");
+			  totalP.setPay_time(end_time);
+			  totalP.setJournal_remark("微信小程序支付通知插入，使用优惠券金额，总账户支出");
+			  totalP.setPay_status("1");//1:成功；2：待处理
+			  totalP.setPay_channel_no("WXXCX");
+			  accountFlowDao.insert(totalP);
+			  
+			  // 更新B端用户账户余额--按照支付金额+优惠金额入账
+			  account_admin.setBalance(account_admin.getBalance().subtract(new BigDecimal(p.getDiscount())));
+			  accountDao.updateById(account_admin);
+		  }
+		  
 		  // 插入账户流水，根据账户ID
 		  // 先根据用户编号和id查找账户id
 		  AccountPo account = accountDao.getAccountInfo(p.getUser_b_no());
@@ -364,9 +395,9 @@ public class ConsultService {
 		  flowP.setJournal_remark("微信小程序支付通知插入");
 		  flowP.setPay_status("1");//1:成功；2：待处理
 		  flowP.setPay_channel_no("WXXCX");
-		  
 		  accountFlowDao.insert(flowP);
-		  // 更新B端用户账户余额
+		  
+		  // 更新B端用户账户余额--按照支付金额+优惠金额入账
 		  account.setBalance(account.getBalance().add(new BigDecimal(p.getPrice())));
 		  accountDao.updateById(account);
 		  re = "SUCCESS";
@@ -399,4 +430,23 @@ public class ConsultService {
   public List<ConsultPo> getRefundConsult() throws Exception{
 	   return consultDao.getRefundConsult();
   }
+  
+  /**
+   * 查找需要12小时自动追问提醒的订单
+   * @param m
+   * @return
+   * @throws Exception
+   */
+  public List<ConsultPo> getConsultNotifyList() throws Exception{
+	   return consultDao.getConsultNotifyList();
+  }
+  
+  /**
+   * 12小时追问短信提醒后，插入短信记录表
+   * @param p
+   * @throws Exception
+   */
+   public void insConsultSheetSms(ConsultSheetSmsPo p) throws Exception{
+ 	   consultSheetSmsDao.insert(p);
+   }
 }

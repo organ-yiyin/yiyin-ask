@@ -1,6 +1,7 @@
 package com.yiyn.ask.c.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +18,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.yiyn.ask.base.constants.UserCouponStatusEnum;
+import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.base.utils.WechatDecryptDataUtil;
 import com.yiyn.ask.c.wechat.controller.XcxOAuthService;
 import com.yiyn.ask.wechat.dto.WechatXcxDto;
 import com.yiyn.ask.xcx.main.po.DistributorsVisitPo;
 import com.yiyn.ask.xcx.main.service.impl.MainService;
+import com.yiyn.ask.xcx.user.po.UserCPo;
+import com.yiyn.ask.xcx.user.po.UserCouponPo;
 import com.yiyn.ask.xcx.user.service.impl.UserService;
 
 @Controller
@@ -69,20 +74,39 @@ public class MainController {
 	@RequestMapping(value = "/insDis.x", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
 	@ResponseBody
 	public String insDis(HttpServletRequest request,
-			HttpServletResponse response,String sessionid,String dis_code,String source) throws Exception {
+			HttpServletResponse response,String sessionid,String dis_code,String source,String newuser) throws Exception {
 		logger.info("insDis");
 		
 		WechatXcxDto dto = XcxOAuthService.getWechatXcxDto(sessionid);
 		
-		DistributorsVisitPo insp = new DistributorsVisitPo();
-		insp.setDis_code(dis_code);
-		insp.setSource(source);
-		if(dto != null){
-			insp.setOpenid(dto.getOpen_id());
-			insp.setUnionid(dto.getUnionid());
-			mainService.insDis(insp);
+		String openid = dto.getOpen_id();
+		if(dto != null && !StringUtils.isEmptyString(openid)){
+			boolean sfcj = false;
+			// 如果是新创建用户的话，渠道商进入肯定要插入渠道商统计表，并且更新用户渠道商信息
+			if("1".equals(newuser)){
+				sfcj = true;
+				Map<String,Object> insM = new HashMap<String,Object>();
+				insM.put("user_no", openid);
+				insM.put("dis_no", dis_code);
+				userService.updDis(insM);
+			}else{
+				// 如果老用户的话，渠道商扫码进来，要查看此用户是否属于渠道商，如果属于，则插入渠道商数据
+				// 获取用户渠道商数据
+				UserCPo p = userService.findUserCInfo(openid);
+				if(!StringUtils.isEmptyString(p.getDis_no())){
+					sfcj = true;
+				}
+			}
 			
-			logger.info(dis_code + "渠道商统计成功+1");
+			if(sfcj){
+				DistributorsVisitPo insp = new DistributorsVisitPo();
+				insp.setDis_code(dis_code);
+				insp.setSource(source);
+				insp.setOpenid(openid);
+				insp.setUnionid(dto.getUnionid());
+				mainService.insDis(insp);
+				logger.info(dis_code + "渠道商统计成功+1");
+			}
 		}
 		
 		return null;
@@ -133,5 +157,69 @@ public class MainController {
 			e.printStackTrace();
 		}
 		return new Gson().toJson(resultMap);	
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/initMainCoupon.x", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String initMainCoupon(HttpServletRequest request,
+			HttpServletResponse response,String sessionid) throws Exception {
+		logger.info("initMainCoupon");
+		// 新建成功返回
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		//获取微信小程序信息
+		WechatXcxDto dto = XcxOAuthService.getWechatXcxDto(sessionid);
+		
+		//查找c端用户关注咨询师列表
+		Map<String,Object> m = new HashMap<String,Object>();
+		m.put("user_c_no", dto.getDb_open_id());
+		List<UserCouponPo> reList = userService.getCouponExsitList(m);
+		resultMap.put("couponList", reList);
+		String ids = "";
+		for(UserCouponPo c:reList){
+			ids += c.getCoupon_id() + ",";
+		}
+		resultMap.put("ids", StringUtils.isEmptyString(ids)?"":ids.substring(0, ids.length()-1));
+		resultMap.put("couponL", reList.size());
+		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * 首页用户点击领取优惠券时触发
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/insCoupon.x", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String insCoupon(HttpServletRequest request,
+			HttpServletResponse response,String ids,String sessionid) throws Exception {
+		// 新建成功返回
+		logger.info("领取优惠券");
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		//获取微信小程序信息
+		WechatXcxDto dto = XcxOAuthService.getWechatXcxDto(sessionid);
+		try{
+			String[] idArr = ids.split(",");
+			for(String id:idArr){
+				UserCouponPo p = new UserCouponPo();
+				p.setCoupon_id(id);
+				p.setUser_c_no(dto.getDb_open_id());
+				p.setStatus(UserCouponStatusEnum.NO_USERD.getName());
+				userService.insertCouponC(p);
+			}
+			
+			resultMap.put("status", "1");
+		}catch(Exception e){
+			e.printStackTrace();
+			resultMap.put("status", "-1");
+		}
+		return new Gson().toJson(resultMap);
 	}
 }

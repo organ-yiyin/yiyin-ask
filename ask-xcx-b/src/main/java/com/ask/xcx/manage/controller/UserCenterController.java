@@ -336,19 +336,19 @@ public class UserCenterController {
 			}	
 			
 			// 更新标签
-			List<UserTagPo> tagList = new ArrayList<UserTagPo>();
-			
-			if(!StringUtils.isEmptyString(tags)){
-				for(String tag:tags.split(",")){
-					UserTagPo t = new UserTagPo();
-					t.setValue(tag);
-					t.setUser_no(user_no);
-					tagList.add(t);
-				}
-				userService.updUserTag(tagList, user_no);
-			}
-			
-			String advice_type = "";
+//			List<UserTagPo> tagList = new ArrayList<UserTagPo>();
+//			
+//			if(!StringUtils.isEmptyString(tags)){
+//				for(String tag:tags.split(",")){
+//					UserTagPo t = new UserTagPo();
+//					t.setValue(tag);
+//					t.setUser_no(user_no);
+//					tagList.add(t);
+//				}
+//				userService.updUserTag(tagList, user_no);
+//			}
+//			
+//			String advice_type = "";
 			// tag 1: 国际认证泌乳顾问 2: 早产儿家庭养育顾问 3: 懿英认证哺乳指导
 			// 根据标签自动匹配获取咨询类型 1：哺育 ：2：早产儿  9：所有
 			/*
@@ -360,26 +360,26 @@ public class UserCenterController {
 			 *  国际认证泌乳顾问 + 早产儿 == 所有
 			 *  懿英认证哺乳指导 + 早产儿 == 所有
 			 */
-			if(tags.indexOf("1") >= 0){
-				if(tags.indexOf("2") >= 0){
-					advice_type = "9";
-				}else{
-					advice_type = "1";
-				}
-			}else if(tags.indexOf("3") >= 0){
-				if(tags.indexOf("2") >= 0){
-					advice_type = "9";
-				}else{
-					advice_type = "1";
-				}
-			}else if(tags.indexOf("2") >= 0){
-				if(tags.indexOf("1") >= 0 || tags.indexOf("3") >= 0){
-					advice_type = "9";
-				}else{
-					advice_type = "2";
-				}
-			}
-			p.setAdvice_type(advice_type);
+//			if(tags.indexOf("1") >= 0){
+//				if(tags.indexOf("2") >= 0){
+//					advice_type = "9";
+//				}else{
+//					advice_type = "1";
+//				}
+//			}else if(tags.indexOf("3") >= 0){
+//				if(tags.indexOf("2") >= 0){
+//					advice_type = "9";
+//				}else{
+//					advice_type = "1";
+//				}
+//			}else if(tags.indexOf("2") >= 0){
+//				if(tags.indexOf("1") >= 0 || tags.indexOf("3") >= 0){
+//					advice_type = "9";
+//				}else{
+//					advice_type = "2";
+//				}
+//			}
+//			p.setAdvice_type(advice_type);
 			userService.updInfo(p);
 			resultMap.put("status", "1");
 		}catch(Exception e){
@@ -537,6 +537,31 @@ public class UserCenterController {
 				p.setId(new Long(id));
 				distributorsService.updateById(p);
 			}
+			resultMap.put("status", "1");
+		}catch(Exception e){
+			e.printStackTrace();
+			resultMap.put("status", "-1");
+		}
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/delDis.x", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String saveDis(HttpServletRequest request,
+			HttpServletResponse response, String id)
+			throws Exception {
+		logger.info("delDis");
+		// 新建成功返回
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try{
+			distributorsService.del(new Long(id));
 			resultMap.put("status", "1");
 		}catch(Exception e){
 			e.printStackTrace();

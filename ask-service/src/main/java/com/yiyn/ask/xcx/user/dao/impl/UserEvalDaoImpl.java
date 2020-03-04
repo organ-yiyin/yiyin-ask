@@ -34,6 +34,16 @@ public class UserEvalDaoImpl extends BaseDao<UserEvalPo> {
 		this.getSqlSession().update(this.getNameStatement() + ".updateByAdmin_bg", userPo);
 	}
 	
+	public List<UserEvalPo> findUserCEval(Map<String,String> m) throws Exception {
+		return this.getSqlSession().selectList(
+				this.getNameStatement() + ".findUserCEval", m);
+	}
+	
+	public void updateByUser_c(UserEvalPo userPo) throws Exception{
+		this.initUpdateInfo(userPo);
+		this.getSqlSession().update(this.getNameStatement() + ".updateByUser_c", userPo);
+	}
+	
 	public String getNameStatement() {
 		return "yiyin.eval";
 	}

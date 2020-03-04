@@ -4,14 +4,24 @@
 
 <mapper namespace="yiyin.consultProcess">
     <select id="getConsultProcessList" resultType="com.yiyn.ask.xcx.consult.po.ConsultProcessPo" parameterType="String">
-        SELECT *, DATE_FORMAT(p.CREATED_TIME,'%Y-%m-%d %H:%i') as created_time_format
+        SELECT *, DATE_FORMAT(p.CREATED_TIME,'%Y-%m-%d %H:%i') as created_time_format,
+        UNIX_TIMESTAMP(p.CREATED_TIME) as refundTime
 		FROM `consultation_process` p
        	where p.CONSULTATION_ID = #{value}
+       	and (delete_flag != 'Y' || delete_flag is null)
        	order by p.CREATED_TIME asc
     </select>
     
-    <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultProcessPo" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultProcessPo" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
 		insert into consultation_process(CONSULTATION_ID,CONTENT,CONTENT1,CONTENT_TYPE,SEND_TYPE,CREATED_BY,CREATED_TIME)
 		values(#{consultation_id},#{content},#{content1},#{content_type},#{send_type},#{created_by},now())
 	</insert>
+	
+    <update id="updateById" parameterType="com.yiyn.ask.xcx.consult.po.ConsultProcessPo">
+		update consultation_process
+		set DELETE_FLAG=#{delete_flag},
+		updated_by=#{updated_by},
+		updated_time=now()
+		where id =#{id}
+    </update>
 </mapper>

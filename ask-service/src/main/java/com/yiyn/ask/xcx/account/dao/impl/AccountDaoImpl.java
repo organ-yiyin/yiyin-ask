@@ -11,6 +11,11 @@ public class AccountDaoImpl extends BaseDao<AccountPo> {
 				this.getNameStatement() + ".getAccountInfo", userno);
 	}
 	
+	public AccountPo getAccountInfoByUserNo(String userno) throws Exception {
+		return this.getSqlSession().selectOne(
+				this.getNameStatement() + ".getAccountInfoByUserNo", userno);
+	}
+	
 	public AccountPo findByUserBId(Long user_b_id) throws Exception {
 		return this.getSqlSession().selectOne(
 				this.getNameStatement() + ".findByUserBId", user_b_id);

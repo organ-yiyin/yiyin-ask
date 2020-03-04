@@ -11,13 +11,15 @@
 	</insert>
 
     <select id="getAccountInfo" resultType="com.yiyn.ask.xcx.account.po.AccountPo" parameterType="String">
-      select t.user_no,t.id,
+      select t.user_no,t.id,b.user_type user_type,
       cast(t.WITHDRAW_enable as decimal(9,2)) as withdraw_enable,
       cast(t.BALANCE as decimal(9,2)) as balance,
       cast(sum(m.income_total) as decimal(9,2))  as income_total,
-	  case when m.STAT_MONTH = DATE_FORMAT(date_sub(now(),INTERVAL 1 month),'%Y-%m') then cast(m.income_total as decimal(9,2)) else 0 end as income_last_m
-	  from user_account t left join stat_account_m m on m.user_no = t.USER_NO
-	  where t.USER_NO = #{value}
+      (select a.income_total from stat_account_m a where a.STAT_MONTH = DATE_FORMAT(date_sub(now(),INTERVAL 1 month),'%Y-%m')
+		and a.user_no = b.user_no
+		) as income_last_m
+	  from user_b b,user_account t left join stat_account_m m on m.user_no = t.USER_NO
+	  where b.user_no = t.user_no and t.USER_NO = #{value}
 	  group by t.user_no
     </select>
     
@@ -25,6 +27,12 @@
       select *
 	  from user_account 
 	  where id = #{id}
+    </select>
+    
+    <select id="getAccountInfoByUserNo" resultType="com.yiyn.ask.xcx.account.po.AccountPo" parameterType="String">
+      select *
+	  from user_account 
+	  where user_no = #{value}
     </select>
     
     <select id="findByUserBId" resultType="com.yiyn.ask.xcx.account.po.AccountPo">

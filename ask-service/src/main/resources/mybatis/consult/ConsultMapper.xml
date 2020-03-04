@@ -181,6 +181,9 @@
          <result column="problem_imgs" property="problem_imgs"/>
          <result column="problem_video" property="problem_video"/>
          <result column="prepay_id" property="prepay_id"/>
+         <result column="discount" property="discount"/>
+         <result column="user_pay_money" property="user_pay_money"/>
+         <result column="coupon_relid" property="coupon_relid"/>
          <result column="created_time_format" property="created_time_format"/>
          <association property="refPo" javaType="com.yiyn.ask.xcx.consult.po.ConsultRefPo">
 	        <result property="name_m" column="name_m"/>
@@ -189,6 +192,9 @@
 	        <result property="user_name" column="user_name"/>
 	        <result property="user_phone" column="user_phone"/>
 	        <result property="open_id" column="open_id"/>
+	     </association>
+	     <association property="userCPo" javaType="com.yiyn.ask.xcx.user.po.UserCPo">
+	        <result property="user_no" column="user_no"/>
 	     </association>
      </resultMap>
     
@@ -199,6 +205,9 @@
         	s.user_b_no,
         	s.price,
         	s.prepay_id,
+        	s.coupon_relid,
+        	s.discount,
+        	s.user_pay_money,
 			ref.name_m,
 		 s.status,
 		 s.odd_num,
@@ -216,6 +225,7 @@
 		b.user_name,
 		b.user_phone,
 		b.open_id,
+		c.user_no,
 		DATE_FORMAT(s.CREATED_TIME,'%Y-%m-%d %H:%i:%s') as created_time_format
 		FROM consultation_sheet s,consultation_sheet_ref ref,
 			user_b b,user_c c
@@ -256,10 +266,10 @@
     <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultPo" useGeneratedKeys="true" keyProperty="id">
 		insert into consultation_sheet(USER_C_NO,USER_B_NO,USER_REF_ID,ODD_NUM,
 		SHEET_AGE_M,SHEET_AGE_B,PRICE,PROBLEM_DESC,PROBLEM_TYPE,PROBLEM_IMGS,PROBLEM_VIDEO,STATUS,
-		CREATED_BY,CREATED_TIME,PREPAY_ID)
+		CREATED_BY,CREATED_TIME,PREPAY_ID,COUPON_RELID,DISCOUNT,USER_PAY_MONEY)
 		values(#{user_c_no},#{user_b_no},#{user_ref_id},#{odd_num},
 		#{sheet_age_m},#{sheet_age_b},#{price},#{problem_desc},#{problem_type},#{problem_imgs},#{problem_video},
-		#{status},#{created_by},now(),#{prepay_id})
+		#{status},#{created_by},now(),#{prepay_id},#{coupon_relid},#{discount},#{user_pay_money})
 	</insert>
 	
     <!-- 查找需要自动退款的订单-->
@@ -270,5 +280,42 @@
 			select t.CONSULT_ID from consultation_sheet_log t where t.log_type = '5'
 		)
 		and s.CREATED_TIME &lt; date_add(NOW(),INTERVAL -1 day)
+    </select>
+    
+    <resultMap type="com.yiyn.ask.xcx.consult.po.ConsultPo" id="ConsultNotifyListMap">
+         <id column="id" property="id"/>
+         <result column="price" property="price"/>
+         <result column="problem_type" property="problem_type"/>
+         <result column="problem_desc" property="problem_desc"/>
+         <result column="ques_num" property="ques_num"/>
+         <association property="userCPo" javaType="com.yiyn.ask.xcx.user.po.UserCPo">
+	        <result property="user_name" column="user_name"/>
+	        <result property="user_phone" column="user_phone"/>
+	        <result property="user_no" column="user_no"/>
+	     </association>
+    </resultMap>
+    <!-- 查找需要12小时自动追问提醒的订单-->
+    <select id="getConsultNotifyList" resultMap="ConsultNotifyListMap">
+        select u.USER_PHONE,u.user_name,u.user_no,t.id,
+        t.problem_desc,
+        t.ques_num,
+        (
+			SELECT
+				NAME
+			FROM
+				yiyn_code CODE
+			WHERE CODE.VALUE = t.PROBLEM_TYPE
+			AND CODE.CODE_TYPE = 'QUS_TYPE'
+		) AS problem_type
+		from user_c u,consultation_sheet t left join (select * from consultation_sheet_log tt 
+		where tt.log_type = '5'
+		group by tt.CONSULT_ID
+		order by tt.CREATED_TIME asc)l on t.id = l.CONSULT_ID
+		where t.status in ('2','5')
+		and u.user_no = t.USER_C_NO
+		and t.ques_num &lt; 2
+		and date_add(l.CREATED_TIME, INTERVAL 12 HOUR) &lt; now()
+		and t.id not in (select consult_id from consultation_sheet_sms_log)
+		order by t.CREATED_TIME desc
     </select>
 </mapper>

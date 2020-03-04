@@ -56,6 +56,10 @@ public class ConsultPo extends BasePo {
 	
 	private String pay_time;
 	
+	private String coupon_relid; // 优惠券关联id
+	private int discount; // 优惠券优惠金额，默认为0
+	private String user_pay_money; // 用户实际支付的金额
+	
 	public UserCPo getUserCPo() {
 		return userCPo;
 	}
@@ -252,5 +256,29 @@ public class ConsultPo extends BasePo {
 
 	public void setRefund_time(Date refund_time) {
 		this.refund_time = refund_time;
+	}
+
+	public String getCoupon_relid() {
+		return coupon_relid;
+	}
+
+	public void setCoupon_relid(String coupon_relid) {
+		this.coupon_relid = coupon_relid;
+	}
+
+	public int getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(int discount) {
+		this.discount = discount;
+	}
+
+	public String getUser_pay_money() {
+		return user_pay_money;
+	}
+
+	public void setUser_pay_money(String user_pay_money) {
+		this.user_pay_money = user_pay_money;
 	}
 }

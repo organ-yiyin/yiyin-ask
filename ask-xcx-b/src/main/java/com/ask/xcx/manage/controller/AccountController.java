@@ -121,7 +121,7 @@ public class AccountController {
 	@ResponseBody
 	public String insWithDraw(HttpServletRequest request,
 			HttpServletResponse response,
-			String account_id,double withdraw,double balance,String user_no)
+			String account_id,double withdraw,double balance,String user_no,String user_type)
 			throws Exception {
 		logger.info("insWithDraw");
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -147,8 +147,16 @@ public class AccountController {
 				AccountWithDrawPo p = new AccountWithDrawPo();
 				p.setAccount_id(account_id);
 				p.setWithdraw(new BigDecimal(withdraw));
-				p.setWithdraw_act(new BigDecimal(withdraw * 0.7));
-				p.setService_charge(new BigDecimal(withdraw * 0.3));
+				// 内部咨询师
+				if("1".equals(user_type)){
+					p.setWithdraw_act(new BigDecimal(withdraw * 0.3));
+					p.setService_charge(new BigDecimal(withdraw * 0.7));
+				// 外部咨询师分摊比例不同
+				}else{
+					p.setWithdraw_act(new BigDecimal(withdraw * 0.7));
+					p.setService_charge(new BigDecimal(withdraw * 0.3));
+				}
+				
 				p.setWithdraw_type(WithDrawTypeEnum.OFFLINE.getCode());
 				p.setStatus(String.valueOf(WithDrawStatusEnum.WAITING_APPROVE.getCode()));
 				p.setCreated_by(user_no);

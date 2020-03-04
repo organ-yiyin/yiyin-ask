@@ -47,6 +47,16 @@ public class AccountService {
    }
    
    /**
+    * 查找账户信息
+    * @param userno
+    * @return
+    * @throws Exception
+    */
+   public AccountPo getAccountInfoByUserNo(String userno) throws Exception{
+	   return accountDao.getAccountInfoByUserNo(userno);
+   }
+   
+   /**
     * 查找月统计信息
     * @param userno
     * @return

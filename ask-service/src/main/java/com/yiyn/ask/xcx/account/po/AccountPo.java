@@ -73,7 +73,11 @@ public class AccountPo extends BasePo {
 		return income_last_m;
 	}
 	public void setIncome_last_m(String income_last_m) {
-		this.income_last_m = income_last_m;
+		if(income_last_m == null){
+			this.income_last_m = "0";
+		}else{
+			this.income_last_m = income_last_m;
+		}
 	}
 	public BigDecimal getWithdraw_enable() {
 		return withdraw_enable;

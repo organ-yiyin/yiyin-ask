@@ -15,12 +15,14 @@ import com.yiyn.ask.xcx.consult.dao.impl.ConsultRefDaoImpl;
 import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
 import com.yiyn.ask.xcx.user.dao.impl.UserCDaoImpl;
 import com.yiyn.ask.xcx.user.dao.impl.UserColDaoImpl;
+import com.yiyn.ask.xcx.user.dao.impl.UserCouponDaoImpl;
 import com.yiyn.ask.xcx.user.dao.impl.UserDaoImpl;
 import com.yiyn.ask.xcx.user.dao.impl.UserEvalDaoImpl;
 import com.yiyn.ask.xcx.user.dao.impl.UserOrderSetDaoImpl;
 import com.yiyn.ask.xcx.user.dao.impl.UserTagDaoImpl;
 import com.yiyn.ask.xcx.user.po.UserCPo;
 import com.yiyn.ask.xcx.user.po.UserColPo;
+import com.yiyn.ask.xcx.user.po.UserCouponPo;
 import com.yiyn.ask.xcx.user.po.UserEvalPo;
 import com.yiyn.ask.xcx.user.po.UserOrderSetPo;
 import com.yiyn.ask.xcx.user.po.UserPo;
@@ -48,6 +50,9 @@ public class UserService {
    
    @Autowired
    private UserOrderSetDaoImpl userOrderSetDao;
+   
+   @Autowired
+   private UserCouponDaoImpl userCouponDao;
    
    public UserPo findByUserno(String userno) throws Exception{
 	   UserPo userP = userBDao.findByUserno(userno);
@@ -154,10 +159,12 @@ public class UserService {
    public void updInfo(UserPo p) throws Exception{
 	   userBDao.updInfo(p);
 	   //插入接单日志
-	   UserOrderSetPo insP = new UserOrderSetPo();
-	   insP.setUser_no(p.getUser_no());
-	   insP.setSet_type(p.getOrder_set());
-	   userOrderSetDao.insert(insP);
+	   if("orderset".equals(p.getType())){
+		   UserOrderSetPo insP = new UserOrderSetPo();
+		   insP.setUser_no(p.getUser_no());
+		   insP.setSet_type(p.getOrder_set());
+		   userOrderSetDao.insert(insP);
+	   }
    }
    
    public List<UserTagPo> getTagCodeList() throws Exception{
@@ -196,6 +203,15 @@ public class UserService {
     */
    public void updPhone(Map<String,Object> m) throws Exception{
 	   userCDao.updByUser_no(m);
+   }
+   
+   /**
+    * 更新C端渠道商信息
+    * @param p
+    * @throws Exception
+    */
+   public void updDis(Map<String,Object> m) throws Exception{
+	   userCDao.updDisByUser_no(m);
    }
    
    /**
@@ -352,5 +368,38 @@ public class UserService {
 	   String birth_week = (t10 + 280)/7 + "周" + (t10 + 280)%7 + "天";
 	   
 	   System.out.println(birth_week);
+   }
+   
+   //我的评价里的信息
+   public List<UserEvalPo> findUserCEval(Map<String,String> m) throws Exception{
+	   return userEvalDao.findUserCEval(m);
+   }
+   
+   // 我的评价里修改评价信息
+   public void updateByUser_c(UserEvalPo p) throws Exception{
+	   userEvalDao.updateByUser_c(p);
+   }
+   
+   /**
+    * 优惠券相关
+    * @param m
+    * @return
+    * @throws Exception
+    */
+   public List<UserCouponPo> getCouponExsitList(Map<String,Object> m) throws Exception{
+	   return userCouponDao.getCouponExsitList(m);
+   }
+   
+   public List<UserCouponPo> getCouponCList(Map<String,Object> m) throws Exception{
+	   return userCouponDao.getCouponCList(m);
+   }
+   
+   // 优惠券状态变为已使用
+   public void updUserCoupon(UserCouponPo p) throws Exception{
+	   userCouponDao.updUserCoupon(p);
+   }
+   // 优惠券分配给用户
+   public void insertCouponC(UserCouponPo p) throws Exception{
+	   userCouponDao.insert(p);
    }
 }

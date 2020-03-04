@@ -50,12 +50,18 @@ public class XcxOAuthService {
 	
 	@Value("#{configProperties['wechat.messageMb']}")
 	private String messageMb;
+	@Value("#{configProperties['wechat.messageMbC']}")
+	private String messageMbC;
 	
 	public static String getsessionUrl = "https://api.weixin.qq.com/sns/jscode2session";
 	
 	public static String accessTokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
 	
-	public static String sendMsgUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send";
+	//模版消息
+	//public static String sendMsgUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send";
+	
+	//订阅消息
+	public static String sendMsgUrl = "https://api.weixin.qq.com/cgi-bin/message/subscribe/send";
 	@Autowired
 	private WeixinConfig weixinConfig;
 	
@@ -79,6 +85,7 @@ public class XcxOAuthService {
 		String phone="";
 		String headimg = "";
 		String unionid  = ""; //统一微信开放平台的unindid
+		String newuser = "0"; // 默认为非新建用户，新建时才算新建用户统计到渠道商名下
 		// 如果token过期了，重新获取微信access_token
         if(tokenObj.get("openid")!=null&&!tokenObj.get("openid").equals("")){  
         	logger.info("是否在session中设置token！");
@@ -112,12 +119,14 @@ public class XcxOAuthService {
 				userService.insCust(cUser);
 				db_openid = openid;//关联的openid
     			wxtype = SourceEnum.WXXCX.getName();
+    			newuser = "1";
         	}
     		
     		// 刷新时间比微信短，以免请求时token失效
         	sessionid = openid + session_key;
         	application.setAttribute(sessionid, new WechatXcxDto(session_key,openid,unionid,db_openid,wxtype));  
         }
+        re.put("newuser", newuser);
         re.put("unionid", unionid);
         re.put("sessionid", sessionid);
         re.put("phone", phone);
@@ -188,8 +197,93 @@ public class XcxOAuthService {
 	}
 	
 	/**
+	 * 获得token
 	 * 
-	 * C端用户发起提问后推送消息给咨询师
+	 * @param code
+	 * @throws Exception
+	 */
+	private JsonObject getCToken() throws Exception {
+		logger.info("getAccessToken");
+		StringBuilder url = new StringBuilder();
+		url.append(accessTokenUrl + "?");
+		url.append("appid=" + weixinConfig.appId);
+		url.append("&secret=").append(weixinConfig.appsecret);
+		url.append("&grant_type=client_credential");
+		logger.info(url.toString());
+		String content = HttpClientGetUtils.getHttpGetContent(url.toString(), "utf-8");
+		logger.info(content);
+		JsonObject o = new JsonParser().parse(content).getAsJsonObject();
+		return o;
+	}
+	
+//	/**
+//	 * 
+//	 * C端用户发起提问后推送消息给咨询师--模版消息，已弃用
+//	 * @param openid
+//	 * @param url
+//	 */
+//	public boolean sendMsg(Map<String,String> param) throws Exception{
+//		Map<String,Object> m = new HashMap<String,Object>();
+//		m.put("touser", param.get("open_id"));
+//		m.put("template_id", messageMb);
+//		m.put("page", param.get("url"));// 回调url
+//		m.put("form_id", param.get("form_id"));// 回调url
+//		//组织模版
+//		Map<String,Map<String,String>> dataMap = new HashMap<String,Map<String,String>>();
+//				
+//		Map<String,String> keyword1Map = new HashMap<String,String>();
+//		keyword1Map.put("value", "收到新的咨询信息，请点击查看。");
+//		dataMap.put("keyword1", keyword1Map);
+//		
+//		Map<String,String> keyword2Map = new HashMap<String,String>();
+//		keyword2Map.put("value", param.get("zxr"));
+//		dataMap.put("keyword2", keyword2Map);
+//		
+//		Map<String,String> keyword3Map = new HashMap<String,String>();
+//		keyword3Map.put("value", param.get("zxlx"));
+//		dataMap.put("keyword3", keyword3Map);
+//		
+//		Map<String,String> keyword4Map = new HashMap<String,String>();
+//		keyword4Map.put("value", param.get("zxsj"));
+//		dataMap.put("keyword4", keyword4Map);
+//		
+//		Map<String,String> keyword5Map = new HashMap<String,String>();
+//		keyword5Map.put("value", param.get("zxnr"));
+//		dataMap.put("keyword5", keyword5Map);
+//		
+//		m.put("data", dataMap);
+//		JsonObject tokenObj = this.getBToken();
+//		String token = tokenObj.get("access_token").getAsString();
+//		StringBuilder url_send = new StringBuilder();
+//		url_send.append(sendMsgUrl);
+//		url_send.append("?access_token=" + token);
+//		logger.info("param ===== :" + new Gson().toJson(m));
+//		String content = HttpClientPostUtils.getHttpPostContentByEntity(
+//				url_send.toString(), new StringEntity(new Gson().toJson(m), "UTF-8"), "UTF-8");
+//		logger.info("wechatResponseXml:" + content);
+//		
+//		JsonObject o = new JsonParser().parse(content).getAsJsonObject();
+//		
+//		if(o.get("errcode").getAsInt() == 0){
+//			return true;
+//		}else{
+//			return false;
+//		}
+//	}
+	
+	/**
+	 * 
+	 * 在消息发送前必须订阅消息，c端订阅后，b端回答后c端会收到消息
+	 * @param openid
+	 * @param url
+	 */
+	public boolean subscribeMsg(Map<String,String> param) throws Exception{
+			return false;
+	}
+	
+	/**
+	 * 
+	 * C端用户发起提问后推送消息给咨询师--订阅消息
 	 * @param openid
 	 * @param url
 	 */
@@ -198,32 +292,80 @@ public class XcxOAuthService {
 		m.put("touser", param.get("open_id"));
 		m.put("template_id", messageMb);
 		m.put("page", param.get("url"));// 回调url
-		m.put("form_id", param.get("form_id"));// 回调url
+		//m.put("form_id", param.get("form_id"));// 回调url
 		//组织模版
 		Map<String,Map<String,String>> dataMap = new HashMap<String,Map<String,String>>();
 				
 		Map<String,String> keyword1Map = new HashMap<String,String>();
-		keyword1Map.put("value", "收到新的咨询信息，请点击查看。");
-		dataMap.put("keyword1", keyword1Map);
+		keyword1Map.put("value", param.get("zxlx"));
+		dataMap.put("phrase1", keyword1Map);// 订单类型
 		
 		Map<String,String> keyword2Map = new HashMap<String,String>();
-		keyword2Map.put("value", param.get("zxr"));
-		dataMap.put("keyword2", keyword2Map);
+		keyword2Map.put("value", param.get("odd_num"));
+		dataMap.put("character_string2", keyword2Map);// 订单编号
 		
 		Map<String,String> keyword3Map = new HashMap<String,String>();
-		keyword3Map.put("value", param.get("zxlx"));
-		dataMap.put("keyword3", keyword3Map);
+		keyword3Map.put("value", param.get("zxr"));
+		dataMap.put("name3", keyword3Map);// 提交人
 		
 		Map<String,String> keyword4Map = new HashMap<String,String>();
 		keyword4Map.put("value", param.get("zxsj"));
-		dataMap.put("keyword4", keyword4Map);
+		dataMap.put("date4", keyword4Map);// 提交时间
 		
 		Map<String,String> keyword5Map = new HashMap<String,String>();
-		keyword5Map.put("value", param.get("zxnr"));
-		dataMap.put("keyword5", keyword5Map);
+		keyword5Map.put("value", "后续追问将通过短信方式提醒到您。");
+		dataMap.put("thing5", keyword5Map);// 操作备注
 		
 		m.put("data", dataMap);
 		JsonObject tokenObj = this.getBToken();
+		String token = tokenObj.get("access_token").getAsString();
+		StringBuilder url_send = new StringBuilder();
+		url_send.append(sendMsgUrl);
+		url_send.append("?access_token=" + token);
+		logger.info("param ===== :" + new Gson().toJson(m));
+		String content = HttpClientPostUtils.getHttpPostContentByEntity(
+				url_send.toString(), new StringEntity(new Gson().toJson(m), "UTF-8"), "UTF-8");
+		logger.info("wechatResponseXml:" + content);
+		
+		JsonObject o = new JsonParser().parse(content).getAsJsonObject();
+		
+		if(o.get("errcode").getAsInt() == 0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * 支付成功后发微信通知--订阅消息
+	 * @param openid
+	 * @param url
+	 */
+	public boolean sendCMsg(Map<String,String> param) throws Exception{
+		Map<String,Object> m = new HashMap<String,Object>();
+		m.put("touser", param.get("user_no"));
+		m.put("template_id", messageMbC);
+		m.put("page", param.get("url"));// 回调url
+		Map<String,Map<String,String>> dataMap = new HashMap<String,Map<String,String>>();
+				
+		Map<String,String> keyword1Map = new HashMap<String,String>();
+		keyword1Map.put("value", param.get("odd_num"));
+		dataMap.put("character_string5", keyword1Map);// 订单编号
+		
+		Map<String,String> keyword2Map = new HashMap<String,String>();
+		keyword2Map.put("value", "￥"  + param.get("amount"));
+		dataMap.put("amount9", keyword2Map);// 金额
+		
+		Map<String,String> keyword3Map = new HashMap<String,String>();
+		keyword3Map.put("value", param.get("zxsj"));
+		dataMap.put("time8", keyword3Map);// 订单时间
+		
+		Map<String,String> keyword5Map = new HashMap<String,String>();
+		keyword5Map.put("value", "咨询师回复后将以短信方式提醒，请留意！");
+		dataMap.put("thing3", keyword5Map);// 温馨提示
+		
+		m.put("data", dataMap);
+		JsonObject tokenObj = this.getCToken();
 		String token = tokenObj.get("access_token").getAsString();
 		StringBuilder url_send = new StringBuilder();
 		url_send.append(sendMsgUrl);

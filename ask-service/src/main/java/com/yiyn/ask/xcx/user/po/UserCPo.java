@@ -24,6 +24,8 @@ public class UserCPo extends BasePo {
 	
 	private String unionid;
 	
+	private String dis_no;
+	
 	public String getUser_headimg() {
 		return user_headimg;
 	}
@@ -79,4 +81,13 @@ public class UserCPo extends BasePo {
 	public void setUnionid(String unionid) {
 		this.unionid = unionid;
 	}
+
+	public String getDis_no() {
+		return dis_no;
+	}
+
+	public void setDis_no(String dis_no) {
+		this.dis_no = dis_no;
+	}
+	
 }

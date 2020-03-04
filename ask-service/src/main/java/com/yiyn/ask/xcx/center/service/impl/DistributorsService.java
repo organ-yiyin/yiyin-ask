@@ -34,4 +34,8 @@ public class DistributorsService {
    public void updateById(DistributorsPo p)throws Exception{
 	   distributorsDao.updateById(p);
    }
+   
+   public void del(long id)throws Exception{
+	   distributorsDao.deleteById(id);
+   }
 }

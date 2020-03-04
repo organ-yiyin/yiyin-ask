@@ -1,6 +1,7 @@
 package com.yiyn.ask.c.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,8 @@ import com.yiyn.ask.c.wechat.controller.XcxOAuthService;
 import com.yiyn.ask.wechat.dto.WechatXcxDto;
 import com.yiyn.ask.xcx.center.service.impl.CodeService;
 import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
+import com.yiyn.ask.xcx.user.po.UserCouponPo;
+import com.yiyn.ask.xcx.user.po.UserEvalPo;
 import com.yiyn.ask.xcx.user.service.impl.UserService;
 
 @Controller
@@ -155,6 +158,88 @@ public class AskUserCenterController {
 		// 新建成功返回
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		resultMap.put("reList", codeService.findCodeList("ABOUT"));
+		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * 初始化我的评价页面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/initEva.x", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String initEva(HttpServletRequest request,
+			HttpServletResponse response,String sessionid)
+			throws Exception {
+		logger.info("initEva");
+		// 新建成功返回
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		//获取微信小程序信息
+		WechatXcxDto dto = XcxOAuthService.getWechatXcxDto(sessionid);
+		//查找c端用户关注咨询师列表
+		Map<String,String> m = new HashMap<String,String>();
+		m.put("user_no", dto.getDb_open_id());
+		List<UserEvalPo> reList = userService.findUserCEval(m);
+		resultMap.put("reList", reList);
+		resultMap.put("count", reList.size());
+		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/saveEva.x", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String saveRefInfo(HttpServletRequest request,
+			HttpServletResponse response,String id,int star,String olddesc,String newdesc) throws Exception {
+		// 新建成功返回
+		logger.info("评价修改");
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		
+		try{
+			UserEvalPo p = new UserEvalPo();
+			p.setId(new Long(id));
+			p.setStars(star);
+			p.setOld_desc(olddesc);
+			p.setEva_desc(newdesc);
+			userService.updateByUser_c(p);
+			resultMap.put("status", "1");
+		}catch(Exception e){
+			e.printStackTrace();
+			resultMap.put("status", "-1");
+		}
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	/**
+	 * 初始化我的优惠券页面
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/initCoupon.x", method = RequestMethod.GET, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String initCoupon(HttpServletRequest request,
+			HttpServletResponse response,String sessionid)
+			throws Exception {
+		logger.info("initCoupon");
+		// 新建成功返回
+		Map<String,Object> resultMap = new HashMap<String,Object>();
+		//获取微信小程序信息
+		WechatXcxDto dto = XcxOAuthService.getWechatXcxDto(sessionid);
+		//查找c端用户关注咨询师列表
+		Map<String,Object> m = new HashMap<String,Object>();
+		m.put("user_c_no", dto.getDb_open_id());
+		List<UserCouponPo> reList = userService.getCouponCList(m);
+		resultMap.put("reList", reList);
+		resultMap.put("count", reList.size());
 		return new Gson().toJson(resultMap);
 	}
 }

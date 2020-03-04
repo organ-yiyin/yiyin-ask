@@ -63,6 +63,17 @@ public class ConsultDaoImpl extends BaseDao<ConsultPo> {
 				this.getNameStatement() + ".getRefundConsult");
 	}
 	
+	/**
+	 * 查找需要12小时自动追问提醒的订单
+	 * @param m
+	 * @return
+	 * @throws Exception
+	 */
+	public List<ConsultPo> getConsultNotifyList() throws Exception {
+		return this.getSqlSession().selectList(
+				this.getNameStatement() + ".getConsultNotifyList");
+	}
+	
 	public String getNameStatement() {
 		return "yiyin.consult";
 	}

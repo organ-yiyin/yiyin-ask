@@ -79,8 +79,7 @@ public class XcxNotifyController {
 	        
 	        // 根据商户订单id查询咨询单信息
 	        ConsultPo p = consultService.getConsultByOdd_Num(outTradeNo);
-	        
-            if(totalFee.equals(StringUtils.subZeroAndDot(String.valueOf(new Double(p.getPrice()) * 100)))) {
+            if(totalFee.equals(StringUtils.subZeroAndDot(String.valueOf(new Double(p.getUser_pay_money()) * 100)))) {
             	// 订单状态是否为待支付
                 if(ConsultStatuEnum.PAY_WAIT.getCode().equals(p.getStatus())) {
                 	logger.info("订单状态是待支付状态====进入通知");
@@ -90,12 +89,12 @@ public class XcxNotifyController {
                       responseMap.put("return_code", "SUCCESS");
                       responseMap.put("return_msg", "OK");
                       // 插入消息模版通知的form_id
-            		  FormIdPo insP = new FormIdPo();
-            		  insP.setForm_id(p.getPrepay_id());
-            		  insP.setRel_user(p.getUser_c_no());
-            		  insP.setSource("C");
-            		  insP.setSend_num(3);// 微信支付通知可以发送三次
-            		  formIdService.insert(insP);
+//            		  FormIdPo insP = new FormIdPo();
+//            		  insP.setForm_id(p.getPrepay_id());
+//            		  insP.setRel_user(p.getUser_c_no());
+//            		  insP.setSource("C");
+//            		  insP.setSend_num(3);// 微信支付通知可以发送三次
+//            		  formIdService.insert(insP);
                       
                       // 成功短信以及通知
               		  // C端给B端发消息  通知咨询师有人咨询 获取B端用户信息
@@ -106,25 +105,34 @@ public class XcxNotifyController {
 		      		  // 获取到的form_id用来保存发送用
 		      		  // 后发通知
 		      		  Map<String,String> param = new HashMap<String,String>();
-		      		  FormIdPo formP = formIdService.getFormId(p.getUserPo().getOpen_id()) ;
-		      			if(formP != null){
-		      				// 真是的form_id从用户取得
-		      				param.put("open_id", p.getUserPo().getOpen_id());
-		      				param.put("form_id", formP.getForm_id());
-		      				param.put("zxr", p.getRefPo().getName_m());// 咨询人姓名（妈妈名称）
-		      				param.put("zxlx", p.getProblem_type());
-		      				param.put("zxsj", p.getCreated_time_format());
-		      				param.put("zxnr", p.getProblem_desc());
-		      				param.put("url", "pages/consultation/consultation");
-		      				boolean f = oAuthService.sendMsg(param);
-		      				
-		      				// 发送成功的情况下
-		      				if(f){
-		      					formIdService.updateById(formP);
-		      				}else{
-		      					formIdService.delForm(formP);
-		      				}
-		      			}
+		      		  //FormIdPo formP = formIdService.getFormId(p.getUserPo().getOpen_id()) ;
+	      				// 真是的form_id从用户取得
+	      				param.put("open_id", p.getUserPo().getOpen_id());
+	      				//param.put("form_id", formP.getForm_id());
+	      				param.put("zxr", p.getRefPo().getName_m());// 咨询人姓名（妈妈名称）
+	      				param.put("zxlx", p.getProblem_type());
+	      				param.put("zxsj", p.getCreated_time_format());
+	      				param.put("zxnr", p.getProblem_desc());
+	      				param.put("odd_num", outTradeNo);
+	      				param.put("url", "pages/consultation/consultation");
+	      				// 给B端发订阅消息
+	      				boolean f = oAuthService.sendMsg(param);
+	      				
+	      				// 给C端自己发订阅消息
+	      				Map<String,String> paramc = new HashMap<String,String>();
+	      				paramc.put("user_no", p.getUserCPo().getUser_no());
+	      				paramc.put("zxsj", p.getCreated_time_format());
+	      				paramc.put("odd_num", outTradeNo);
+	      				paramc.put("amount", p.getUser_pay_money());
+	      				paramc.put("url", "pages/order/order");
+	      				oAuthService.sendCMsg(paramc);
+	      				
+//	      				// 发送成功的情况下
+//	      				if(f){
+//	      					formIdService.updateById(formP);
+//	      				}else{
+//	      					formIdService.delForm(formP);
+//	      				}
                     }
                 // 如果是其他状态则代表通知已经成功
                 }else {

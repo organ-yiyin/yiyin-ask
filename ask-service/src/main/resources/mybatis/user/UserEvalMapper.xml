@@ -104,4 +104,24 @@
 		where id =#{id};
 	</update>
 	
+	<!-- 根据c端用户号查找相应的评价信息，按订单倒序排列 -->
+    <select id="findUserCEval" resultType="com.yiyn.ask.xcx.user.po.UserEvalPo" parameterType="java.util.HashMap">
+		SELECT e.*,b.user_name as user_b_name,b.user_headimg as user_b_img,
+        case when (date_add(now(), interval -15 day) &lt;= e.CREATED_TIME and e.stars &lt; 3) then '1' else '0' end as btn_show,
+        DATE_FORMAT(e.CREATED_TIME,'%Y-%m-%d') as created_time_format
+        FROM consultation_evaluate e,user_b b
+        where e.user_c_no = #{user_no}
+        and e.user_b_no = b.user_no
+		and e.is_hidden = 'N'
+		order by e.CREATED_TIME desc
+    </select>
+	
+	<!-- C端用户自行修改 -->
+    <update id="updateByUser_c" parameterType="com.yiyn.ask.xcx.user.po.UserEvalPo">
+		update consultation_evaluate
+		set stars=#{stars},eva_desc=#{eva_desc},old_desc=#{old_desc},
+		UPDATE_FLAG='N',updated_by=#{updated_by},updated_time=#{updated_time}
+		where id =#{id}
+	</update>
+	
 </mapper>

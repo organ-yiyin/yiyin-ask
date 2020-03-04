@@ -18,6 +18,8 @@ public class ConsultProcessPo extends BasePo {
 	private String send_type;// 操作类型   customer：客户 server：咨询服务人员
 	
 	private String showTime; //咨询流程是否显示时间
+	
+	private long refundTime; // 退回时间
 
 	public String getConsultation_id() {
 		return consultation_id;
@@ -65,5 +67,13 @@ public class ConsultProcessPo extends BasePo {
 
 	public void setShowTime(String showTime) {
 		this.showTime = showTime;
+	}
+
+	public long getRefundTime() {
+		return refundTime;
+	}
+
+	public void setRefundTime(long refundTime) {
+		this.refundTime = refundTime;
 	}
 }

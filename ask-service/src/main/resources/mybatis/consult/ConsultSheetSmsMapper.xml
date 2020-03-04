@@ -1,0 +1,10 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="yiyin.consultSheetSms">
+    <insert id="insert" parameterType="com.yiyn.ask.xcx.consult.po.ConsultSheetSmsPo" useGeneratedKeys="true" keyProperty="id">
+		insert into consultation_sheet_sms_log(SMS_PHONE,OPERATION_TYPE,CONSULT_ID,STATUS,CREATED_TIME)
+		values(#{sms_phone},#{operation_type},#{consult_id},#{status},now())
+	</insert>
+</mapper>

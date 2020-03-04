@@ -133,6 +133,36 @@ public class ConsultController {
 	}
 	
 	/**
+	 * 消息撤回
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/updPorocess.x", method = RequestMethod.POST, produces = { "application/json;charset=UTF-8" })
+	@ResponseBody
+	public String updPorocess(HttpServletRequest request,
+			HttpServletResponse response, String id)
+			throws Exception {
+		logger.info("updPorocess");
+		// 新建成功返回
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		try{
+			ConsultProcessPo insP = new ConsultProcessPo();
+	    	insP.setId(new Long(id));
+	    	insP.setUpdated_by("用户撤回");
+	    	insP.setDelete_flag("Y");
+	    	consultService.updConsultProcess(insP);
+	    	resultMap.put("status", "1");
+		}catch(Exception e){
+			e.printStackTrace();
+			resultMap.put("status", "-1");
+		}
+		
+		return new Gson().toJson(resultMap);
+	}
+	
+	/**
 	 * 服务人员退单
 	 * @param request
 	 * @param response
@@ -227,11 +257,12 @@ public class ConsultController {
 		updP.setStatus(ConsultStatuEnum.ANS.getCode());
 		updP.setUpdated_by(user_no);
 		try{
-			consultService.insConsultProcess(insP);
+			Long reid = consultService.insConsultProcess(insP);
 			if(sfupd){
 				consultService.updConsultStatus(updP);
 			}
 			resultMap.put("status", "1");
+			resultMap.put("reid", reid);
 		}catch(Exception e){
 			e.printStackTrace();
 			resultMap.put("status", "-1");
@@ -251,25 +282,25 @@ public class ConsultController {
 		// 先发送短信
 		smsUtils.sendNotice("【嘉问养育】您好，咨询师已经回复您消息了，请登陆嘉问养育小程序查看", user_phone);
 		
-		// 获取到的form_id用来保存发送用
-		// 后发通知
-		Map<String,String> param = new HashMap<String,String>();
-		FormIdPo p = formIdService.getFormId(open_id);
-		if(p != null){
-			// 真是的form_id从用户取得
-			param.put("open_id", open_id);
-			param.put("form_id", p.getForm_id());
-			param.put("hfr", user_b_name);
-			param.put("url", "pages/order/order");
-			boolean f = oAuthService.sendMsg(param);
-			
-			// 发送成功更新次数
-			if(f){
-				formIdService.updateById(p);
-			}else{
-				formIdService.delForm(p);
-			}
-		}
+//		// 获取到的form_id用来保存发送用
+//		// 后发通知
+//		Map<String,String> param = new HashMap<String,String>();
+//		FormIdPo p = formIdService.getFormId(open_id);
+//		if(p != null){
+//			// 真是的form_id从用户取得
+//			param.put("open_id", open_id);
+//			param.put("form_id", p.getForm_id());
+//			param.put("hfr", user_b_name);
+//			param.put("url", "pages/order/order");
+//			boolean f = oAuthService.sendMsg(param);
+//			
+//			// 发送成功更新次数
+//			if(f){
+//				formIdService.updateById(p);
+//			}else{
+//				formIdService.delForm(p);
+//			}
+//		}
 		return null;
 	}
 				

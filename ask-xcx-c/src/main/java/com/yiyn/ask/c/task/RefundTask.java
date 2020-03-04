@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
 import com.yiyn.ask.base.constants.LogUserTypeEnum;
 import com.yiyn.ask.base.utils.DateUtils;
+import com.yiyn.ask.base.utils.StringUtils;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.wechat.dto.WechatRefundResponseDto;
 import com.yiyn.ask.wechat.dto.WechatResultDto;
@@ -52,7 +53,9 @@ public class RefundTask {
 				 logger.info("需要退款的订单id分别为：" + p.getId() + "金额为：" + p.getPrice());
 				 String odd_num = p.getOdd_num();
 				 String num = p.getPrice();
-				 WechatResultDto<WechatRefundResponseDto> re = wechatRefundService.refund(odd_num, new BigDecimal(num), new BigDecimal(num));
+				 String user_m = p.getUser_pay_money();
+				 int discount = p.getDiscount();
+				 WechatResultDto<WechatRefundResponseDto> re = wechatRefundService.refund(odd_num, new BigDecimal(user_m), new BigDecimal(user_m));
 				 
 				 // 调用成功则更新状态
 				 if(re.isSuccess()){
@@ -82,7 +85,7 @@ public class RefundTask {
 					
 					AccountFlowPo flowP = new AccountFlowPo();
 					flowP.setAccount_id(accountPo.getId());
-					flowP.setJournal_money(NumberUtils.createBigDecimal(num).doubleValue());
+					flowP.setJournal_money(new Double(num));
 					flowP.setJournal_dir("2");// 1：流入，2：流出
 					flowP.setJournal_type("3");// 1：用户支付，2：提现：3：退款
 					flowP.setOrder_id(odd_num);
@@ -92,7 +95,29 @@ public class RefundTask {
 					flowP.setPay_status("1");//1:成功；2：待处理
 					flowP.setPay_channel_no("WXXCX");
 					accountService.insAccountFlow(flowP);
-				 }
+					
+					// 更新平台总账户，如果有使用优惠券，则把金额加回来
+					// 如果有优惠券信息，更新总账户金额，并且更新流水表
+				    if(discount > 0 && !StringUtils.isEmptyString(p.getCoupon_relid())){
+					  AccountPo account_admin = accountService.getAccountInfoByUserNo("super_admin");
+					  AccountFlowPo total_p = new AccountFlowPo();
+					  total_p.setAccount_id(account_admin.getId());
+					  total_p.setJournal_money(new Double(discount));
+					  total_p.setJournal_dir("1");// 1：流入，2：流出
+					  total_p.setJournal_type("5");// 1：用户支付，2：提现：3：退款   4:优惠券金额从平台账户中扣除 5:退款后平台总账户要加回来
+					  total_p.setOrder_id(odd_num);
+					  total_p.setPay_type("WXPAY");
+					  total_p.setPay_time(SPDateUtils.formatDateTimeDefault(new Date()));
+					  total_p.setJournal_remark("微信小程序支付退款插入，总账户收入");
+					  total_p.setPay_status("1");//1:成功；2：待处理
+					  total_p.setPay_channel_no("WXXCX");
+					  accountService.insAccountFlow(total_p);
+					  
+					  // 更新B端用户账户余额--按照支付金额+优惠金额入账
+					  account_admin.setBalance(account_admin.getBalance().subtract(new BigDecimal(discount)));
+					  accountService.updateByIdAfterCancel(account_admin);
+				  }
+				}
 			 }
 			
 		}

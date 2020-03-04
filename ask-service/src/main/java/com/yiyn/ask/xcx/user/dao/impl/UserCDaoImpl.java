@@ -17,6 +17,12 @@ public class UserCDaoImpl extends BaseDao<UserCPo> {
 	   this.getSqlSession().update(
 				this.getNameStatement() + ".updByUser_no", p);
 	}
+	
+	public void updDisByUser_no(Map<String,Object> p) throws Exception {
+	   this.getSqlSession().update(
+				this.getNameStatement() + ".updDisByUser_no", p);
+	}
+	
 	public String getNameStatement() {
 		return "yiyin.userc";
 	}
