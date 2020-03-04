@@ -317,6 +317,6 @@
 		<module>ask-service</module>
 		<module>ask-xcx-b</module>
 		<module>ask-xcx-c</module>
-		<module>ask-bg-web</module>
+		<!-- <module>ask-bg-web</module> -->
 	</modules>
 </project>
