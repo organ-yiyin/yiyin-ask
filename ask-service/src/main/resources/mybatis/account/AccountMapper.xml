@@ -51,7 +51,7 @@
 	<!--  通知后更新账户数据 -->
     <update id="updateByIdAftetTransfer" parameterType="com.yiyn.ask.xcx.account.po.AccountPo">
 		update user_account
-		set balance=#{balance},withdraw=#{withdraw},updated_by=#{updated_by},updated_time=#{updated_time}
+		set balance=#{balance},withdraw=#{withdraw},withdraw_enable=#{withdraw_enable},updated_by=#{updated_by},updated_time=#{updated_time}
 		where id = #{id}
 	</update>
 	

@@ -54,7 +54,17 @@
 					<input type="text" name="bank_account" value="${info.bank_account}"/>
 				</dd>
 			</dl>
-			
+			<dl class="">
+				<dt>咨询师性质：</dt>
+				<dd>
+					<select name="user_type" class="combox required">
+						<option value="">请选择</option>
+						<c:forEach items="${info.userTypes}" var="p">
+							<option <c:if test="${p.code eq info.user_type}">selected</c:if> value="${p.code}">${p.name}</option>	
+						</c:forEach>
+					</select>
+				</dd>
+			</dl>
 			<dl class="nowrap">
 				<dt>头像：</dt>
 				<dd>
@@ -109,7 +119,7 @@
 			<dl class="">
 				<dt>附加订单数（刷单用）：</dt>
 				<dd>
-					<input type="text" name="add_orders" class="digits" value="${info.add_orders}"/>
+					<input type="text" name="add_orders" class="digits required" value="${info.add_orders}"/>
 				</dd>
 			</dl>
 			
@@ -150,6 +160,33 @@
 					<textarea name="user_desc" cols="80" rows="8">${info.user_desc}</textarea>
 				</dd>
 			</dl>
+			
+			<dl class="nowrap">
+				<dt>标签列表新：</dt>
+				<dd>
+					<table class="table" targetType="dialog" width="370px">
+						<thead>
+							<tr>
+								<th width="70px">选项</th>
+								<th width="70px">标签值</th>
+								<th width="300px">标签名称</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${info.metaTags}" var="metaTag">
+								<tr>
+									<td><input type="checkbox" value="${metaTag.value}" name="tags"></td>
+									<td>${metaTag.value}</td>
+									<td>${metaTag.name}</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</dd>
+			</dl>
+			
+			<br>
+			<br>
 			
 			<div class="divider"></div>
 			<dl>

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yiyn.ask.base.constants.ConsultingTypeEnum;
+import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.constants.YesOrNoType;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.base.utils.excel.ExcelUtil;
@@ -62,6 +63,8 @@ public class ConsultantManager {
 			ExcelUtil.setCellStringValue(row, cellIndex++, userBPo.getBank_account());
 			ExcelUtil.setCellStringValue(row, cellIndex++, userBPo.getWork_year());
 			
+			UserTypeEnum userType = UserTypeEnum.findEnumByCode(userBPo.getUser_type());
+			ExcelUtil.setCellStringValue(row, cellIndex++, userType == null ? "" : userType.getName());
 			ConsultingTypeEnum consultingType = ConsultingTypeEnum.findEnumByCode(userBPo.getAdvice_type());
 			ExcelUtil.setCellStringValue(row, cellIndex++, consultingType == null ? "" : consultingType.getName());
 			ExcelUtil.setCellStringValue(row, cellIndex++, userBPo.getAdvice_val() == null ? "" : userBPo.getAdvice_val().toPlainString());

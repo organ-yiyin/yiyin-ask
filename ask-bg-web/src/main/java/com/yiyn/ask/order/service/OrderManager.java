@@ -20,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
+import com.yiyn.ask.base.constants.DistributorSourceEnum;
 import com.yiyn.ask.base.constants.GenderEnum;
+import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
 import com.yiyn.ask.base.utils.excel.ExcelUtil;
@@ -75,14 +77,7 @@ public class OrderManager {
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_birthday_b"));
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_edc_b"));
 			String ucr_birth_weight_b = (String)dataMap.get("ucr_birth_weight_b");
-			if(StringUtils.isEmpty(ucr_birth_weight_b)) {
-				ExcelUtil.setCellStringValue(row, cellIndex++, "");
-			}
-			else {
-				Cell weightCell = ExcelUtil.getCell(row, cellIndex++);
-				weightCell.setCellStyle(numberCellStyle);
-				weightCell.setCellValue(Double.valueOf(ucr_birth_weight_b).doubleValue());
-			}
+			ExcelUtil.setCellStringValue(row, cellIndex++, ucr_birth_weight_b);
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ucr_special_b"));
 			
 			Date c_reg_time = (Date)dataMap.get("c_reg_time");
@@ -107,17 +102,36 @@ public class OrderManager {
 			Date refund_time = (Date)dataMap.get("REFUND_TIME");
 			ExcelUtil.setCellStringValue(row, cellIndex++, SPDateUtils.formatDateTimeDefault(refund_time));
 			
+			// 订单金额
+			BigDecimal price = BigDecimal.valueOf((Double)dataMap.get("PRICE"));
 			Cell priceCell = ExcelUtil.getCell(row, cellIndex++);
 			priceCell.setCellStyle(numberCellStyle);
-			priceCell.setCellValue(((Double)dataMap.get("PRICE")).doubleValue());
+			priceCell.setCellValue(price.doubleValue());
+			
+			// 优惠金额
+			//Integer couponAmount = dataMap.get("ucc_amount") == null ? 0 : (Integer)dataMap.get("ucc_amount");
+			Cell couponAmountCell = ExcelUtil.getCell(row, cellIndex++);
+			couponAmountCell.setCellStyle(numberCellStyle);
+			couponAmountCell.setCellValue((Integer)dataMap.get("DISCOUNT"));
+			
+			// 实际支付
+			BigDecimal user_pay_money = BigDecimal.valueOf((Double)dataMap.get("USER_PAY_MONEY"));
+			Cell actualAmountCell = ExcelUtil.getCell(row, cellIndex++);
+			actualAmountCell.setCellStyle(numberCellStyle);
+			actualAmountCell.setCellValue(user_pay_money.doubleValue());
 			
 			Cell cPriceCell = ExcelUtil.getCell(row, cellIndex++);
 			cPriceCell.setCellStyle(numberCellStyle);
-			BigDecimal price = BigDecimal.valueOf((Double)dataMap.get("PRICE"));
-			BigDecimal cPrice = price.multiply(NumberUtils.createBigDecimal("0.7"));
+			UserTypeEnum userTypeEnum = UserTypeEnum.findEnumByCode((Integer)dataMap.get("b_user_type"));
+			//BigDecimal cPrice = price.multiply(NumberUtils.createBigDecimal("0.7"));
+			BigDecimal cPrice = price.multiply(userTypeEnum.getPercent());
 			cPriceCell.setCellValue(cPrice.doubleValue());
 			
 			ExcelUtil.setCellStringValue(row, cellIndex++, "微信支付");
+			String sdis_source = (String)dataMap.get("sdis_source");
+			DistributorSourceEnum disSource = DistributorSourceEnum.findByCode(sdis_source);
+			ExcelUtil.setCellStringValue(row, cellIndex++, disSource == null ? "" : disSource.getName());
+			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("sdis_dis_name"));
 			
 			CodePo codePo = qus_types.stream().filter(e-> e.getValue().equals((String)dataMap.get("PROBLEM_TYPE"))).findFirst().get();
 			ExcelUtil.setCellStringValue(row, cellIndex++, codePo == null ? "" : codePo.getName());

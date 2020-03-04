@@ -70,8 +70,8 @@
 	<update id="updateByIdInBg" parameterType="com.yiyn.ask.sys.po.UserBPo">
 		update user_b
 		set
-		user_name=#{user_name},user_phone=#{user_phone},bank_name=#{bank_name},bank_account=#{bank_account},user_id_num=#{user_id_num},user_headimg=#{user_headimg},
-		work_year=#{work_year},order_set=#{order_set},advice_type=#{advice_type},advice_val=#{advice_val},advice_num=#{advice_num},
+		user_name=#{user_name},user_phone=#{user_phone},bank_name=#{bank_name},bank_account=#{bank_account},user_id_num=#{user_id_num},user_type=#{user_type},
+		user_headimg=#{user_headimg},work_year=#{work_year},order_set=#{order_set},advice_type=#{advice_type},advice_val=#{advice_val},advice_num=#{advice_num},
 		share_link=#{share_link},recommend=#{recommend},user_desc=#{user_desc},add_orders=#{add_orders},is_hidden=#{is_hidden},
 		updated_by=#{updated_by},updated_time=#{updated_time}
 		where id =#{id};

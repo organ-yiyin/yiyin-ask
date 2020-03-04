@@ -175,6 +175,11 @@ $(function(){
 							<li><a href="<%= path%>/market/ad/management.do" target="navTab" rel="/market/ad/management">广告管理</a></li>
 							<% } %>
 						</ul>
+						<ul class="tree treeFolder">
+							<% if(AuthorityCode.isAuthorized(AuthorityCode.coupon_management)){%>
+							<li><a href="<%= path%>/market/coupon/management.do" target="navTab" rel="/market/coupon/management">优惠活动管理</a></li>
+							<% } %>
+						</ul>
 					</div>
 					<% } %>
 					

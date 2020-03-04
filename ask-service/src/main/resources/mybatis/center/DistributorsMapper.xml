@@ -16,6 +16,12 @@
         where t.id = #{id}
     </select>
     
+    <select id="findDisByDisCode" resultType="com.yiyn.ask.xcx.center.po.DistributorsPo" parameterType="String">
+        SELECT t.*
+        FROM yiyn_distributors t
+        where t.dis_code = #{dis_code}
+    </select>
+    
     <insert id="insert" parameterType="com.yiyn.ask.xcx.center.po.DistributorsPo">
         insert into yiyn_distributors(dis_code,dis_name,link_url,wechat_url,created_by,created_time)
         values(#{dis_code},#{dis_name},#{link_url},#{wechat_url},#{created_by},now())

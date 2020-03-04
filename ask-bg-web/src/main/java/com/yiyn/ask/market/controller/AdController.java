@@ -52,7 +52,7 @@ public class AdController {
 	}
 	
 	@RequestMapping(value = "/search.do", method = RequestMethod.POST)
-	public ModelAndView searchUserList(HttpServletRequest request,
+	public ModelAndView search(HttpServletRequest request,
 			HttpServletResponse response, 
 			@RequestParam("ad_position") String ad_position,
 			@RequestParam("ad_title") String ad_title,

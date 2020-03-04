@@ -1,0 +1,72 @@
+<!DOCTYPE mapper PUBLIC     
+    "-//mybatis.org//DTD Mapper 3.0//EN"    
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="market.coupon">
+
+	<select id="findById" parameterType="Long"
+		resultType="com.yiyn.ask.market.po.CouponPo">
+		select * from coupon where id = #{id};
+	</select>
+
+	<select id="searchByConditions" parameterType="com.yiyn.ask.base.utils.PaginationUtils"
+		resultType="com.yiyn.ask.market.po.CouponPo">
+		select * from coupon where 1=1
+		<if test="paramMap.name != null and '' != paramMap.name">
+			AND name like CONCAT('%',#{paramMap.name},'%')
+		</if>
+		<if test="paramMap.coupon_type != null and '' != paramMap.coupon_type">
+			and coupon_type = #{paramMap.coupon_type}
+		</if>
+		<if test="paramMap.coupon_range != null and '' != paramMap.coupon_range">
+			and coupon_range = #{paramMap.coupon_range}
+		</if>
+		<if test="paramMap.coupon_status != null and '' != paramMap.coupon_status">
+			and status = #{paramMap.coupon_status}
+		</if>
+		
+		order by updated_time desc
+		limit #{startIndex}, #{numPerPage}
+	</select>
+
+	<select id="searchCountByConditions" parameterType="com.yiyn.ask.base.utils.PaginationUtils"
+		resultType="int">
+
+		select count(*) as totalCount from coupon where 1=1
+		<if test="paramMap.name != null and '' != paramMap.name">
+			AND name like CONCAT('%',#{paramMap.name},'%')
+		</if>
+		<if test="paramMap.coupon_type != null and '' != paramMap.coupon_type">
+			and coupon_type = #{paramMap.coupon_type}
+		</if>
+		<if test="paramMap.coupon_range != null and '' != paramMap.coupon_range">
+			and coupon_range = #{paramMap.coupon_range}
+		</if>
+		<if test="paramMap.coupon_status != null and '' != paramMap.coupon_status">
+			and status = #{paramMap.coupon_status}
+		</if>
+		
+	</select>
+
+	<insert id="insert" parameterType="com.yiyn.ask.market.po.CouponPo"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		coupon(name,coupon_no,coupon_type,coupon_range,total_amount,amount,
+		start_date,end_date,post_start,post_end,status,user_list,
+		delete_flag,created_by,created_time,updated_by,updated_time)
+		values
+		(#{name},#{coupon_no},#{coupon_type},#{coupon_range},#{total_amount},#{amount},
+		#{start_date},#{end_date},#{post_start},#{post_end},#{status},#{user_list},
+		#{delete_flag},#{created_by},#{created_time},#{updated_by},#{updated_time});
+	</insert>
+
+	<update id="updateById" parameterType="com.yiyn.ask.market.po.CouponPo">
+		update coupon
+		set
+		name=#{name},coupon_no=#{coupon_no},coupon_type=#{coupon_type},coupon_range=#{coupon_range},total_amount=#{total_amount},amount=#{amount},
+		start_date=#{start_date},end_date=#{end_date},post_start=#{post_start},post_end=#{post_end},status=#{status},user_list=#{user_list},
+		DELETE_FLAG=#{delete_flag},updated_by=#{updated_by},updated_time=#{updated_time}
+		where id =#{id};
+	</update>
+
+</mapper>

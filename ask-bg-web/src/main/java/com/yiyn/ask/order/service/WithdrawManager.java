@@ -15,6 +15,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.constants.WithDrawStatusEnum;
 import com.yiyn.ask.base.constants.WithDrawTypeEnum;
 import com.yiyn.ask.base.utils.PaginationUtils;
@@ -50,6 +51,8 @@ public class WithdrawManager {
 			int cellIndex = 0;
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ub_user_no"));
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ub_user_name"));
+			UserTypeEnum user_type = UserTypeEnum.findEnumByCode((Integer)dataMap.get("ub_user_type"));
+			ExcelUtil.setCellStringValue(row, cellIndex++, user_type == null ? "" : user_type.getName());
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ub_user_id_num"));
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ub_bank_name"));
 			ExcelUtil.setCellStringValue(row, cellIndex++, (String)dataMap.get("ub_bank_account"));

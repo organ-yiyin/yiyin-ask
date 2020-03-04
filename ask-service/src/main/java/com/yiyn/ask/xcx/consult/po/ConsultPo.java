@@ -1,4 +1,4 @@
-package com.yiyn.ask.xcx.consult.po;
+﻿package com.yiyn.ask.xcx.consult.po;
 
 import java.util.Date;
 
@@ -26,6 +26,10 @@ public class ConsultPo extends BasePo {
 	private String odd_num;
 	
 	private String price;
+	
+	private String user_pay_money;
+	
+	private Integer discount;
 	
 	private String problem_desc;
 	
@@ -59,7 +63,7 @@ public class ConsultPo extends BasePo {
 	private String coupon_relid; // 优惠券关联id
 	private int discount; // 优惠券优惠金额，默认为0
 	private String user_pay_money; // 用户实际支付的金额
-	
+
 	public UserCPo getUserCPo() {
 		return userCPo;
 	}
@@ -265,6 +269,7 @@ public class ConsultPo extends BasePo {
 	public void setCoupon_relid(String coupon_relid) {
 		this.coupon_relid = coupon_relid;
 	}
+
 
 	public int getDiscount() {
 		return discount;

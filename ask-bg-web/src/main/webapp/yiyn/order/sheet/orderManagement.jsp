@@ -92,7 +92,7 @@
 		</ul>
 	</div>
 
-	<table class="table" style="width:950px" layoutH="165">
+	<table class="table" style="width:1390px" layoutH="165">
 		<thead>
 			<tr>
 				<th width="60px">订单序号</th>
@@ -101,8 +101,12 @@
 				<th width="150px">订单号</th>
 				<th width="200px">下单日期</th>
 				<th width="100px">订单金额</th>
+				<th width="100px">优惠金额</th>
+				<th width="100px">实际支付金额</th>
 				<th width="100px">订单状态</th>
 				<th width="120px">咨询师姓名</th>
+				<th width="120px">渠道商来源</th>
+				<th width="120px">渠道商名称</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -115,12 +119,20 @@
 				<td>${item['ODD_NUM']}</td>
 				<td><f:formatDate value="${item['CREATED_TIME']}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<td>${item['PRICE']}</td>
+				<td>${item['DISCOUNT']}</td>
+				<td>${item['USER_PAY_MONEY']}</td>
 				<td>
 					<c:forEach items="${info.consultStatusList}" var="item_u" varStatus="s">
 						<c:if test="${item_u.code==item['STATUS']}">${item_u.name}</c:if>
 					</c:forEach>
 				</td>
 				<td>${item['b_user_name']}</td>
+				<td>
+					<c:forEach items="${info.distributorSourceList}" var="item_u" varStatus="s">
+						<c:if test="${item_u.code==item['sdis_source']}">${item_u.name}</c:if>
+					</c:forEach>
+				</td>
+				<td>${item['sdis_dis_name']}</td>
 			</tr>
 			</c:forEach>
 		</tbody>

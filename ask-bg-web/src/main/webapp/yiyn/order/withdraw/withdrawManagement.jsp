@@ -85,14 +85,15 @@
 		</ul>
 	</div>
 
-	<table class="table" style="width:950px" layoutH="140">
+	<table class="table" style="width:960px" layoutH="140">
 		<thead>
 			<tr>
-				<th width="150px">提现账户</th>
-				<th width="100px">提现金额</th>
-				<th width="100px">实际到账金额</th>
-				<th width="100px">提现类型</th>
-				<th width="100px">状态</th>
+				<th width="120px">提现账户</th>
+				<th width="120px">咨询师姓名</th>
+				<th width="80px">提现金额</th>
+				<th width="80px">实际到账金额</th>
+				<th width="80px">提现类型</th>
+				<th width="80px">状态</th>
 				<th width="150px">提现申请时间</th>
 				<th width="150px">操作时间</th>
 				<th width="100px">操作人</th>
@@ -103,6 +104,7 @@
 			<c:forEach items="${info.data}" var="item" varStatus="s">
 			<tr target="id" rel="${item['ID']}">
 				<td>${item['ub_user_no']}</td>
+				<td>${item['ub_user_name']}</td>
 				<td>${item['WITHDRAW']}</td>
 				<td>${item['WITHDRAW_ACT']}</td>
 				<td>

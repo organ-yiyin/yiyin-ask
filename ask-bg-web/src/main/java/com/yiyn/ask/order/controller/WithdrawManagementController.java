@@ -216,8 +216,9 @@ public class WithdrawManagementController {
 		userWithdrawDao.updateStatusById(withdrawPo);
 		
 		// 修改账户表数据
-		// 并对user_account更新余额以及真实的提现金额
+		// 并对user_account更新余额,可提现金额，已提现金额
 		accountPo.setBalance(accountPo.getBalance().subtract(withdrawPo.getWithdraw()));
+		accountPo.setWithdraw_enable(accountPo.getWithdraw_enable().subtract(withdrawPo.getWithdraw()));
 		accountPo.setWithdraw(accountPo.getWithdraw().add(withdrawPo.getWithdraw()));
 		accountDao.updateByIdAftetTransfer(accountPo);
 		
@@ -258,7 +259,7 @@ public class WithdrawManagementController {
 	@RequestMapping(value = "/attachment/save.do", method = RequestMethod.POST, produces = {"application/json;charset=UTF-8" })
 	@ResponseBody
 	@Transactional
-	public String save(HttpServletRequest request, HttpServletResponse response, AttachmentForm attachmentForm)
+	public String attachmentSave(HttpServletRequest request, HttpServletResponse response, AttachmentForm attachmentForm)
 			throws Exception {
 		logger.info("save");
 

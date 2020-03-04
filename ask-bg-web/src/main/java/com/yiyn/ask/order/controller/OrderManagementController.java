@@ -1,5 +1,6 @@
 package com.yiyn.ask.order.controller;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
@@ -27,6 +29,7 @@ import com.google.gson.Gson;
 import com.yiyn.ask.base.constants.ConsultStatuEnum;
 import com.yiyn.ask.base.constants.LogUserTypeEnum;
 import com.yiyn.ask.base.constants.ObjectTypeEnum;
+import com.yiyn.ask.base.constants.UserTypeEnum;
 import com.yiyn.ask.base.convert.AttachmentConvert;
 import com.yiyn.ask.base.dao.impl.AttachmentDaoImpl;
 import com.yiyn.ask.base.form.AttachmentForm;
@@ -34,6 +37,7 @@ import com.yiyn.ask.base.po.AttachmentPo;
 import com.yiyn.ask.base.utils.DwzResponseForm;
 import com.yiyn.ask.base.utils.PaginationUtils;
 import com.yiyn.ask.base.utils.date.SPDateUtils;
+import com.yiyn.ask.market.form.CouponForm;
 import com.yiyn.ask.order.convert.ConsultationSheetConvert;
 import com.yiyn.ask.order.form.ConsultationSheetForm;
 import com.yiyn.ask.order.form.OrderManagementForm;
@@ -48,15 +52,21 @@ import com.yiyn.ask.xcx.account.dao.impl.AccountFlowDaoImpl;
 import com.yiyn.ask.xcx.account.po.AccountFlowPo;
 import com.yiyn.ask.xcx.account.po.AccountPo;
 import com.yiyn.ask.xcx.center.dao.impl.CodeDaoImpl;
+import com.yiyn.ask.xcx.center.dao.impl.DistributorsDaoImpl;
 import com.yiyn.ask.xcx.center.po.CodePo;
+import com.yiyn.ask.xcx.center.po.DistributorsPo;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultLogDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultProcessDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultRefDaoImpl;
 import com.yiyn.ask.xcx.consult.dao.impl.ConsultantSheetBgDaoImpl;
+import com.yiyn.ask.xcx.consult.dao.impl.UserCCouponDaoImpl;
 import com.yiyn.ask.xcx.consult.po.ConsultLogPo;
 import com.yiyn.ask.xcx.consult.po.ConsultPo;
 import com.yiyn.ask.xcx.consult.po.ConsultProcessPo;
 import com.yiyn.ask.xcx.consult.po.ConsultRefPo;
+import com.yiyn.ask.xcx.consult.po.UserCCouponPo;
+import com.yiyn.ask.xcx.main.dao.impl.DistributorsVisitDaoImpl;
+import com.yiyn.ask.xcx.main.po.DistributorsVisitPo;
 import com.yiyn.ask.xcx.user.dao.impl.UserCDaoImpl;
 import com.yiyn.ask.xcx.user.po.UserCPo;
 
@@ -105,6 +115,15 @@ public class OrderManagementController {
 	
 	@Autowired
 	private AccountFlowDaoImpl accountFlowDao;
+	
+	@Autowired
+	private UserCCouponDaoImpl userCCouponDaoImpl;
+	
+	@Autowired
+	private DistributorsVisitDaoImpl distributorsVisitDaoImpl;
+	
+	@Autowired
+	private DistributorsDaoImpl distributorsDaoImpl;
 
 	@RequestMapping(value = "/management.do", method = RequestMethod.GET)
 	public ModelAndView forwardManagementPage(HttpServletRequest request, HttpServletResponse response)
@@ -155,24 +174,46 @@ public class OrderManagementController {
 		
 		ConsultPo consultPo = this.consultantSheetBgDao.findById(id);
 		ConsultationSheetForm consultantSheet = ConsultationSheetConvert.convertToForm(consultPo);
+		
+		UserCCouponPo userCCouponPo = null;
+		if(StringUtils.isNotEmpty(consultPo.getCoupon_relid())) {
+			userCCouponPo = userCCouponDaoImpl.findById(Long.valueOf(consultPo.getCoupon_relid()));
+		}
+		
 		List<CodePo> qus_types = codeDao.findCodeList("QUS_TYPE");
 		consultantSheet.setQus_types(qus_types);
 		
 		UserBPo userB = userBDao.findByUserNo(consultPo.getUser_b_no());
+		// 计算咨询师收入
+		UserTypeEnum userTypeEnum = UserTypeEnum.findEnumByCode(userB.getUser_type());
+		BigDecimal deservedPrice = NumberUtils.createBigDecimal(consultantSheet.getPrice()).multiply(userTypeEnum.getPercent());
+		consultantSheet.setDeservedPrice(deservedPrice.toPlainString());
+		
 		UserCPo userC = userCDao.findByUserno(consultPo.getUser_c_no());
 		ConsultRefPo consultRef = consultRefDao.findById(Long.valueOf(consultPo.getUser_ref_id()));		
 		List<AttachmentPo> attachments = attachmentDao.findAllByObject(ObjectTypeEnum.ORDER_ATTACHMENT.getCode(), id);
 		List<ConsultLogPo> logs = this.consultLogDao.findByConsultId(id);
 		List<ConsultProcessPo> consultProcessList = consultProceessDao.getConsultProcessList(id.toString());
+		
+		// 供应商
+		DistributorsVisitPo distributorVisitPo = this.distributorsVisitDaoImpl.findByOpenId(consultantSheet.getUser_c_no());
+		DistributorsPo ditributor = null;
+		if(distributorVisitPo != null) {
+			ditributor = this.distributorsDaoImpl.findDisByDisCode(distributorVisitPo.getDis_code());
+		}
 
 		ModelAndView mv = new ModelAndView(FOLDER_PATH + "/orderDetails.jsp");
 		mv.addObject("consultantSheet",consultantSheet);
+		mv.addObject("userCCoupon",userCCouponPo);
 		mv.addObject("consultProcessList", consultProcessList);
 		mv.addObject("userB", userB);
 		mv.addObject("userC", userC);
 		mv.addObject("consultRef", consultRef);
 		mv.addObject("attachments", attachments);
 		mv.addObject("logs", logs);
+		mv.addObject("couponForm", new CouponForm());
+		mv.addObject("distributorVisitPo", distributorVisitPo);
+		mv.addObject("ditributor", ditributor);
 
 		return mv;
 	}
@@ -212,7 +253,7 @@ public class OrderManagementController {
 		}
 
 		 WechatResultDto<WechatRefundResponseDto> refund = wechatRefundService.refund(consultPo.getOdd_num(),
-				 NumberUtils.createBigDecimal(consultPo.getPrice()),NumberUtils.createBigDecimal(consultPo.getPrice()));
+				 NumberUtils.createBigDecimal(consultPo.getUser_pay_money()),NumberUtils.createBigDecimal(consultPo.getUser_pay_money()));
 		 if(refund.isSuccess()) {
 			// 修改订单状态
 			consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
@@ -247,7 +288,7 @@ public class OrderManagementController {
 			accountFlowDao.insert(flowP);
 				
 			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
-				String.format("订单%s已取消，总共退款金额为%s",consultPo.getOdd_num(),consultPo.getPrice()));
+				String.format("订单%s已取消，总共退款金额为%s",consultPo.getOdd_num(),consultPo.getUser_pay_money()));
 			responseForm.setNavTabId("orderDetails");
 		 	return new Gson().toJson(responseForm);
 		 }
@@ -286,8 +327,8 @@ public class OrderManagementController {
 		}
 		
 		WechatResultDto<WechatRefundResponseDto> refund = wechatRefundService.refund(consultPo.getOdd_num(),
-		NumberUtils.createBigDecimal(consultPo.getPrice()),
-		NumberUtils.createBigDecimal(consultPo.getPrice()));
+		NumberUtils.createBigDecimal(consultPo.getUser_pay_money()),
+		NumberUtils.createBigDecimal(consultPo.getUser_pay_money()));
 		if(refund.isSuccess()) {
 			// 修改订单状态
 			consultPo.setStatus(ConsultStatuEnum.REFUND.getCode());
@@ -322,7 +363,7 @@ public class OrderManagementController {
 			accountFlowDao.insert(flowP);
 				
 			DwzResponseForm responseForm = DwzResponseForm.createSuccessResponseForm(
-					String.format("订单%s已同意取消，总共退款金额为%s", consultPo.getOdd_num(), consultPo.getPrice()));
+					String.format("订单%s已同意取消，总共退款金额为%s", consultPo.getOdd_num(), consultPo.getUser_pay_money()));
 			responseForm.setNavTabId("orderDetails");
 			return new Gson().toJson(responseForm);
 		}

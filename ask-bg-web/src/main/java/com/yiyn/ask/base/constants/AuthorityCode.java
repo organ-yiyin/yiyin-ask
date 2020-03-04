@@ -17,6 +17,7 @@ public enum AuthorityCode {
 	customer_management("customer.management","客户管理","客户管理"),
 	
 	ad_management("ad.management","广告管理","广告管理"),
+	coupon_management("coupon.management","优惠活动管理","优惠活动管理"),
 	
 	sys_user_management("sys.user.management","用户管理","用户管理");
 	
