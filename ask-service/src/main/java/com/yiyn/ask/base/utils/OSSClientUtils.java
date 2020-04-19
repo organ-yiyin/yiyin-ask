@@ -85,7 +85,7 @@ public class OSSClientUtils
   }
   
   public static void main(String[] args){
-	  OSSClient ossClient = new OSSClient("http//oss-cn-hangzhou.aliyuncs.com", "LTAIwtXK6M12ihFc", "zesu1Y7Eb1ZL9W7Z8XCXuW9nBf0cMy");
+	  OSSClient ossClient = new OSSClient("http//oss-cn-hangzhou.aliyuncs.com", "11", "222");
       boolean exist = ossClient.doesObjectExist("iesms-upload-test","http://iesms-upload-test.oss-cn-hangzhou.aliyuncs.com/用户证件1568278884151/pic.jpg");
       if (!exist) {
           System.out.println("文件不存在,filePath={}");
